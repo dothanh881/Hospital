@@ -4,48 +4,79 @@ import java.util.Date;
 
 public class PatientDTO {
 
-    private Long id;
-    private String code;
+    private Integer Id;
     private String firstName;
     private String lastName;
     private Date dob;
     private String gender;
-    private String address;
+    private String street;
+    private Integer cityId, districtId, wardId;
     private String phoneNumber;
 
     // No-argument constructor
     public PatientDTO() {
     }
 
-    // Constructor with all parameters
-    public PatientDTO(Long id, String code, String firstName, String lastName, Date dob, String gender, String address, String phoneNumber) {
-        this.id = id;
-        this.code = code;
+
+    public PatientDTO(Integer id, String firstName, String lastName, Date dob, String gender, String street, Integer cityId, Integer districtId, Integer wardId, String phoneNumber) {
+        Id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
         this.gender = gender;
-        this.address = address;
+        this.street = street;
+        this.cityId = cityId;
+        this.districtId = districtId;
+        this.wardId = wardId;
         this.phoneNumber = phoneNumber;
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
+    public Integer getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Integer districtId) {
+        this.districtId = districtId;
+    }
+
+    public Integer getWardId() {
+        return wardId;
+    }
+
+    public void setWardId(Integer wardId) {
+        this.wardId = wardId;
+    }
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
+    }
+
+
+
+    // Constructor with all parameters
+
     // Getters and setters...
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -79,13 +110,7 @@ public class PatientDTO {
         this.gender = gender;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public String getPhoneNumber() {
         return phoneNumber;

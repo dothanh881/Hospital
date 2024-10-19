@@ -44,16 +44,16 @@ public class EmployeeEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "cityId", referencedColumnName = "CityId", insertable = false, updatable = false)
-    private Cities city; // Assuming you have a City entity class
+    @JoinColumn(name = "city_id")
+    private Cities city;
 
     @ManyToOne
-    @JoinColumn(name = "districtId", referencedColumnName = "DistrictId", insertable = false, updatable = false)
-    private Districts district; // Assuming you have a District entity class
+    @JoinColumn(name = "district_id")
+    private Districts district;
 
     @ManyToOne
-    @JoinColumn(name = "wardId", referencedColumnName = "WardId", insertable = false, updatable = false)
-    private Wards ward; // Assuming you have a Ward entity class
+    @JoinColumn(name = "ward_id")
+    private Wards ward;
 
     public String getSpecialty() {
         return specialty;
@@ -76,7 +76,7 @@ public class EmployeeEntity {
     private Date startDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_Id", nullable = false)
+    @JoinColumn(name = "department_id", nullable = false)
     private DepartmentEntity department;
 
     // No-arg constructor

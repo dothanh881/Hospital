@@ -2,13 +2,17 @@ package com.hospital.hospitalmanagement.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cities")
 public class Cities {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer CityId;
+    @Column(name = "city_id")
+    private Integer cityId;
 
     @Column(length = 10, nullable = false)
     private String CityCode;
@@ -26,11 +30,11 @@ public class Cities {
 
     // Getters and Setters
     public Integer getCityId() {
-        return CityId;
+        return cityId;
     }
 
     public void setCityId(Integer cityId) {
-        CityId = cityId;
+        cityId = cityId;
     }
 
     public String getCityCode() {
@@ -72,4 +76,6 @@ public class Cities {
     public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
     }
+    @OneToMany(mappedBy = "city")
+    List<PatientEntity> patientEntityList;
 }

@@ -21,10 +21,11 @@ public class PatientEntity {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.street = street;
-        this.phoneNumber = phoneNumber;
         this.city = city;
         this.district = district;
         this.ward = ward;
+        this.phoneNumber = phoneNumber;
+
     }
 
     @Column(name = "firstName", nullable = false, length = 100)
@@ -46,15 +47,15 @@ public class PatientEntity {
     private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "cityId", referencedColumnName = "CityId", insertable = false, updatable = false)
+    @JoinColumn(name = "city_id")
     private Cities city;
 
     @ManyToOne
-    @JoinColumn(name = "districtId", referencedColumnName = "DistrictId", insertable = false, updatable = false)
+    @JoinColumn(name = "district_id")
     private Districts district;
 
     @ManyToOne
-    @JoinColumn(name = "wardId", referencedColumnName = "WardId", insertable = false, updatable = false)
+    @JoinColumn(name = "ward_id")
     private Wards ward;
 
 

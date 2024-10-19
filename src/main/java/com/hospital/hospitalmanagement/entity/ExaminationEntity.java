@@ -17,7 +17,7 @@ public class ExaminationEntity {
     @Column(name = "ID")
     private int ID;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "outpatient_Id", nullable = false)
+    @JoinColumn(name = "outpatient_id", nullable = false)
     private OutPatientEntity outPatient;
 
     @ManyToOne(fetch = FetchType.LAZY)

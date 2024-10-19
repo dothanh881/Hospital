@@ -18,15 +18,15 @@ public class ProviderEntity {
     private String street;
 
     @ManyToOne
-    @JoinColumn(name = "cityId", referencedColumnName = "CityId", insertable = false, updatable = false)
+    @JoinColumn(name = "cityId")
     private Cities city;
 
     @ManyToOne
-    @JoinColumn(name = "districtId", referencedColumnName = "DistrictId", insertable = false, updatable = false)
+    @JoinColumn(name = "districtId")
     private Districts district;
 
     @ManyToOne
-    @JoinColumn(name = "wardId", referencedColumnName = "WardId", insertable = false, updatable = false)
+    @JoinColumn(name = "wardId")
     private Wards ward;
     @Column(name = "phoneNumber", length = 15)
     private String phoneNumber;

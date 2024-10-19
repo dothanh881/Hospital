@@ -7,10 +7,10 @@ public class OutPatientDTO extends PatientDTO {
     private String visitReason;
 
     // Constructor with all parameters
-    public OutPatientDTO(Long id, String code, String firstName, String lastName, Date dob, String gender, String address, String phoneNumber, String visitReason) {
-        super(id, code, firstName, lastName, dob, gender, address, phoneNumber);  // Pass parameters to the parent constructor
-        this.visitReason = visitReason;
-    }
+//    public OutPatientDTO(Integer id, String code, String firstName, String lastName, Date dob, String gender, String address, String phoneNumber, String visitReason) {
+//        super(id, code, firstName, lastName, dob, gender, address, phoneNumber);  // Pass parameters to the parent constructor
+//        this.visitReason = visitReason;
+//    }
 
     // No-argument constructor (optional, useful for frameworks like Hibernate)
     public OutPatientDTO() {

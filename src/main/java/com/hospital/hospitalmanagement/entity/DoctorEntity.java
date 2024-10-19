@@ -16,7 +16,18 @@ public class DoctorEntity extends EmployeeEntity {
     }
 
 
+    @Override
+    public DepartmentEntity getDepartment() {
+        return department;
+    }
 
+    @Override
+    public void setDepartment(DepartmentEntity department) {
+        this.department = department;
+    }
+
+    @OneToOne(mappedBy = "headDoctor")
+    private DepartmentEntity department;
     @OneToMany(mappedBy = "doctor")
     private List<ExaminationEntity> examinations;
 

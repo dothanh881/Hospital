@@ -10,7 +10,7 @@ public class Wards {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer WardId;
 
-    private Integer DistrictId;
+
 
     @Column(name = "IsActive")
     private Boolean isActive;
@@ -18,13 +18,17 @@ public class Wards {
     @Column(name = "IsDelete")
     private Boolean isDelete;
 
-    private Integer OrderId;
+    private Integer orderId;
 
     @Column(length = 255, nullable = false)
     private String WardCode;
 
     @Column(length = 255, nullable = false)
     private String WardName;
+
+    @ManyToOne
+    @JoinColumn(name="districtId")
+    private Districts district;
 
     // Getters and Setters
     public Integer getWardId() {
@@ -35,13 +39,6 @@ public class Wards {
         WardId = wardId;
     }
 
-    public Integer getDistrictId() {
-        return DistrictId;
-    }
-
-    public void setDistrictId(Integer districtId) {
-        DistrictId = districtId;
-    }
 
     public Boolean getIsActive() {
         return isActive;
@@ -60,11 +57,11 @@ public class Wards {
     }
 
     public Integer getOrderId() {
-        return OrderId;
+        return orderId;
     }
 
     public void setOrderId(Integer orderId) {
-        OrderId = orderId;
+        orderId = orderId;
     }
 
     public String getWardCode() {

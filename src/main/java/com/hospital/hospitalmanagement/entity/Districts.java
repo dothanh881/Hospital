@@ -8,9 +8,9 @@ public class Districts {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer DistrictId;
+    private Integer districtId;
 
-    private Integer CityId;
+
 
     @Column(length = 10, nullable = false)
     private String DistrictCode;
@@ -24,26 +24,25 @@ public class Districts {
     @Column(name = "IsDelete")
     private Boolean isDelete;
 
-    private Integer OrderId;
+
+    @ManyToOne
+    @JoinColumn(name="city_id")
+    private Cities city;
+
+
+    private Integer orderId;
 
     private Integer DanSo;
 
     // Getters and Setters
     public Integer getDistrictId() {
-        return DistrictId;
+        return districtId;
     }
 
     public void setDistrictId(Integer districtId) {
-        DistrictId = districtId;
+        districtId = districtId;
     }
 
-    public Integer getCityId() {
-        return CityId;
-    }
-
-    public void setCityId(Integer cityId) {
-        CityId = cityId;
-    }
 
     public String getDistrictCode() {
         return DistrictCode;
@@ -78,11 +77,11 @@ public class Districts {
     }
 
     public Integer getOrderId() {
-        return OrderId;
+        return orderId;
     }
 
     public void setOrderId(Integer orderId) {
-        OrderId = orderId;
+        orderId = orderId;
     }
 
     public Integer getDanSo() {
