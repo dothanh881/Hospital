@@ -122,4 +122,8 @@ public class MedicationEntity {
     public void setTreatmentMedications(List<TreatmentMedicationEntity> treatmentMedications) {
         this.treatmentMedications = treatmentMedications;
     }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
 }

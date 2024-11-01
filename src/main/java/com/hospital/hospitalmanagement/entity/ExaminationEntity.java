@@ -10,6 +10,21 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "examination")
+@NamedStoredProcedureQuery(
+        name = "AddExamination",
+        procedureName = "AddExamination",
+        parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "outpatientId", type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "doctorId", type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "examinationDate", type = Date.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "nextExaminationDate", type = Date.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "diagnosis", type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "fee", type = BigDecimal.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "medicationIds", type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "prices", type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "quantities", type = String.class)
+        }
+)
 public class ExaminationEntity {
 
     @Id
@@ -17,8 +32,9 @@ public class ExaminationEntity {
     @Column(name = "ID")
     private int ID;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "outpatient_id", nullable = false)
-    private OutPatientEntity outPatient;
+    @JoinColumn(name = "outpatient_id", referencedColumnName = "outpatient_id", nullable = false)
+    private OutPatientEntity outPatient; // This references the OutPatientEntity
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_Id", nullable = false)
@@ -28,7 +44,7 @@ public class ExaminationEntity {
     @Column(name = "examination_Date", nullable = false)
     private Date examinationDate;
 
-    @Column(nullable = false)
+    @Column
     private String diagnosis;
 
     @Temporal(TemporalType.DATE)
@@ -40,7 +56,6 @@ public class ExaminationEntity {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal fee;
-
 
     @OneToMany(mappedBy = "examination")
     private List<ExaminationMedicationEntity> examinationMedications = new ArrayList<>();

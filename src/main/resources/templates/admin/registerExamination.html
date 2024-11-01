@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Dashboard - Ace Admin</title>
+
+    <meta name="description" content="overview &amp; stats" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Bootstrap & FontAwesome -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" th:href="@{/admin/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/admin/assets/font-awesome/4.2.0/css/font-awesome.min.css}" />
+
+    <!-- Page Specific Plugin Styles -->
+    <!-- Text Fonts -->
+    <link rel="stylesheet" th:href="@{/admin/assets/fonts/fonts.googleapis.com.css}" />
+
+    <!-- ACE Styles -->
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace.min.css}" class="ace-main-stylesheet" id="main-ace-style" />
+
+    <!-- Conditional Stylesheets for IE9 and below -->
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace-part2.min.css}" class="ace-main-stylesheet" />
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace-ie.min.css}" />
+    <![endif]-->
+
+    <!-- ACE Settings Handler -->
+    <script th:src="@{/admin/assets/js/ace-extra.min.js}"></script>
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+    <!--[if lte IE 8]>
+    <script th:src="@{/admin/assets/js/html5shiv.min.js}"></script>
+    <script th:src="@{/admin/assets/js/respond.min.js}"></script>
+    <![endif]-->
+    <style>
+
+        body {
+            font-family: 'PT Serif', 'Times New Roman', serif;
+        }
+        .custom-modal {
+            width: 1000px; /* Adjust width */
+            height: 90vh; /* Adjust height */
+            max-width: 900px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 10px;            /* Adjusted to have some margin from the top */
+            right: 10px;          /* Aligns the alert to the right */
+            width: 80%;           /* Adjusted width */
+            max-width: 400px;      /* Optional: limits the width of the alert */
+            height: 60px;          /* Set a custom height */
+            z-index: 1050;
+            font-weight: bold;     /* Makes the font bold */
+            display: flex;
+            align-items: center;   /* Vertically center the content */
+            padding-left: 20px;    /* Padding inside the alert box */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a shadow for better aesthetics */
+            background-color: #dff0d8; /* Success alert background */
+            color: #3c763d;       /* Success alert text color */
+            border-radius: 5px;    /* Rounded corners */
+        }
+
+        .alert-fixed .close-btn {
+            margin-left: auto;     /* Pushes the close button to the far right */
+            padding: 0 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+        <use xlink:href="#check-circle-fill"></use>
+    </svg>
+    <div id="alertMessage" th:text="${alertMessage}"></div>
+    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+</div>
+<body class="no-skin">
+
+<div id="navbar" class="navbar navbar-default">
+    <script type="text/javascript">
+        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="navbar-container" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-header pull-left">
+            <a href="index.html" class="navbar-brand">
+                <small>
+                    <i class="fa fa-leaf"></i>
+                    Hospital Management
+                </small>
+            </a>
+        </div>
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+
+
+                <li class="light-blue">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                        <img class="nav-user-photo"
+                             th:src="@{/admin/assets/avatars/user.jpg}"
+                             alt="Jason's Photo" />
+                        <span class="user-info">
+									<small>Welcome,</small>
+									Jason
+								</span>
+
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-cog"></i>
+                                Settings
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="profile.html">
+                                <i class="ace-icon fa fa-user"></i>
+                                Profile
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div><!-- /.navbar-container -->
+</div>
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div id="sidebar" class="sidebar                  responsive">
+        <script type="text/javascript">
+            try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+        </script>
+
+
+        <!-- /.sidebar-shortcuts -->
+
+        <ul class="nav nav-list">
+            <li class="active">
+                <a href="/patients">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Patient </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+        </ul><!-- /.nav-list -->
+
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+
+        <script type="text/javascript">
+            try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+        </script>
+    </div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+
+                <ul class="breadcrumb">
+
+                    <li class="active">Management</li>
+                </ul><!-- /.breadcrumb -->
+
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- /.nav-search -->
+            </div>
+
+            <div class="page-content">
+
+
+
+                <div class="page-header">
+                    <h1>
+                        Patient
+                        <small>
+                            <i class="ace-icon fa fa-angle-double-right"></i>
+                            overview &amp;
+                        </small>
+                    </h1>
+
+
+                </div><!-- /.page-header -->
+                <!-- filter -->
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <h4 class="lighter">
+                            <i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue"></i>
+                            <a href="#modal-wizard" data-toggle="modal" class="pink"> Wizard Inside a Modal Box </a>
+                        </h4>
+
+                        <div class="hr hr-18 hr-double dotted"></div>
+
+                        <div class="widget-box">
+                            <div class="widget-header widget-header-blue widget-header-flat">
+                                <h4 class="widget-title lighter">ĐĂNG KÝ KHÁM</h4>
+
+
+                            </div>
+
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <div id="fuelux-wizard-container">
+                                        <div>
+                                            <ul class="steps">
+                                                <li data-step="1" class="active">
+                                                    <span class="step">1</span>
+                                                    <span class="title">Thông tin</span>
+                                                </li>
+
+                                                <li data-step="2">
+                                                    <span class="step">2</span>
+                                                    <span class="title">Đơn thuốc</span>
+                                                </li>
+
+
+                                                <li data-step="3">
+                                                    <span class="step">3</span>
+                                                    <span class="title">Hoàn thành</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <hr />
+
+                                        <div class="step-content pos-rel">
+                                            <div class="step-pane active" data-step="1">
+
+
+                                                <form class="form-horizontal" role="form" id="examination-info-form">
+                                                    <input type="hidden" id="patientId" name="patientId" th:value="${patient.ID}">
+
+                                                    <!-- Doctor ID -->
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label " for="doctorId">Doctor</label>
+                                                        <div class="col-sm-9">
+                                                            <select class="chosen-select form-control" id="doctorId" name="doctorId" required>
+                                                                <option value="">Choose a Doctor...</option>
+                                                                <option th:each="doctor : ${doctors}"
+                                                                        th:value="${doctor.ID}"
+                                                                        th:text="${'Bs. ' + doctor.firstName + ' ' + doctor.lastName}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Examination Date -->
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label no-padding-right" for="examinationDate">Examination Date</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="date" id="examinationDate" name="examinationDate" class="form-control" required>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label no-padding-right" for="next_examinationDate">Next Examination Date</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="date" id="next_examinationDate" name="next_examinationDate" class="form-control" >
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- Diagnosis -->
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label no-padding-right" for="diagnosis">Diagnosis</label>
+                                                        <div class="col-sm-9">
+                                                            <textarea id="diagnosis" name="diagnosis" placeholder="Diagnosis" class="form-control" rows="3" ></textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Editable Medication Table -->
+
+
+                                                    <!-- Form Actions -->
+
+                                                </form>
+
+
+
+                                            </div>
+
+                                            <div class="step-pane" data-step="2">
+                                                <form class="form-horizontal" role="form" id="examination-info-form1">
+                                                    <!-- Medication Table -->
+                                                    <div class="form-group">
+                                                        <div class="col-sm-12">
+                                                            <table class="table table-bordered" id="medicationTable">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Tên thuốc</th>
+                                                                    <th>Giá</th>
+                                                                    <th>Số lượng</th>
+                                                                    <th>
+                                                                        <button id="but_add" type="button" class="btn btn-primary btn-sm" onclick="addNewRow();">
+                                                                            Thêm mới
+                                                                        </button>
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody id="medicationBody">
+                                                                <tr>
+                                                                    <td>
+                                                                        <select class="chosen-select form-control" id="form-field-select-3" name="medicationId" data-placeholder="Chọn thuốc" onchange="updatePrice(this)">
+                                                                            <option value="">Chọn thuốc</option>
+                                                                            <option th:each="medication : ${medications}"
+                                                                                    th:value="${medication.ID}"
+                                                                                    th:data-price="${medication.price}"
+                                                                                    th:text="${medication.name+ '-' + medication.effect}">
+                                                                            </option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td><input type="number" class="form-control" name="price" id="price" placeholder="Enter Price"></td>
+                                                                    <td><input type="number" class="form-control" name="quantity" placeholder="Enter Quantity"></td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-danger btn-sm remove-row">
+                                                                            Xóa
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Examination Fee -->
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label no-padding-right" for="fee">Phí khám</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="number" id="fee" name="fee" class="form-control" oninput="calculateTotal()" placeholder="Enter examination fee" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Total Fee -->
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label no-padding-right" for="total">Tổng tiền</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="number" id="total" name="fee" class="form-control" readonly placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+
+
+
+
+
+
+                                            <div class="step-pane" data-step="3">
+                                                <div class="center">
+                                                    <h3 class="green">Thành công!</h3>
+                                                    Nhấn nút hoàn thành để tiếp tục
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+                                    <div class="wizard-actions">
+                                        <button class="btn btn-prev">
+                                            <i class="ace-icon fa fa-arrow-left"></i>
+                                            Trước
+                                        </button>
+
+                                        <button class="btn btn-success btn-next" data-last="finish">
+                                            Tiếp tục
+                                            <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                                        </button>
+                                    </div>
+                                </div><!-- /.widget-main -->
+                            </div><!-- /.widget-body -->
+                        </div>
+
+
+                    </div><!-- /.col -->
+
+                    <!-- WIZARD -->
+                </div><!-- /.row -->
+        </div>
+    </div>
+</div>
+</div>
+<!--[if !IE]> -->
+<script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
+<!-- <![endif]-->
+
+<!--[if !IE]> -->
+<script type="text/javascript">
+    window.jQuery || document.write("<script th:src='@{/admin/assets/js/jquery.min.js}'>"+"<"+"/script>");
+</script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script th:src='@{/admin/assets/js/jquery1x.min.js}'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if('ontouchstart' in document.documentElement)
+        document.write("<script th:src='@{/admin/assets/js/jquery.mobile.custom.min.js}'>"+"<"+"/script>");
+</script>
+
+<script th:src="@{/admin/assets/js/bootstrap.min.js}"></script>
+
+<!-- page specific plugin scripts -->
+<script th:src="@{/admin/assets/js/fuelux.wizard.min.js}"></script>
+<script th:src="@{/admin/assets/js/jquery.validate.min.js}"></script>
+<script th:src="@{/admin/assets/js/additional-methods.min.js}"></script>
+<script th:src="@{/admin/assets/js/bootbox.min.js}"></script>
+<script th:src="@{/admin/assets/js/jquery.maskedinput.min.js}"></script>
+
+
+<!-- ace scripts -->
+<script th:src="@{/admin/assets/js/ace-elements.min.js}"></script>
+<script th:src="@{/admin/assets/js/ace.min.js}"></script>
+<!-- inline scripts related to this page -->
+
+
+<script>
+
+    function addNewRow() {
+        // Clone the options from the first select
+        var options = $('#medicationBody tr:first-child select[name="medicationId"]').html();
+
+        // Create a new row and use the cloned options
+        var newRow = '<tr>' +
+            '<td>' +
+            '<select class="chosen-select form-control" name="medicationId" data-placeholder="Chọn thuốc" onchange="updatePrice(this)">' +
+            options + // Add cloned options here
+            '</select>' +
+            '</td>' +
+            '<td><input type="number" class="form-control" name="price" placeholder="Enter Price"></td>' +
+            '<td><input type="number" class="form-control" name="quantity" placeholder="Enter Quantity"></td>' +
+            '<td><button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button></td>' +
+            '</tr>';
+
+        $('#medicationBody').append(newRow); // Append the new row to the tbody
+        $(".chosen-select").chosen(); // Re-initialize chosen-select for the new row
+    }
+    // Remove row from the table
+    $(document).on('click', '.remove-row', function () {
+        $(this).closest('tr').remove(); // Remove the specific row
+        calculateTotal(); // Recalculate total after removing a row
+    });
+
+    // Function to calculate total price of medications + examination fee
+    function calculateTotal() {
+        var total = 0;
+
+        // Iterate through each row in the medication table
+        $('#medicationBody tr').each(function () {
+            var price = $(this).find('input[name="price"]').val();
+            var quantity = $(this).find('input[name="quantity"]').val();
+
+            // Calculate the subtotal for each medication
+            if (price && quantity) {
+                total += price * quantity;
+            }
+        });
+
+        // Add examination fee to total
+        var examinationFee = parseFloat($('#fee').val()) || 0;
+        total += examinationFee;
+
+        // Set the total fee field
+        $('#total').val(total.toFixed(2));
+    }
+
+    function updatePrice(selectElement) {
+        // Get the selected option
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+
+        // Get the price from the data attribute
+        var price = selectedOption.getAttribute('data-price');
+
+        // Set the price in the price input field
+        var priceInput = selectElement.closest('tr').querySelector('input[name="price"]');
+        priceInput.value = price ? price : '';
+    }
+    // $('.btn-next').on('click', function () {
+    //     if ($(this).attr('data-last') === 'finish') {
+    //         // Gather data from the first form
+    //         if(validateFinalStep()){
+    //             let formData1 = {
+    //                 outPatientId: $('#patientId').val(),
+    //                 doctorId: $('#doctorId').val(),
+    //                 examinationDate: new Date($('#examinationDate').val()).toISOString(),
+    //                 nextExaminationDate: new Date($('#next_examinationDate').val()).toISOString(),
+    //                 diagnosis: $('#diagnosis').val(),
+    //             };
+    //
+    //             // Gather data from the second form
+    //             let formData2 = {
+    //                 fee: parseFloat($('#fee').val()),
+    //                 medications: []
+    //             };
+    //
+    //             // Loop through the medication rows and collect data
+    //             $('#medicationBody tr').each(function () {
+    //                 let medicationId = $(this).find('select[name="medicationId"]').val();
+    //                 let price = parseFloat($(this).find('input[name="price"]').val());
+    //                 let quantity = parseInt($(this).find('input[name="quantity"]').val());
+    //
+    //                 if (medicationId && !isNaN(price) && !isNaN(quantity)) {
+    //                     formData2.medications.push({
+    //                         medicationId: medicationId,
+    //                         price: price,
+    //                         quantity: quantity
+    //                     });
+    //                 }
+    //             });
+    //
+    //             // Combine both form data
+    //             let combinedData = { ...formData1, ...formData2 };
+    //
+    //
+    //
+    //             // Make an AJAX POST request to the /examination/add API
+    //             $.ajax({
+    //                 url: '/examination/add',
+    //                 type: 'POST',
+    //                 contentType: 'application/json',
+    //                 data: JSON.stringify(combinedData),
+    //                 success: function (response) {
+    //
+    //
+    //
+    //                     window.location.href = '/patients';
+    //                     $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+    //                     $('#alertMessage').text(response.message); // Update the alert message
+    //                     $('#postResultDiv').show().addClass('alert-fixed');
+    //                     setTimeout(function() {
+    //                         $('#postResultDiv').fadeOut();
+    //                     }, 5000);
+    //                 },
+    //                 error: function (error) {
+    //                     console.error('Error during API request:', error);
+    //                     $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
+    //                     $('#alertMessage').text("Failed to add examination!"); // Update the alert message
+    //                     $('#postResultDiv').show().addClass('alert-fixed');
+    //                     setTimeout(function() {
+    //                         $('#postResultDiv').fadeOut();
+    //                     }, 5000);
+    //                 }
+    //             }); // Closing the AJAX call
+    //         }
+    //         else{
+    //             console.log('Not the last step, moving to the next step.');
+    //         }
+    // } else {
+    //     console.log('Not the last step, moving to the next step.');
+    // }
+    // });
+    //
+    // // Function to validate required fields in the final step
+    // function validateFinalStep() {
+    //     let isValid = true;
+    //
+    //     // Check if required fields in the first form are filled
+    //     if (!$('#patientId').val() || !$('#doctorId').val() || !$('#examinationDate').val() || !$('#diagnosis').val()) {
+    //         isValid = false;
+    //     }
+    //
+    //     // Check if required fields in the medication table are filled
+    //     $('#medicationBody tr').each(function () {
+    //         let medicationId = $(this).find('select[name="medicationId"]').val();
+    //         let price = $(this).find('input[name="price"]').val();
+    //         let quantity = $(this).find('input[name="quantity"]').val();
+    //
+    //         if (!medicationId || !price || !quantity) {
+    //             isValid = false;
+    //         }
+    //     });
+    //
+    //     return isValid;
+    // }
+</script>
+
+
+<!-- <![endif]-->
+
+
+<script type="text/javascript">
+    jQuery(function($) {
+
+        // $('[data-rel=tooltip]').tooltip();
+        //
+        // $(".select2").css('width','200px').select2({allowClear:true})
+        //     .on('change', function(){
+        //         $(this).closest('form').validate().element($(this));
+        //     });
+
+
+        var $validation = true; // Enables validation when navigating steps
+
+        $('#fuelux-wizard-container')
+            .ace_wizard()
+            .on('actionclicked.fu.wizard', function (e, info) {
+                // Validation logic for the first form (step 1)
+                if (info.step == 1 && $validation) {
+                    if (!$('#examination-info-form').valid()) e.preventDefault();
+                }
+                // Validation logic for the second form (step 2)
+                if (info.step == 2 && $validation) {
+                    if (!$('#examination-info-form1').valid()) e.preventDefault();
+                }
+            })
+            .on('finished.fu.wizard', function (e) {
+                // Validate final step
+                if (validateFinalStep()) {
+                    // Gather data from the first form
+                    let formData1 = {
+                        outPatientId: $('#patientId').val(),
+                        doctorId: $('#doctorId').val(),
+                        examinationDate: new Date($('#examinationDate').val()).toISOString(),
+                        nextExaminationDate: $('#next_examinationDate').val() ? new Date($('#next_examinationDate').val()).toISOString() : null,
+                        diagnosis: $('#diagnosis').val()
+                    };
+
+                    // Gather data from the second form
+                    let formData2 = {
+                        fee: parseFloat($('#fee').val()),
+                        medications: []
+                    };
+
+                    // Loop through the medication rows and collect data
+                    $('#medicationBody tr').each(function () {
+                        let medicationId = $(this).find('select[name="medicationId"]').val();
+                        let price = parseFloat($(this).find('input[name="price"]').val());
+                        let quantity = parseInt($(this).find('input[name="quantity"]').val());
+
+                        if (medicationId && !isNaN(price) && !isNaN(quantity)) {
+                            formData2.medications.push({
+                                medicationId: medicationId,
+                                price: price,
+                                quantity: quantity
+                            });
+                        }
+                    });
+
+                    // Combine both form data
+                    let combinedData = { ...formData1, ...formData2 };
+
+                    // Make an AJAX POST request to the /examination/add API
+                    $.ajax({
+                        url: '/examination/add',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(combinedData),
+                        success: function (response) {
+                            // Trigger success alert after successful API call
+                            setTimeout(function() {
+                                window.location.href = '/patients'; // Redirect to patients page
+                            }, 1000); // Delay of 5 seconds
+
+                            $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                            $('#alertMessage').text(response.message); // Update the alert message
+                            $('#postResultDiv').show().addClass('alert-fixed');
+
+
+                            // Redirect or reload
+
+                        },
+                        error: function (error) {
+                            console.error('Error during API request:', error);
+                            $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
+                            $('#alertMessage').text("Failed to add examination!"); // Update the alert message
+                            $('#postResultDiv').show().addClass('alert-fixed');
+                            setTimeout(function() {
+                                $('#postResultDiv').fadeOut();
+                            }, 5000);
+                        }
+                    });
+                }
+            })
+            .on('stepclick.fu.wizard', function (e) {
+                e.preventDefault(); // Prevents clicking directly to steps
+            });
+
+// Validate final step
+        function validateFinalStep() {
+            return $('#examination-info-form').valid() && $('#examination-info-form1').valid();
+        }
+
+// Form validation for step 1
+        $('#examination-info-form').validate({
+            rules: {
+                doctorId: { required: true },
+                examinationDate: { required: true }
+            },
+            messages: {
+                doctorId: { required: "Please select a doctor." },
+                examinationDate: { required: "Please enter an examination date." }
+            },
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+
+// Form validation for step 2
+        $('#examination-info-form1').validate({
+            rules: {
+                examinationFee: { required: true, number: true },
+                "medicationId[]": { required: true },
+                "price[]": { required: true, number: true },
+                "quantity[]": { required: true, number: true }
+            },
+            messages: {
+                examinationFee: { required: "Examination fee is required.", number: "Please enter a valid fee." },
+                "medicationId[]": { required: "Please select at least one medication." },
+                "price[]": { required: "Price is required.", number: "Please enter a valid price." },
+                "quantity[]": { required: "Quantity is required.", number: "Please enter a valid quantity." }
+            },
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+
+
+// Validate final step
+
+        //jump to a step
+        /**
+         var wizard = $('#fuelux-wizard-container').data('fu.wizard')
+         wizard.currentStep = 3;
+         wizard.setState();
+         */
+
+        //determine selected step
+        //wizard.selectedItem().step
+
+
+        //hide or show the other form which requires validation
+        //this is for demo only, you usullay want just one form in your application
+        // $('#skip-validation').removeAttr('checked').on('click', function(){
+        //     $validation = this.checked;
+        //     if(this.checked) {
+        //         $('#sample-form').hide();
+        //         $('#validation-form').removeClass('hide');
+        //     }
+        //     else {
+        //         $('#validation-form').addClass('hide');
+        //         $('#sample-form').show();
+        //     }
+        // })
+
+
+        //documentation : http://docs.jquery.com/Plugins/Validation/validate
+
+
+        $('#modal-wizard-container').ace_wizard();
+        $('#modal-wizard .wizard-actions .btn[data-dismiss=modal]').removeAttr('disabled');
+    })
+    /**
+     $('#date').datepicker({autoclose:true}).on('changeDate', function(ev) {
+     $(this).closest('form').validate().element($(this));
+     });
+
+     $('#mychosen').chosen().on('change', function(ev) {
+     $(this).closest('form').validate().element($(this));
+     });
+     */
+</script>
+
+
+
+
+
+
+</body>
+</html>

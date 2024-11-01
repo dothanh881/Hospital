@@ -38,21 +38,49 @@
     <script th:src="@{/admin/assets/js/respond.min.js}"></script>
     <![endif]-->
     <style>
+        body {
+            font-family: 'PT Serif', 'Times New Roman', serif;
+        }
         .custom-modal {
             width: 1000px; /* Adjust width */
             height: 90vh; /* Adjust height */
             max-width: 900px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 10px;            /* Adjusted to have some margin from the top */
+            right: 10px;          /* Aligns the alert to the right */
+            width: 80%;           /* Adjusted width */
+            max-width: 400px;      /* Optional: limits the width of the alert */
+            height: 60px;          /* Set a custom height */
+            z-index: 1050;
+            font-weight: bold;     /* Makes the font bold */
+            display: flex;
+            align-items: center;   /* Vertically center the content */
+            padding-left: 20px;    /* Padding inside the alert box */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a shadow for better aesthetics */
+            background-color: #dff0d8; /* Success alert background */
+            color: #3c763d;       /* Success alert text color */
+            border-radius: 5px;    /* Rounded corners */
+        }
+
+        .alert-fixed .close-btn {
+            margin-left: auto;     /* Pushes the close button to the far right */
+            padding: 0 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
-<body class="no-skin">
-<div class="alert d-flex align-items-center" role="alert" id="postResultDiv" style="display: none;">
+<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-        <use xlink:href="#check-circle-fill" />
+        <use xlink:href="#check-circle-fill"></use>
     </svg>
-    <div id="alertMessage"></div>
+    <div id="alertMessage" th:text="${alertMessage}"></div>
+    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
 </div>
+<body class="no-skin">
 <div id="navbar" class="navbar navbar-default">
     <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
@@ -84,7 +112,9 @@
 
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <img class="nav-user-photo" src="assets/avatars/user.jpg" alt="Jason's Photo" />
+                        <img class="nav-user-photo"
+                             th:src="@{/admin/assets/avatars/user.jpg}"
+                             alt="Jason's Photo" />
                         <span class="user-info">
 									<small>Welcome,</small>
 									Jason
@@ -92,6 +122,7 @@
 
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
+
 
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                         <li>
@@ -211,7 +242,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <table id="myTable" class="table table-striped table-bordered table-hover">
-                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">
+<!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
 
                                     <thead>
                                     <tr>
@@ -251,24 +282,22 @@
                                                     </li>
 
                                                     <li>
-                                                        <a  href="#">
+                                                        <a th:href="@{/edit/{id}(id=${patient.ID})}">
                                                             <i class="ace-icon fa fa-pencil "></i>
                                                             Chỉnh sửa
                                                         </a>
 
 
                                                     </li>
-
                                                     <li>
-                                                        <a href="#" onclick="addExamination()">
+                                                        <a th:href="@{/examination/{id}(id=${patient.ID})}">
                                                             <i class="ace-icon fa fa-bars"></i>
                                                             Đăng kí khám bệnh
                                                         </a>
-
                                                     </li>
 
                                                     <li>
-                                                        <a  href="#">
+                                                        <a  th:href="@{/admission/{id}(id=${patient.ID})}">
                                                             <i class="ace-icon fa fa-search "></i>
                                                             Đăng kí nhập viện
                                                         </a>
@@ -341,10 +370,13 @@
                                         <td th:text="${patient.city?.CityName}"></td>
                                     </tr>
                                     </tbody>
-                                </table> <br>
-                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>
+                                </table>
+                                        <br>
 
-                        </div>
+<!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
+
+
+                            </div>
                         </div>
 
 
@@ -628,130 +660,7 @@
                             </div>
                         </div>
                     </div>
-<!-- basic scripts -->
 
-<!--        examination-->
-                    <div class="modal fade" id="addExamination">
-                        <div class="modal-dialog">
-                            <div class="modal-content custom-modal">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Thêm mới</h4>
-                                    <button type="button" class="close" data-dismiss="modal">×</button>
-                                </div>
-
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <form class="form-horizontal" role="form" id="examination-info-form">
-                                        <!-- Doctor ID -->
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label " for="doctorId">Doctor</label>
-                                            <div class="col-sm-9">
-                                                <select class="chosen-select form-control" id="doctorId" name="doctorId" required>
-                                                    <option value="">Choose a Doctor...</option>
-                                                    <option value="1">Dr. John Doe</option>
-                                                    <option value="2">Dr. Jane Smith</option>
-                                                    <option value="3">Dr. Emily Johnson</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <!-- Examination Date -->
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="examinationDate">Examination Date</label>
-                                            <div class="col-sm-9">
-                                                <input type="date" id="examinationDate" name="examinationDate" class="form-control" required>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="next_examinationDate">Next Examination Date</label>
-                                            <div class="col-sm-9">
-                                                <input type="date" id="next_examinationDate" name="next_examinationDate" class="form-control" >
-                                            </div>
-
-                                        </div>
-
-                                        <!-- Diagnosis -->
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="diagnosis">Diagnosis</label>
-                                            <div class="col-sm-9">
-                                                <textarea id="diagnosis" name="diagnosis" placeholder="Diagnosis" class="form-control" rows="3" required></textarea>
-                                            </div>
-                                        </div>
-
-                                        <!-- Editable Medication Table -->
-
-                                        <table class="table" id="medicationTable">
-                                            <thead>
-                                            <tr>
-                                                <th>Medication Name</th>
-                                                <th>Price</th>
-                                                <th>quantity</th>
-                                                <th>
-                                                    <button id="but_add" type="button" class="btn btn-primary" onclick="addNewRow();">Add Row</button>
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="medicationBody">
-                                            <tr>
-                                                <td>
-
-
-
-                                                    <select class="chosen-select form-control" id="form-field-select-3" data-placeholder="Choose a State...">
-                                                        <option value="">  </option>
-                                                        <option value="AL">Alabama</option>
-
-                                                    </select>
-
-                                                </td>
-                                                <td><input type="number" class="form-control" name="price"></td>
-                                                <td><input type="number" class="form-control" name="quantity"></td>
-                                                <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <!-- Examination Fee -->
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="examinationFee">Examination Fee</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" id="examinationFee" name="examinationFee" class="form-control" oninput="calculateTotal()" placeholder="Enter examination fee" required>
-                                            </div>
-                                        </div>
-
-                                        <!-- Total Fee -->
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="fee">Total Fee</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" id="fee" name="fee" class="form-control" readonly>
-                                            </div>
-                                        </div>
-
-                                        <!-- Form Actions -->
-                                        <div class="clearfix form-actions">
-                                            <div class="col-md-offset-4 col-md-12">
-                                                <button class="btn btn-info" id="submitBtn" type="submit">Submit</button>
-                                                <button class="btn btn-default" type="reset">Reset</button>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                </div>
-
-                                <!-- Modal Footer -->
-                                <!-- Uncomment if needed
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                </div>
-                                -->
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!--        examination-->
                 </div>
             </div>
         </div>
@@ -920,20 +829,25 @@
                 $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
                 $('#alertMessage').text(response.message); // Update the alert message
                 $('#addPatient').modal('hide');
-                $('#postResultDiv').show(); // Show the alert
+                $('#postResultDiv').show().addClass('alert-fixed');
+                // Reload the table content
+                $('#myTable').load(location.href + ' #myTable', function() {
+                    console.log("Table reloaded successfully");
+                });
 
                 setTimeout(function() {
-                    $('#postResultDiv').fadeOut(); // Fade out the alert
+                    $('#postResultDiv').fadeOut();
                 }, 5000);
+
+                // Reset the form
                 $('#patient-info-form')[0].reset();
-                $('#myTable').load(location.href + " #myTable");
 
             },
             error: function(xhr, status, error) {
                 console.log("Failed:", status, error);
                 $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
                 $('#alertMessage').text("Failed to add patient. Please check the console for more details."); // Update the alert message
-                $('#postResultDiv').show(); // Show the alert
+                $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut(); // Fade out the alert
                 }, 5000);

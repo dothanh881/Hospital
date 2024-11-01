@@ -15,7 +15,7 @@ public class AdmissionEntity {
     private Integer ID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inpatient_Id", nullable = false)
+    @JoinColumn(name = "inpatient_Id", referencedColumnName = "inpatient_Id", nullable = false)
     private InPatientEntity inPatient;
 
 
@@ -36,9 +36,9 @@ public class AdmissionEntity {
     @Column(name = "diagnosis", length = 255)
     private String diagnosis;
 
-    @Column(name = "sickroom", length = 100)
-    private String sickroom;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sickroom", referencedColumnName = "roomNo", nullable = false)
+    private RoomEntity room;
     @Column(name = "dateOfDischarge")
     @Temporal(TemporalType.DATE)
     private Date dateOfDischarge;
@@ -46,19 +46,30 @@ public class AdmissionEntity {
     @Column(precision = 10, scale = 2)
     private BigDecimal fee;
 
-    public AdmissionEntity(InPatientEntity inPatient, DoctorEntity doctor, NurseEntity nurse, List<TreatmentEntity> treatments, Date dateAdmission, String diagnosis, String sickroom, Date dateOfDischarge, BigDecimal fee) {
+
+
+    public AdmissionEntity() {
+    }
+
+    public AdmissionEntity(Integer ID, InPatientEntity inPatient, DoctorEntity doctor, NurseEntity nurse, List<TreatmentEntity> treatments, Date dateAdmission, String diagnosis, RoomEntity room, Date dateOfDischarge, BigDecimal fee) {
+        this.ID = ID;
         this.inPatient = inPatient;
         this.doctor = doctor;
         this.nurse = nurse;
         this.treatments = treatments;
         this.dateAdmission = dateAdmission;
         this.diagnosis = diagnosis;
-        this.sickroom = sickroom;
+        this.room = room;
         this.dateOfDischarge = dateOfDischarge;
         this.fee = fee;
     }
 
-    public AdmissionEntity() {
+    public RoomEntity getRoom() {
+        return room;
+    }
+
+    public void setRoom(RoomEntity room) {
+        this.room = room;
     }
 
     public Integer getID() {
@@ -117,13 +128,7 @@ public class AdmissionEntity {
         this.diagnosis = diagnosis;
     }
 
-    public String getSickroom() {
-        return sickroom;
-    }
 
-    public void setSickroom(String sickroom) {
-        this.sickroom = sickroom;
-    }
 
     public Date getDateOfDischarge() {
         return dateOfDischarge;

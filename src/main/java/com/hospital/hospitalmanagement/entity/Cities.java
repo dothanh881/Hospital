@@ -15,12 +15,12 @@ public class Cities {
     private Integer cityId;
 
     @Column(length = 10, nullable = false)
-    private String CityCode;
+    private String cityCode;
 
     @Column(length = 100, nullable = false)
-    private String CityName;
+    private String cityName;
 
-    private Integer IndexId;
+    private Integer indexId;
 
     @Column(name = "IsActive")
     private Boolean isActive;
@@ -34,31 +34,30 @@ public class Cities {
     }
 
     public void setCityId(Integer cityId) {
-        cityId = cityId;
+        this.cityId = cityId;
     }
 
     public String getCityCode() {
-        return CityCode;
+        return cityCode;
     }
 
     public void setCityCode(String cityCode) {
-        CityCode = cityCode;
+        this.cityCode = cityCode;
     }
 
     public String getCityName() {
-        return CityName;
+        return cityName;
     }
 
     public void setCityName(String cityName) {
-        CityName = cityName;
+        this.cityName = cityName;
     }
 
     public Integer getIndexId() {
-        return IndexId;
+        return indexId;
     }
 
-    public void setIndexId(Integer indexId) {
-        IndexId = indexId;
+    public void setIndexId(Integer indexId) {this.indexId = indexId;
     }
 
     public Boolean getIsActive() {

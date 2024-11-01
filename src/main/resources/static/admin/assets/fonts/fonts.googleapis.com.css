@@ -10,3 +10,9 @@
   font-weight: 400;
   src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
 }
+@font-face {
+  font-family: 'Times New Roman';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Times New Roman'), local('TimesNewRoman');
+}

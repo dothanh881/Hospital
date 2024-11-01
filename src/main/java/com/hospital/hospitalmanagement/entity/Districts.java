@@ -13,10 +13,10 @@ public class Districts {
 
 
     @Column(length = 10, nullable = false)
-    private String DistrictCode;
+    private String districtCode;
 
     @Column(length = 100, nullable = false)
-    private String DistrictName;
+    private String districtName;
 
     @Column(name = "IsActive")
     private Boolean isActive;
@@ -40,24 +40,24 @@ public class Districts {
     }
 
     public void setDistrictId(Integer districtId) {
-        districtId = districtId;
+        this.districtId = districtId;
     }
 
 
     public String getDistrictCode() {
-        return DistrictCode;
+        return districtCode;
     }
 
     public void setDistrictCode(String districtCode) {
-        DistrictCode = districtCode;
+        this.districtCode = districtCode;
     }
 
     public String getDistrictName() {
-        return DistrictName;
+        return districtName;
     }
 
     public void setDistrictName(String districtName) {
-        DistrictName = districtName;
+        this.districtName = districtName;
     }
 
     public Boolean getIsActive() {
@@ -81,7 +81,7 @@ public class Districts {
     }
 
     public void setOrderId(Integer orderId) {
-        orderId = orderId;
+        this.orderId = orderId;
     }
 
     public Integer getDanSo() {
@@ -89,6 +89,6 @@ public class Districts {
     }
 
     public void setDanSo(Integer danSo) {
-        DanSo = danSo;
+        this.DanSo = danSo;
     }
 }

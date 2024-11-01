@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Dashboard - Ace Admin</title>
+
+    <meta name="description" content="overview &amp; stats" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Bootstrap & FontAwesome -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" th:href="@{/admin/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/admin/assets/font-awesome/4.2.0/css/font-awesome.min.css}" />
+
+    <!-- Page Specific Plugin Styles -->
+    <!-- Text Fonts -->
+    <link rel="stylesheet" th:href="@{/admin/assets/fonts/fonts.googleapis.com.css}" />
+
+    <!-- ACE Styles -->
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace.min.css}" class="ace-main-stylesheet" id="main-ace-style" />
+    <!-- Conditional Stylesheets for IE9 and below -->
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace-part2.min.css}" class="ace-main-stylesheet" />
+    <![endif]-->
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/ace-ie.min.css}" />
+    <![endif]-->
+
+    <!-- ACE Settings Handler -->
+    <script th:src="@{/admin/assets/js/ace-extra.min.js}"></script>
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+    <!--[if lte IE 8]>
+    <script th:src="@{/admin/assets/js/html5shiv.min.js}"></script>
+    <script th:src="@{/admin/assets/js/respond.min.js}"></script>
+    <![endif]-->
+    <style>
+        body {
+            font-family: 'PT Serif', 'Times New Roman', serif;
+        }
+        .custom-modal {
+            width: 1000px; /* Adjust width */
+            height: 90vh; /* Adjust height */
+            max-width: 900px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 10px;            /* Adjusted to have some margin from the top */
+            right: 10px;          /* Aligns the alert to the right */
+            width: 80%;           /* Adjusted width */
+            max-width: 400px;      /* Optional: limits the width of the alert */
+            height: 60px;          /* Set a custom height */
+            z-index: 1050;
+            font-weight: bold;     /* Makes the font bold */
+            display: flex;
+            align-items: center;   /* Vertically center the content */
+            padding-left: 20px;    /* Padding inside the alert box */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a shadow for better aesthetics */
+            background-color: #dff0d8; /* Success alert background */
+            color: #3c763d;       /* Success alert text color */
+            border-radius: 5px;    /* Rounded corners */
+        }
+
+        .alert-fixed .close-btn {
+            margin-left: auto;     /* Pushes the close button to the far right */
+            padding: 0 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .modal-body {
+
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+        <use xlink:href="#check-circle-fill"></use>
+    </svg>
+    <div id="alertMessage" th:text="${alertMessage}"></div>
+    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+</div>
+<body class="no-skin">
+<div id="navbar" class="navbar navbar-default">
+    <script type="text/javascript">
+        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="navbar-container" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-header pull-left">
+            <a href="/patients" class="navbar-brand">
+                <small>
+                    <i class="fa fa-leaf"></i>
+                    Hospital Management
+                </small>
+            </a>
+        </div>
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+
+
+                <li class="light-blue">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                        <img class="nav-user-photo"
+                             th:src="@{/admin/assets/avatars/user.jpg}"
+                             alt="Jason's Photo" />
+                        <span class="user-info">
+									<small>Welcome,</small>
+									Jason
+								</span>
+
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+
+
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-cog"></i>
+                                Settings
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="profile.html">
+                                <i class="ace-icon fa fa-user"></i>
+                                Profile
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div><!-- /.navbar-container -->
+</div>
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div id="sidebar" class="sidebar                  responsive">
+        <script type="text/javascript">
+            try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+        </script>
+
+
+        <!-- /.sidebar-shortcuts -->
+
+        <ul class="nav nav-list">
+            <li class="active">
+                <a href="/patients">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Patient </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+        </ul><!-- /.nav-list -->
+
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+
+        <script type="text/javascript">
+            try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+        </script>
+    </div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#1a" data-toggle="tab">Thông tin</a>
+                    </li>
+                    <li><a href="#2a" data-toggle="tab">Khám bệnh</a></li>
+                    <li><a href="#3a" data-toggle="tab">Đăng ký nhập viện</a></li>
+
+                </ul>
+
+                <br>
+<!--                <ul class="breadcrumb">-->
+
+<!--                    <li class="active">Management</li>-->
+<!--                </ul>&lt;!&ndash; /.breadcrumb &ndash;&gt;-->
+
+<!--                <div class="nav-search" id="nav-search">-->
+<!--                    <form class="form-search">-->
+<!--								<span class="input-icon">-->
+<!--									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />-->
+<!--									<i class="ace-icon fa fa-search nav-search-icon"></i>-->
+<!--								</span>-->
+<!--                    </form>-->
+<!--                </div>&lt;!&ndash; /.nav-search &ndash;&gt;-->
+            </div>
+
+
+
+
+
+            <div id="exTab1"class="container-fluid">
+                <div class="tab-content clearfix">
+                    <!-- Tab 1: Overview -->
+                    <div class="tab-pane active" id="1a">
+
+
+                        <form >
+                            <div class="row">
+                                <!-- Full Name -->
+                                <div class="col-md-9">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Họ và Tên</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Gender:</label>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" name="gender" id="male" value="Nam" checked>
+                                            <label class="form-check-label" for="male">Nam</label>
+                                                <input type="radio" class="form-check-input" name="gender" id="female" value="Nữ">
+                                                <label class="form-check-label" for="female">Nữ</label>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- City ID -->
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="cityId" class="form-label">City ID</label>
+                                        <input type="number" class="form-control" id="cityId" name="cityId" placeholder="City ID" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- District ID -->
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="districtId" class="form-label">District ID</label>
+                                        <input type="number" class="form-control" id="districtId" name="districtId" placeholder="District ID" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Ward ID -->
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="wardId" class="form-label">Ward ID</label>
+                                        <input type="number" class="form-control" id="wardId" name="wardId" placeholder="Ward ID" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Street -->
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="street" class="form-label">Street</label>
+                                        <input type="text" class="form-control" id="street" name="street" placeholder="Street Address" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Date of Birth -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="dob" name="dob" required>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" required>
+                                    </div>
+                                </div>
+                            </div>
+<br>
+                            <!-- Submit Button -->
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+
+                    </div>
+
+                    <!-- Tab 2: Using nav-pills -->
+                    <div class="tab-pane " id="2a">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table id="myTable" class="table table-striped table-bordered table-hover">
+                                    <!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
+
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 50px;text-align: center;">STT</th>
+                                        <th style="width: 40px;text-align: center;">Xử Lý</th>
+                                        <th style="width: 80px;text-align: center;">Ngày khám</th>
+                                        <th style="width: 80px;text-align: center;">Ngày tái khám </th>
+                                        <th style="width: 90px;text-align: center;" class="hidden-480"> Bác Sĩ</th>
+                                        <th style="width: 100px;text-align: center;">Phí khám</th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Iterate over the patients list -->
+                                    <tr th:each="examination, iterStat : ${examinations}">
+                                        <td th:text="${iterStat.count}" style="text-align: center;"></td><!-- Row number -->
+                                        <td>
+                                            <div class="btn-group">
+
+                                                <button data-toggle="dropdown" class="btn btn-sm btn-primary dropdown-toggle" jf-ext-button-ct="danger" aria-expanded="false">
+                                                    <i class="ace-icon fa fa-cog "></i>
+
+                                                    <i class="ace-icon fa fa-angle-down icon-on-right"></i>
+                                                </button>
+
+                                                <ul class="dropdown-menu dropdown-primary">
+                                                    <li>
+                                                        <a th:href="@{/view/{id}(id=${examination.ID})}">
+                                                            <i class="ace-icon fa fa-search-plus "></i>
+                                                            Xem
+                                                        </a>
+
+
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="#" data-toggle="modal" th:data-target="${'#editExaminationModal' + examination.ID}">
+                                                            <i class="ace-icon fa fa-pencil "></i> Chỉnh sửa
+                                                        </a>
+                                                    </li>
+
+
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="ace-icon fa fa-trash-o "></i>
+                                                            Xóa
+                                                        </a>
+                                                    </li>
+
+
+                                                </ul>
+
+                                                <div class="modal fade" th:id="${'editExaminationModal' + examination.ID}" tabindex="-1" role="dialog" aria-labelledby="editExaminationModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editExaminationModalLabel">Edit Examination</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <form th:action="@{/edit/{id}(id=${examination.ID})}" method="post">
+                                                                <div class="modal-body">
+                                                                    <!-- Hidden input for Examination ID -->
+                                                                    <input type="hidden" th:value="${examination.ID}" name="id" />
+
+
+
+                                                                    <div class="form-group">
+                                                                        <label  for="doctorId">Bác sĩ:</label>
+
+                                                                            <select class="chosen-select form-control" id="doctorId" name="doctorId" required>
+                                                                                <option value="">...</option>
+                                                                                <option th:each="doctor : ${doctors}"
+                                                                                        th:value="${doctor.ID}"
+                                                                                        th:text="${'Bs. ' + doctor.firstName + ' ' + doctor.lastName}"
+                                                                                        th:selected="${doctor.ID == examination.doctor.ID }">
+                                                                                </option>
+                                                                            </select>
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="examinationDate">Ngày khám</label>
+                                                                        <input type="date" class="form-control" th:value="${#dates.format(examination.examinationDate, 'yyyy-MM-dd')}" id="examinationDate" name="examinationDate" required />
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="diagnosis">Chẩn Đoán:</label>
+                                                                        <input type="text" class="form-control" th:value="${examination.diagnosis}" id="diagnosis" name="diagnosis" required />
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="nextExaminationDate">Ngày tái khám</label>
+                                                                        <input type="date" class="form-control" th:value="${#dates.format(examination.nextExaminationDate, 'yyyy-MM-dd')}" id="nextExaminationDate" name="nextExaminationDate" />
+                                                                    </div>
+
+
+
+
+                                                                    <div class="form-group">
+
+<!--                                                                        <div th:each="examinationMedication : ${examinationMedications}">-->
+<!--                                                                            <div class="form-row mb-2">-->
+<!--                                                                                <div class="col">-->
+<!--                                                                                    <input type="text" class="form-control" th:value="${examinationMedication.medication.name}" placeholder="Medication Name" readonly />-->
+<!--                                                                                </div>-->
+<!--                                                                                <div class="col">-->
+<!--                                                                                    <input type="number" class="form-control" th:value="${examinationMedication.quantity}" placeholder="Quantity" readonly />-->
+<!--                                                                                </div>-->
+<!--                                                                                <div class="col">-->
+<!--                                                                                    <input type="text" class="form-control" th:value="${examinationMedication.price}" placeholder="Price" readonly />-->
+<!--                                                                                </div>-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
+                                                                        <table class="table table-bordered" id="medicationTable">
+                                                                            <thead class="thead-light">
+                                                                            <tr>
+                                                                                <th>Tên thuốc</th>
+                                                                                <th>Giá</th>
+                                                                                <th>Số lượng</th>
+                                                                                <th>
+                                                                                    <button id="but_add" type="button" class="btn btn-primary btn-sm" onclick="addNewRow();">
+                                                                                        Thêm mới
+                                                                                    </button>
+                                                                                </th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody id="medicationBody">
+                                                                            <tr  th:each="examinationMedication : ${examination.examinationMedications}">
+                                                                                <!-- Medication select with pre-selected value based on examinationMedication.medicationId -->
+                                                                                <td>
+                                                                                    <select class="chosen-select form-control" id="form-field-select-3" name="medicationId"
+                                                                                            data-placeholder="Chọn thuốc" onchange="updatePrice(this)">
+                                                                                        <option value="">Chọn thuốc</option>
+                                                                                        <option th:each="medical : ${medications}"
+                                                                                                th:value="${medical.ID}"
+                                                                                                th:data-price="${medical.price}"
+                                                                                                th:text="${medical.name + '-' + medical.effect}"
+                                                                                                th:selected="${medical.ID == examinationMedication.medication.ID}">
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </td>
+
+                                                                                <!-- Price input with value from examinationMedication.price -->
+                                                                                <td>
+                                                                                    <input type="number" class="form-control" name="price" id="price"
+                                                                                           th:value="${examinationMedication.price}" placeholder="Enter Price">
+                                                                                </td>
+
+                                                                                <!-- Quantity input with value from examinationMedication.quantity -->
+                                                                                <td>
+                                                                                    <input type="number" class="form-control" name="quantity"
+                                                                                           th:value="${examinationMedication.quantity}" placeholder="Enter Quantity">
+                                                                                </td>
+
+                                                                                <!-- Remove button -->
+                                                                                <td>
+                                                                                    <button type="button" class="btn btn-danger btn-sm remove-row">
+                                                                                        Xóa
+                                                                                    </button>
+                                                                                </td>
+
+
+                                                                            </tr>
+
+                                                                            </tbody>
+                                                                        </table>
+
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="fee">Phí khám</label>
+                                                                        <input type="number" step="0.01" class="form-control"  th:value="${examination.fee}" id="fee" name="fee"  />
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="total">Tổng phí khám</label>
+                                                                        <input type="number" step="0.01" class="form-control" id="total" name="total" required oninput="calculateFeeExamination()" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                        <td style="text-align: center;" th:text="${#dates.format(examination.examinationDate, 'dd-MM-yyyy')}" ></td> <!-- Patient name -->
+                                        <td style="text-align: center;" th:text="${#dates.format(examination.nextExaminationDate, 'dd-MM-yyyy')}"></td> <!-- Patient gender -->
+                                        <td style="text-align: left;" class="hidden-480" th:text="${'Bs.' +' '+ examination.doctor.firstName + ' ' + examination.doctor.lastName }"></td> <!-- Birth date formatted -->
+                                        <td style="text-align: right;" th:text="${examination.fee}"></td> <!-- Address -->
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+
+                                <!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Applying clearfix -->
+                    <div class="tab-pane" id="3a">
+                        <form>
+                            <div class="form-group">
+                                <label for="clearfixExample">Example Field:</label>
+                                <input type="text" class="form-control" id="clearfixExample" placeholder="Enter example">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab 4: Background color -->
+
+                </div>
+            </div>
+
+
+
+
+
+
+                <!-- filter -->
+
+                <!-- LISTPATIENT			 -->
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--[if !IE]> -->
+<script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
+
+<script>
+    function calculateFeeExamination() {
+        // Get the predefined total fee
+        const totalFee = parseFloat(document.getElementById("fee").value) || 0;
+
+        let medicationsCost = 0;
+
+        // Loop through each row in the medication table and calculate total medications cost
+        document.querySelectorAll("#medicationBody tr").forEach(row => {
+            const price = parseFloat(row.querySelector("input[name='price']").value) || 0;
+            const quantity = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+            medicationsCost += price * quantity;
+        });
+
+        // Calculate and set feeExamination value
+        const feeExamination = totalFee - medicationsCost;
+        document.getElementById("feeExamination").value = feeExamination.toFixed(2);
+    }
+
+    // Attach event listeners to automatically calculate when price or quantity changes
+    document.querySelectorAll("#medicationBody input[name='price'], #medicationBody input[name='quantity']").forEach(input => {
+        input.addEventListener("input", calculateFeeExamination);
+    });
+</script>
+<script>
+    function loadDistricts(cityId) {
+        // Clear existing options
+        const districtSelect = document.getElementById('districtId');
+        districtSelect.innerHTML = '<option value="" disabled selected>Select a district</option>';
+
+        // Fetch districts
+        fetch(`/districts/${cityId}`)
+            .then(response => response.json())
+            .then(districts => {
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.districtId; // Adjust this if your field name is different
+                    option.textContent = district.districtName; // Adjust to your attribute
+                    districtSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching districts:', error);
+            });
+    }
+
+    function loadWards(districtId) {
+        // Clear existing options
+        const wardSelect = document.getElementById('wardId');
+        wardSelect.innerHTML = '<option value="" disabled selected>Select a ward</option>';
+
+        // Fetch wards
+        fetch(`/wards/${districtId}`)
+            .then(response => response.json())
+            .then(wards => {
+                wards.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.wardId; // Adjust this if your field name is different
+                    option.textContent = ward.wardName; // Adjust to your attribute
+                    wardSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching wards:', error);
+            });
+    }
+</script>
+<script>
+
+    function addNewRow() {
+        // Get the first row's select options
+        var options = $('#medicationBody tr:first-child select[name="medicationId"]').html();
+
+        // Create a new row and use the cloned options
+        var newRow = '<tr>' +
+            '<td>' +
+            '<select class="form-control" name="medicationId" data-placeholder="Chọn thuốc" onchange="updatePrice(this)">' +
+            '<option value="">Chọn thuốc</option>' + // Default option
+            options + // Add cloned options here
+            '</select>' +
+            '</td>' +
+            '<td><input type="number" class="form-control" name="price" placeholder="Enter Price"></td>' +
+            '<td><input type="number" class="form-control" name="quantity" placeholder="Enter Quantity"></td>' +
+            '<td><button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button></td>' +
+            '</tr>';
+        console.log(options); // Check if this outputs the expected options
+        $('#medicationBody').append(newRow); // Append the new row to the tbody
+
+        // Initialize Chosen for the new row if needed
+        // $(".chosen-select").chosen(); // Uncomment this line if you decide to use Chosen again
+    }
+    // Remove row from the table
+    function removeRow(button) {
+        $(button).closest('tr').remove();  // Remove the specific row
+        calculateTotal(); // Recalculate total after removing a row
+    }
+
+    // Update price in the row based on selected medication
+    function updatePrice(selectElement) {
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var price = selectedOption.getAttribute('data-price');
+
+        var priceInput = selectElement.closest('tr').querySelector('input[name="price"]');
+        priceInput.value = price ? parseFloat(price).toFixed(2) : '';
+        calculateTotal(); // Recalculate total after price change
+    }
+
+    // Function to calculate the total price
+    function calculateTotal() {
+        var total = 0;
+
+        // Iterate through each row in the medication table
+        $('#medicationBody tr').each(function() {
+            var price = parseFloat($(this).find('input[name="price"]').val()) || 0;
+            var quantity = parseFloat($(this).find('input[name="quantity"]').val()) || 0;
+
+            total += price * quantity; // Calculate subtotal for each medication
+        });
+
+        // Add examination fee to the total
+        var examinationFee = parseFloat($('#fee').val()) || 0;
+        total += examinationFee;
+
+        $('#total').val(total.toFixed(2)); // Set the total fee
+    }
+    // Handle form submission
+    $('#examination-info-form').submit(function(e) {
+        e.preventDefault();  // Prevent form from refreshing the page
+
+        // Gather form data
+        var formData = {
+            doctorId: $('#doctorId').val(),
+            examinationDate: $('#examinationDate').val(),
+            diagnosis: $('#diagnosis').val(),
+            medications: []
+        };
+
+        // Gather table data
+        $('#medicationTable tbody tr').each(function() {
+            var medication = {
+                medicationName: $(this).find('input[name="medicationName"]').val(),
+                dosage: $(this).find('input[name="dosage"]').val(),
+                frequency: $(this).find('input[name="frequency"]').val()
+            };
+            formData.medications.push(medication);
+        });
+
+        // Send data to the backend via AJAX
+        $.ajax({
+            url: '/api/examinations',  // The URL of the API to handle form submission
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert('Examination saved successfully!');
+                // Reset the form after successful submission
+                $('#examination-info-form')[0].reset();
+                $('#medicationBody').html('');  // Clear the table
+            },
+            error: function(error) {
+                console.error('Error saving the examination:', error);
+            }
+        });
+    });
+
+</script>
+
+<script>
+    $('#btnSubmit').click(function(event) {
+        event.preventDefault();
+        var data = {};
+        var formData = $('#patient-info-form').serializeArray();
+
+        $.each(formData, function() {
+            data[this.name] = this.value; // Convert array to object
+        });
+
+        // Log form data for debugging
+        console.log("Form Data:", data);
+
+        // Perform AJAX request to the API
+        $.ajax({
+            type: "POST",
+            url: "patient/add", // Make sure the URL matches the endpoint
+            data: JSON.stringify(data),
+            contentType: "application/json", // Important to specify JSON content
+            dataType: 'json', // Expect JSON response
+            success: function(response) {
+                console.log("Success:", response);
+                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                $('#alertMessage').text(response.message); // Update the alert message
+                $('#addPatient').modal('hide');
+                $('#postResultDiv').show().addClass('alert-fixed');
+                // Reload the table content
+                $('#myTable').load(location.href + ' #myTable', function() {
+                    console.log("Table reloaded successfully");
+                });
+
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut();
+                }, 5000);
+
+                // Reset the form
+                $('#patient-info-form')[0].reset();
+
+            },
+            error: function(xhr, status, error) {
+                console.log("Failed:", status, error);
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
+                $('#alertMessage').text("Failed to add patient. Please check the console for more details."); // Update the alert message
+                $('#postResultDiv').show().addClass('alert-fixed');
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut(); // Fade out the alert
+                }, 5000);
+
+            }
+        });
+    });
+</script>
+
+<script>
+    function assignmentBuilding(){
+        $('#assignmentBuildingModal').modal();
+    }
+</script>
+<script>
+    function addPatient() {
+        $('#addPatient').modal();
+    }
+
+
+
+        function addExamination(){
+        $('#addExamination').modal();
+    }
+
+</script>
+
+
+<!--[if IE]>
+<script th:src="@{/admin/assets/js/jquery.1.11.1.min.js}"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+<script type="text/javascript" th:src="@{/admin/assets/js/jquery.min.js}"></script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script th:src='@{/assets/js/jquery1x.min.js}'><"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if('ontouchstart' in document.documentElement) document.write("<script th:src='@{/assets/js/jquery.mobile.custom.min.js}'><"+"/script>");
+</script>
+<script th:src="@{/admin/assets/js/bootstrap.min.js}"></script>
+
+<!-- Page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script th:src="@{/assets/js/excanvas.min.js}"></script>
+<![endif]-->
+<!--                    <script th:src="@{/assets/js/jquery-ui.custom.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.ui.touch-punch.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.easypiechart.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.sparkline.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.pie.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.resize.min.js}"></script>-->
+
+<!-- Ace scripts -->
+<!--                    <script th:src="@{/assets/js/ace-elements.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/ace.min.js}"></script>-->
+
+</body>
+</html>

@@ -1,26 +1,28 @@
 package com.hospital.hospitalmanagement.models.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ExaminationDTO {
 
-    private Long id;
-    private Long outPatientId;
+    private Integer id;
+    private Integer outPatientId;
+    private Integer doctorId;
     private Date examinationDate;
     private String diagnosis;
     private Date nextExaminationDate;
-    private String medications;
-    private Double fee;
+    private List<ExaminationMedicationDTO> medications; // List of Medications
+    private BigDecimal fee;
 
     // No-arg constructor
     public ExaminationDTO() {
     }
 
-    // Constructor with all fields
-    public ExaminationDTO(Long id, Long outPatientId, Date examinationDate, String diagnosis, Date nextExaminationDate, String medications, Double fee) {
+    public ExaminationDTO(Integer id, Integer outPatientId, Integer doctorId, Date examinationDate, String diagnosis, Date nextExaminationDate, List<ExaminationMedicationDTO> medications, BigDecimal fee) {
         this.id = id;
         this.outPatientId = outPatientId;
-
+        this.doctorId = doctorId;
         this.examinationDate = examinationDate;
         this.diagnosis = diagnosis;
         this.nextExaminationDate = nextExaminationDate;
@@ -28,20 +30,27 @@ public class ExaminationDTO {
         this.fee = fee;
     }
 
-    // Getters and setters
-    public Long getId() {
+    public List<ExaminationMedicationDTO> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(List<ExaminationMedicationDTO> medications) {
+        this.medications = medications;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getOutPatientId() {
+    public Integer getOutPatientId() {
         return outPatientId;
     }
 
-    public void setOutPatientId(Long outPatientId) {
+    public void setOutPatientId(Integer outPatientId) {
         this.outPatientId = outPatientId;
     }
 
@@ -69,33 +78,24 @@ public class ExaminationDTO {
         this.nextExaminationDate = nextExaminationDate;
     }
 
-    public String getMedications() {
-        return medications;
+    public Integer getDoctorId() {
+        return doctorId;
     }
 
-    public void setMedications(String medications) {
-        this.medications = medications;
+    public void setDoctorId(Integer doctorId) {
+        this.doctorId = doctorId;
     }
 
-    public Double getFee() {
+
+
+    public BigDecimal getFee() {
         return fee;
     }
 
-    public void setFee(Double fee) {
+    public void setFee(BigDecimal fee) {
         this.fee = fee;
     }
 
     // toString method for debugging
-    @Override
-    public String toString() {
-        return "ExaminationDTO{" +
-                "id=" + id +
-                ", outPatientId=" + outPatientId +
-                ", examinationDate=" + examinationDate +
-                ", diagnosis='" + diagnosis + '\'' +
-                ", nextExaminationDate=" + nextExaminationDate +
-                ", medications='" + medications + '\'' +
-                ", fee=" + fee +
-                '}';
-    }
+
 }

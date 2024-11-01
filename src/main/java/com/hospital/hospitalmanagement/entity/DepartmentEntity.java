@@ -28,7 +28,8 @@ public class DepartmentEntity {
     @OneToMany(mappedBy = "department")
     private List<EmployeeEntity> employees;
 
-
+    @OneToMany(mappedBy = "department")
+    private List<RoomEntity> rooms;
 
 
     public DepartmentEntity(String code, String title, DoctorEntity headDoctor, List<EmployeeEntity> employees) {

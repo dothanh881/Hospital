@@ -8,7 +8,7 @@ public class Wards {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer WardId;
+    private Integer wardId;
 
 
 
@@ -21,10 +21,10 @@ public class Wards {
     private Integer orderId;
 
     @Column(length = 255, nullable = false)
-    private String WardCode;
+    private String wardCode;
 
     @Column(length = 255, nullable = false)
-    private String WardName;
+    private String wardName;
 
     @ManyToOne
     @JoinColumn(name="districtId")
@@ -32,11 +32,11 @@ public class Wards {
 
     // Getters and Setters
     public Integer getWardId() {
-        return WardId;
+        return wardId;
     }
 
     public void setWardId(Integer wardId) {
-        WardId = wardId;
+        this.wardId = wardId;
     }
 
 
@@ -61,22 +61,22 @@ public class Wards {
     }
 
     public void setOrderId(Integer orderId) {
-        orderId = orderId;
+        this.orderId = orderId;
     }
 
     public String getWardCode() {
-        return WardCode;
+        return wardCode;
     }
 
     public void setWardCode(String wardCode) {
-        WardCode = wardCode;
+        this.wardCode = wardCode;
     }
 
     public String getWardName() {
-        return WardName;
+        return wardName;
     }
 
     public void setWardName(String wardName) {
-        WardName = wardName;
+        this.wardName = wardName;
     }
 }

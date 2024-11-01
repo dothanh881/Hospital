@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "patient") // tên bảng sẽ gen trong db
-@Inheritance(strategy = InheritanceType.JOINED) // cho phép tạo bảng của đối tượng chuyên biệt hóa
+
 public class PatientEntity {
 
     @Id
@@ -136,13 +136,12 @@ public class PatientEntity {
         this.ward = ward;
     }
 
-    public int getID() {
-        return ID;
-    }
 
     public void setID(int ID) {
         this.ID = ID;
     }
 
-
+    public int getID() {
+        return ID;
+    }
 }
