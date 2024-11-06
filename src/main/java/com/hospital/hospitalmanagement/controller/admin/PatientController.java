@@ -40,22 +40,17 @@ public class PatientController {
 
 
 
-    //    @GetMapping("/patients")
-//    public String listPatients(Model model) {
-//        List<PatientEntity> patients = patientRepository.findAll();
-//        model.addAttribute("patients", patients);
-//        return "patient/information";
-//    }
+    // lấy danh sách patient
     @GetMapping("/patients")
     public String listPatients(Model model) {
         List<PatientEntity> patients = patientRepository.findAll();
         List<Cities> cities = cityRepository.findAll();
         model.addAttribute("patients", patients);
         model.addAttribute("cities",cities);
-        return "admin/patient";
+        return "admin/patient"; // tra ve page patient.html
     }
 
-    @GetMapping("/examination/{id}")
+    @GetMapping("patient/examination/{id}")
     public String ResgisterExamination(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
         Optional<PatientEntity> patient = patientRepository.findById(id);
@@ -75,7 +70,7 @@ public class PatientController {
         return "admin/registerExamination";
     }
 
-    @GetMapping("/admission/{id}")
+    @GetMapping("patient/admission/{id}")
     public String ResgisterAdmission(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
         Optional<PatientEntity> patient = patientRepository.findById(id);
@@ -105,7 +100,7 @@ public class PatientController {
     }
 
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("patient/edit/{id}")
     public String EditPatient(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
         Optional<PatientEntity> patient = patientRepository.findById(id);

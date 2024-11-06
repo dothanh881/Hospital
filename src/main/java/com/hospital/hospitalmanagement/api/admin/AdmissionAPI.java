@@ -7,11 +7,15 @@ import com.hospital.hospitalmanagement.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.print.Doc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +40,7 @@ public class AdmissionAPI {
     private NurseRepository nurseRepository; // New repository for Nurse
     @Autowired
     private RoomRepository roomRepository; // New repository for Room
-    @PostMapping("admission/add")
+    @PostMapping("/admission/add")
     public ResponseEntity<Map<String, Object>> addAdmission(@RequestBody AdmissionDTO admissionDTO) {
 
         Map<String, Object> response = new HashMap<>();
@@ -100,4 +104,74 @@ public class AdmissionAPI {
 
 
     }
+
+
+    @PostMapping(value = "/admission/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ResponseEntity<Map<String, Object>> editAdmission(@RequestParam("id") Integer admissionId, @RequestBody AdmissionDTO admissionDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Find existing admission by ID
+            Optional<AdmissionEntity> optionalAdmission = admissionRepository.findById(admissionId);
+
+            if (!optionalAdmission.isPresent()) {
+                response.put("status", "error");
+                response.put("message", "Admission not found.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            AdmissionEntity admission = optionalAdmission.get();
+
+            // Update related entities (doctor, nurse, and room)
+            DoctorEntity doctor = new DoctorEntity();
+            doctor.setID(admissionDTO.getDoctorId());
+            admission.setDoctor(doctor);
+
+            NurseEntity nurse = new NurseEntity();
+            nurse.setID(admissionDTO.getNurseId());
+            admission.setNurse(nurse);
+
+            RoomEntity sickroom = new RoomEntity();
+            sickroom.setRoomNo(admissionDTO.getSickroom());
+            admission.setRoom(sickroom);
+
+            // Update other fields
+            admission.setDateAdmission(admissionDTO.getDateAdmission());
+            admission.setDateOfDischarge(admissionDTO.getDateOfDischarge());
+            admission.setDiagnosis(admissionDTO.getDiagnosis());
+            admission.setFee(admissionDTO.getFee());
+
+            // Save updated admission
+            admissionRepository.save(admission);
+
+            // Construct success response
+            response.put("status", "success");
+            response.put("message", "Cập nhật thành công!");
+            response.put("admissionId", admissionId);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // Log error for debugging (optional)
+            response.put("status", "error");
+            response.put("message", "Không thành công: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -482,8 +482,13 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn btn-primary" th:attr="onclick='getFormDataAndSubmit(' + ${examination.ID} + ')'">Save changes</button>
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                            th:onclick="|getFormDataAndSubmit(${examination.ID}, 'editExaminationModal${examination.ID}')|">
+                                                                        Lưu
+                                                                    </button>
+
+
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -590,7 +595,7 @@
                                                                         <div class="tab-content clearfix">
                                                                             <!-- Tab 1: Overview -->
                                                                             <div class="tab-pane active" id="1t">
-                                                                                <form th:action="@{/editAdmission(id=${admission.ID})}" method="post">
+                                                                                <form  id="admissionForm">
                                                                                     <!-- Hidden input for Examination ID -->
                                                                                     <input type="hidden" name="admissionId" th:value="${admission.ID}" />
 
@@ -709,13 +714,13 @@
 
                                                                                     <div class="form-group">
                                                                                         <label for="admissionTotal">Tổng phí khám</label>
-                                                                                        <input type="number" step="0.01" class="form-control" id="admissionTotal" name="admissionTotal" required oninput="calculateFeeExamination()" />
+                                                                                        <input type="number" step="0.01" class="form-control" id="admissionTotal" name="admissionTotal" c:readonly oninput="calculateFeeExamination()" />
                                                                                     </div>
 
 
                                                                                 <div class="modal-footer">
-                                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                                                    <button type="button" class="btn btn-primary" th:onclick="|editAdmission(${admission.ID}, 'editAdmissionModal${admission.ID}')|">Lưu</button>
                                                                                 </div>
                                                                                 </form>
                                                                             </div>
@@ -754,7 +759,7 @@
 
 
                                                                                                     <li>
-                                                                                                        <a th:href="@{/edit/{id}(id=${patient.ID})}">
+                                                                                                        <a th:href="@{/treatment/{id}(id=${patient.ID})}">
                                                                                                             <i class="ace-icon fa fa-pencil "></i>
                                                                                                             Chỉnh sửa
                                                                                                         </a>
@@ -997,8 +1002,46 @@
     //         }
     //     });
     // });
+    function editAdmission(admissionId, modalId) {
+        let formData = {
+            admissionId: admissionId,
+            doctorId: $('#admissionDoctorId').val(),
+            nurseId: $('#nurseId').val(),
+            dateAdmission: $('#dateAdmission').val(),
+            dateOfDischarge: $('#dateOfDischarge').val(),
+            diagnosis: $('#admissionDiagnosis').val(),
+            fee: $('#admissionFee').val(),
+            sickroom: $('#sickroom').val(),
+        };
 
-    function getFormDataAndSubmit(examinationId) {
+        $.ajax({
+            url: `/admission/edit?id=${admissionId}`,  // API endpoint
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                console.log("Success:", response);
+                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                $('#alertMessage').text(response.message);
+                $(`#${modalId}`).modal('hide');  // Hide the modal with the specific ID
+                $('#postResultDiv').show().addClass('alert-fixed');
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut();
+                }, 5000);
+            },
+            error: function(error) {
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                $('#alertMessage').text("Không thành công");
+                $('#postResultDiv').show().addClass('alert-fixed');
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut();
+                }, 5000);
+            }
+        });
+    }
+
+    // examination
+    function getFormDataAndSubmit(examinationId,modalId) {
         const formData = {
             Id: examinationId,
             doctorId: document.getElementById("doctorId").value,
@@ -1037,22 +1080,31 @@
 
         // Call the API using AJAX
         $.ajax({
-            url: `examination/edit?id=${examinationId}`,  // Use the appropriate endpoint
+            url: `/examination/edit?id=${examinationId}`,  // Corrected URL with the expected endpoint
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
-                alert("Examination updated successfully!");
-                // Optionally, you can refresh the data or close the modal
-                $('#editExaminationModal').modal('hide');
+                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                $('#alertMessage').text("Cập nhật thành công"); // Update the alert message
+                $(`#${modalId}`).modal('hide');  // Hide the modal with the specific ID
+                $('#postResultDiv').show().addClass('alert-fixed');
+
+
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut();
+                }, 5000);
             },
             error: function(error) {
-                alert("An error occurred while updating the examination. Please try again.");
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
+                $('#alertMessage').text("Không thành công"); // Update the alert message
+                $('#postResultDiv').show().addClass('alert-fixed');
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut(); // Fade out the alert
+                }, 5000);
             }
         });
     }
-
-
 
     function addNewRow(examinationId) {
 
@@ -1106,45 +1158,7 @@
     }
 
 
-    // Handle form submission
-    $('#examination-info-form').submit(function(e) {
-        e.preventDefault();  // Prevent form from refreshing the page
 
-        // Gather form data
-        var formData = {
-            doctorId: $('#doctorId').val(),
-            examinationDate: $('#examinationDate').val(),
-            diagnosis: $('#diagnosis').val(),
-            medications: []
-        };
-
-        // Gather table data
-        $('#medicationTable tbody tr').each(function() {
-            var medication = {
-                medicationName: $(this).find('input[name="medicationName"]').val(),
-                dosage: $(this).find('input[name="dosage"]').val(),
-                frequency: $(this).find('input[name="frequency"]').val()
-            };
-            formData.medications.push(medication);
-        });
-
-        // Send data to the backend via AJAX
-        $.ajax({
-            url: '/api/examinations',  // The URL of the API to handle form submission
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function(response) {
-                alert('Examination saved successfully!');
-                // Reset the form after successful submission
-                $('#examination-info-form')[0].reset();
-                $('#medicationBody').html('');  // Clear the table
-            },
-            error: function(error) {
-                console.error('Error saving the examination:', error);
-            }
-        });
-    });
 
 </script>
 </body>

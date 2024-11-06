@@ -66,10 +66,10 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
         ward.setWardId(patientDTO.getWardId());
         patientEntity.setWard(ward);
 
-        // Saving the patient entity
+        // Luu benh nhan
         PatientEntity result = patientRepository.save(patientEntity);
 
-        // Prepare successful response
+
         response.put("message", "Patient added successfully!");
         response.put("patient", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED); // HTTP 201 for created resource
