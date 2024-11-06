@@ -669,7 +669,7 @@
                     // Gather data from the second form
                     let formData2 = {
                         fee: parseFloat($('#fee').val()),
-                        medications: []
+                        examinationMedications: []
                     };
 
                     // Loop through the medication rows and collect data
@@ -679,7 +679,7 @@
                         let quantity = parseInt($(this).find('input[name="quantity"]').val());
 
                         if (medicationId && !isNaN(price) && !isNaN(quantity)) {
-                            formData2.medications.push({
+                            formData2.examinationMedications.push({
                                 medicationId: medicationId,
                                 price: price,
                                 quantity: quantity

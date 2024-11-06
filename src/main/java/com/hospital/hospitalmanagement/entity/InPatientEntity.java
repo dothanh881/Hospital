@@ -54,8 +54,6 @@ public class InPatientEntity {
     public InPatientEntity() {
     }
 
-
-
     public String getCode() {
         return code;
     }

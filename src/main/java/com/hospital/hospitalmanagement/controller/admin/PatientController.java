@@ -10,10 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 
@@ -35,7 +33,10 @@ public class PatientController {
     @Autowired
     private ExaminationRepository examinationRepository;
     @Autowired
-    private ExaminationMedicationRepository examinationMedicationRepository;
+    private AdmissionRepository admissionRepository;
+    @Autowired
+    private TreatmentRepository treatmentRepository;
+
 
 
 
@@ -109,21 +110,19 @@ public class PatientController {
         // Fetch the patient by ID
         Optional<PatientEntity> patient = patientRepository.findById(id);
         List<ExaminationEntity> examinations = examinationRepository.findByOutPatient_Patient_ID(id);
-        // list doctor
+
+        List<AdmissionEntity> admissions = admissionRepository.findByInPatient_Patient_ID(id);
+
+        // Prepare map to hold medications per examination
+
         model.addAttribute("examinations", examinations);
+        model.addAttribute("admissions", admissions);
+// Add the map to the model for use in the frontend
 
-
-
-        // Adding nested data for each examination's medications
-        Map<Integer, List<ExaminationMedicationEntity>> examinationMedicationsMap = new HashMap<>();
-        for (ExaminationEntity examination : examinations) {
-            List<ExaminationMedicationEntity> medications = examinationMedicationRepository.findByExamination_ID(examination.getID());
-            examinationMedicationsMap.put(examination.getID(), medications);
-        }
 
 
         List<DoctorEntity> doctors = doctorRepository.findAll();
-        model.addAttribute("doctors", doctors);
+         model.addAttribute("doctors", doctors);
         // list nurse
         List<NurseEntity> nurses = nurseRepository.findAll();
         model.addAttribute("nurses", nurses);

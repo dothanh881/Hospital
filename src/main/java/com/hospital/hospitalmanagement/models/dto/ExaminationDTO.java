@@ -12,30 +12,30 @@ public class ExaminationDTO {
     private Date examinationDate;
     private String diagnosis;
     private Date nextExaminationDate;
-    private List<ExaminationMedicationDTO> medications; // List of Medications
+
+    private String medications;
+
+    private List<ExaminationMedicationDTO> examinationMedications; // List of Medications
     private BigDecimal fee;
 
     // No-arg constructor
     public ExaminationDTO() {
     }
 
-    public ExaminationDTO(Integer id, Integer outPatientId, Integer doctorId, Date examinationDate, String diagnosis, Date nextExaminationDate, List<ExaminationMedicationDTO> medications, BigDecimal fee) {
-        this.id = id;
-        this.outPatientId = outPatientId;
-        this.doctorId = doctorId;
-        this.examinationDate = examinationDate;
-        this.diagnosis = diagnosis;
-        this.nextExaminationDate = nextExaminationDate;
-        this.medications = medications;
-        this.fee = fee;
-    }
-
-    public List<ExaminationMedicationDTO> getMedications() {
+    public String getMedications() {
         return medications;
     }
 
-    public void setMedications(List<ExaminationMedicationDTO> medications) {
+    public void setMedications(String medications) {
         this.medications = medications;
+    }
+
+    public List<ExaminationMedicationDTO> getExaminationMedications() {
+        return examinationMedications;
+    }
+
+    public void setExaminationMedications(List<ExaminationMedicationDTO> examinationMedications) {
+        this.examinationMedications = examinationMedications;
     }
 
     public Integer getId() {
