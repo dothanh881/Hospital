@@ -19,9 +19,13 @@ public class TreatmentEntity {
     @Column(name = "end_date")
     private Date endDate;
 
-    @Column(name = "result", length = 255)
-    private String result;
 
+
+
+    // Many treatments can have the same TreatmentStatusEntity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", nullable = false)  // Foreign key to TreatmentStatusEntity
+    private TreatmentStatusEntity treatmentStatusEntity;
     @Column(name = "medications", length = 255)
     private String medications;
 
@@ -33,14 +37,6 @@ public class TreatmentEntity {
     @OneToMany(mappedBy = "treatment")
     private List<TreatmentMedicationEntity>  treatmentMedication;
 
-    public TreatmentEntity(  Date startDate, Date endDate, String result, String medications, AdmissionEntity admission, List<TreatmentMedicationEntity> treatmentMedication) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.result = result;
-        this.medications = medications;
-        this.admission = admission;
-        this.treatmentMedication = treatmentMedication;
-    }
 
     public TreatmentEntity() {
     }
@@ -53,7 +49,23 @@ public class TreatmentEntity {
         this.ID = ID;
     }
 
+    public TreatmentStatusEntity getTreatmentStatusEntity() {
+        return treatmentStatusEntity;
+    }
 
+    public void setTreatmentStatusEntity(TreatmentStatusEntity treatmentStatusEntity) {
+        this.treatmentStatusEntity = treatmentStatusEntity;
+    }
+
+    public TreatmentEntity(Integer ID, Date startDate, Date endDate, TreatmentStatusEntity treatmentStatusEntity, String medications, AdmissionEntity admission, List<TreatmentMedicationEntity> treatmentMedication) {
+        this.ID = ID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.treatmentStatusEntity = treatmentStatusEntity;
+        this.medications = medications;
+        this.admission = admission;
+        this.treatmentMedication = treatmentMedication;
+    }
 
     public Date getStartDate() {
         return startDate;
@@ -71,13 +83,6 @@ public class TreatmentEntity {
         this.endDate = endDate;
     }
 
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
 
     public String getMedications() {
         return medications;

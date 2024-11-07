@@ -31,15 +31,14 @@ public class ExaminationMedicationEntity {
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal total;
 
-    public ExaminationMedicationEntity(ExaminationEntity examination, MedicationEntity medication, int quantity, BigDecimal price, BigDecimal total) {
+
+    public ExaminationMedicationEntity(ExaminationEntity examination, MedicationEntity medication, int quantity, BigDecimal price) {
         this.examination = examination;
         this.medication = medication;
         this.quantity = quantity;
         this.price = price;
-        this.total = total;
+
     }
 
     public ExaminationMedicationEntity() {
@@ -88,11 +87,5 @@ public class ExaminationMedicationEntity {
         this.price = price;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
 }
