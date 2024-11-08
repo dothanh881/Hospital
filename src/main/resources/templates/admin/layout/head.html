@@ -71,6 +71,20 @@
                 font-size: 20px;
                 cursor: pointer;
             }
+            .modal-body {
+
+                    overflow-y: auto;
+                 }
+            .independent-modal {
+                position: fixed;  /* Ensures modal stays above other content */
+                z-index: 1050;    /* Sets modal above most elements */
+                width: 1200px;    /* Adjust width as needed */
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);  /* Centers modal horizontally and vertically */
+                /* Optional height setting, e.g., height: 600px; */
+
+            }
         </style>
     </head>
 </th:block>
