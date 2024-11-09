@@ -37,7 +37,8 @@ public class PatientController {
     @Autowired
     private TreatmentRepository treatmentRepository;
 
-
+    @Autowired
+    private TreatmentStatusRepository treatmentStatusRepository;
 
 
     // lấy danh sách patient
@@ -107,11 +108,12 @@ public class PatientController {
         List<ExaminationEntity> examinations = examinationRepository.findByOutPatient_Patient_ID(id);
 
         List<AdmissionEntity> admissions = admissionRepository.findByInPatient_Patient_ID(id);
-
+        List<TreatmentStatusEntity> treatmentStatus = treatmentStatusRepository.findAll();
         // Prepare map to hold medications per examination
 
         model.addAttribute("examinations", examinations);
         model.addAttribute("admissions", admissions);
+        model.addAttribute("treatmentStatus", treatmentStatus);
 // Add the map to the model for use in the frontend
 
 

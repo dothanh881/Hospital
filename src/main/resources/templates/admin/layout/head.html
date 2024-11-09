@@ -78,12 +78,24 @@
             .independent-modal {
                 position: fixed;  /* Ensures modal stays above other content */
                 z-index: 1050;    /* Sets modal above most elements */
-                width: 1200px;    /* Adjust width as needed */
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);  /* Centers modal horizontally and vertically */
+
+
                 /* Optional height setting, e.g., height: 600px; */
 
+            }
+            /* Make the second tab content larger */
+            .tab-pane#2t {
+                width: 100%;   /* Full width */
+                min-height: 500px; /* Adjust the height as needed */
+                overflow-y: auto;  /* Allow scrolling if content exceeds the height */
+                padding: 20px;  /* Adjust padding as per your design */
+            }
+
+            .tab-content {
+                /* Optional: If you want all tab panes to behave the same */
+                width: 100%;
+                min-height: 500px; /* You can adjust this value based on your needs */
+                padding: 20px;
             }
         </style>
     </head>

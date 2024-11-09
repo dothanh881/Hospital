@@ -88,27 +88,70 @@ public class ExaminationServiceImpl implements ExaminationService {
             examination.setFee(examinationDTO.getFee());
             examination.setMedications(examinationDTO.getMedications());
 
-            // Step 3: Delete existing medications for this examination
-            examinationMedicationRepository.deleteMedicationsByExaminationId(examinationDTO.getId());
 
-            // Step 4: Insert new medications
-            List<ExaminationMedicationEntity> newMedications = new ArrayList<>();
-            for (ExaminationMedicationDTO medicationDTO : examinationDTO.getExaminationMedications()) {
-                ExaminationMedicationEntity examinationMedication = new ExaminationMedicationEntity();
-                MedicationEntity medicationEntity = new MedicationEntity();
-                medicationEntity.setID(medicationDTO.getMedicationId());
-                examinationMedication.setMedication(medicationEntity); // Set medication entity
-                examinationMedication.setPrice(medicationDTO.getPrice()); // Ensure correct type
-                examinationMedication.setQuantity(medicationDTO.getQuantity());
-                examinationMedication.setExamination(examination); // Associate with the examination
+            // Step 1: Retrieve the existing medications for this examination
+            List<ExaminationMedicationEntity> existingMedications = examinationMedicationRepository
+                    .findByExamination_ID(examinationDTO.getId());
 
-                newMedications.add(examinationMedication);
+            // Step 2: Compare existing medications with the new medications
+            boolean medicationsChanged = false;
+            List<ExaminationMedicationDTO> newMedicationDTOs = examinationDTO.getExaminationMedications();
+
+            // Check if the existing medications differ from the new ones
+            if (existingMedications.size() != newMedicationDTOs.size()) {
+                medicationsChanged = true;  // If the sizes don't match, they have changed
+            } else {
+                // If the sizes match, compare individual medications
+                for (int i = 0; i < existingMedications.size(); i++) {
+                    ExaminationMedicationEntity existingMedication = existingMedications.get(i);
+                    ExaminationMedicationDTO newMedicationDTO = newMedicationDTOs.get(i);
+
+                    // Compare medication ID, price, and quantity
+                    if (!existingMedication.getMedication().getID().equals(newMedicationDTO.getMedicationId()) ||
+                            !existingMedication.getPrice().equals(newMedicationDTO.getPrice()) ||
+                            existingMedication.getQuantity()!=(newMedicationDTO.getQuantity())) {
+                        medicationsChanged = true;  // Found a difference, so medications have changed
+                        break;
+                    }
+                }
             }
 
-            // Step 5: Save the new medications in the examinationMedication table
-            examinationMedicationRepository.saveAll(newMedications);
+            // Step 3: If medications have changed, delete old ones and insert new ones
+            if (medicationsChanged) {
+                // Delete existing medications for this examination
+                examinationMedicationRepository.deleteMedicationsByExaminationId(examinationDTO.getId());
 
-            // Step 6: Save the updated examination entity (optional if medications are saved separately)
+                // Insert new medications
+                List<ExaminationMedicationEntity> newMedications = new ArrayList<>();
+                for (ExaminationMedicationDTO medicationDTO : newMedicationDTOs) {
+                    ExaminationMedicationEntity examinationMedication = new ExaminationMedicationEntity();
+                    MedicationEntity medicationEntity = new MedicationEntity();
+                    medicationEntity.setID(medicationDTO.getMedicationId());
+                    examinationMedication.setMedication(medicationEntity); // Set medication entity
+                    examinationMedication.setPrice(medicationDTO.getPrice()); // Ensure correct type
+                    examinationMedication.setQuantity(medicationDTO.getQuantity());
+                    examinationMedication.setExamination(examination); // Associate with the examination
+
+                    newMedications.add(examinationMedication);
+                }
+
+                // Step 4: Save the new medications in the examinationMedication table
+                examinationMedicationRepository.saveAll(newMedications);
+            } else {
+                // If medications haven't changed, just update the examination record as needed
+                // You can update the existing medications here if needed (e.g., update price or quantity)
+                for (int i = 0; i < existingMedications.size(); i++) {
+                    ExaminationMedicationEntity existingMedication = existingMedications.get(i);
+                    ExaminationMedicationDTO newMedicationDTO = newMedicationDTOs.get(i);
+
+                    // If there's any need to update the existing medication (e.g., price or quantity change)
+                    existingMedication.setPrice(newMedicationDTO.getPrice());
+                    existingMedication.setQuantity(newMedicationDTO.getQuantity());
+                    examinationMedicationRepository.save(existingMedication);
+                }
+            }
+
+            // Step 5: Save the updated examination entity (optional if medications are saved separately)
             examinationRepository.save(examination);
 
             // Construct successful response

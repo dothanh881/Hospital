@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "treatment")
+
 public class TreatmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,14 +58,8 @@ public class TreatmentEntity {
         this.treatmentStatusEntity = treatmentStatusEntity;
     }
 
-    public TreatmentEntity(Integer ID, Date startDate, Date endDate, TreatmentStatusEntity treatmentStatusEntity, String medications, AdmissionEntity admission, List<TreatmentMedicationEntity> treatmentMedication) {
+    public TreatmentEntity(Integer ID) {
         this.ID = ID;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.treatmentStatusEntity = treatmentStatusEntity;
-        this.medications = medications;
-        this.admission = admission;
-        this.treatmentMedication = treatmentMedication;
     }
 
     public Date getStartDate() {

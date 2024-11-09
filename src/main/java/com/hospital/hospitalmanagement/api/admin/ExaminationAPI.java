@@ -21,7 +21,7 @@
     public class ExaminationAPI {
 
         @Autowired
-        private ExaminationService examinationService; // Ensure you have the correct service injected
+        private ExaminationService examinationService;
         @Autowired
         private OutPatientRepository outPatientRepository;
         @Autowired
@@ -33,14 +33,14 @@
 
 
             try {
-                // Step 1: Check if Patient exists
+
                 PatientEntity patient = patientRepository.findById(examinationDTO.getOutPatientId())
                         .orElseThrow(() -> new IllegalArgumentException("Patient not found with ID: " + examinationDTO.getOutPatientId()));
 
-                // Log the patient for debugging
+
                 System.out.println("Patient found: " + patient);
 
-                // Step 2: Check if OutPatientEntity exists
+
                 Optional<OutPatientEntity> optionalOutPatient = outPatientRepository.findByPatient_ID(patient.getID());
                 OutPatientEntity outPatient;
 
@@ -55,17 +55,17 @@
                     outPatientRepository.save(outPatient);
                 }
 
-                // Log the examination DTO
+
                 System.out.println("Examination DTO before saving: " + examinationDTO);
 
-                // Call the service to add the examination
+
                 examinationService.addExamination(examinationDTO);
 
-                response.put("message", "Examination added successfully!");
+                response.put("message", "Thêm thành công !");
                 return new ResponseEntity<>(response, HttpStatus.CREATED);
             } catch (Exception e) {
                 e.printStackTrace(); // Print stack trace for better debugging
-                response.put("message", "Failed to add examination: " + e.getMessage());
+                response.put("message", "lỗi, thêm không thành công " + e.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

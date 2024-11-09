@@ -1,8 +1,7 @@
 package com.hospital.hospitalmanagement.models.dto;
 
-import com.hospital.hospitalmanagement.entity.TreatmentStatusEntity;
-
 import java.util.Date;
+import java.util.List;
 
 public class TreatmentDTO {
     private Integer id;
@@ -10,9 +9,9 @@ public class TreatmentDTO {
     private Date endDate;
     private String medications;
     private TreatmentStatusDTO treatmentStatus;
-
-    private AdmissionDTO admission;
-    private TreatmentMedicationDTO treatmentMedication;
+    private Integer statusId;  // Renamed from statudId to statusId for consistency
+    private Integer admissionId;
+    private List<TreatmentMedicationDTO> treatmentMedications; // Updated to List
 
     public TreatmentDTO() {
     }
@@ -57,19 +56,27 @@ public class TreatmentDTO {
         this.treatmentStatus = treatmentStatus;
     }
 
-    public AdmissionDTO getAdmission() {
-        return admission;
+    public Integer getStatusId() {  // Renamed getter method
+        return statusId;
     }
 
-    public void setAdmission(AdmissionDTO admission) {
-        this.admission = admission;
+    public void setStatusId(Integer statusId) {  // Renamed setter method
+        this.statusId = statusId;
     }
 
-    public TreatmentMedicationDTO getTreatmentMedication() {
-        return treatmentMedication;
+    public Integer getAdmissionId() {
+        return admissionId;
     }
 
-    public void setTreatmentMedication(TreatmentMedicationDTO treatmentMedication) {
-        this.treatmentMedication = treatmentMedication;
+    public void setAdmissionId(Integer admissionId) {
+        this.admissionId = admissionId;
+    }
+
+    public List<TreatmentMedicationDTO> getTreatmentMedications() {  // Updated getter method
+        return treatmentMedications;
+    }
+
+    public void setTreatmentMedications(List<TreatmentMedicationDTO> treatmentMedications) {  // Updated setter method
+        this.treatmentMedications = treatmentMedications;
     }
 }
