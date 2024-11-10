@@ -1346,7 +1346,7 @@
     function getFormDataAndSubmitTreatment(treatmentId,modalId) {
         const formData = {
             Id: treatmentId,
-            startDate: document.getElementById("startDateTreatmentDate").value,
+            startDate: document.getElementById("startDateTreatment").value,
             endDate: document.getElementById("endDateTreatment").value,
             statusId: document.getElementById("treatmentStatus").value,
             treatmentMedications: [],
@@ -1405,7 +1405,43 @@
             }
         });
     }
+    function addNewRowTreatmentEdit(treatmentId) {
 
+        const medicationBody = document.getElementById(`medicationBody-${treatmentId}`);
+        console.log(`Trying to access: medicationBody-${treatmentId}`, medicationBody); // Debugging log
+        if (!medicationBody) {
+            console.error(`Element with ID 'medicationBody-${treatmentId}' not found!`);
+            return; // Exit the function if the element is not found
+        }
+        const medicationTemplate = document.getElementById('medicationTemplate');
+
+        // Create a new row
+        const newRow = document.createElement('tr');
+
+        // Create the cells for the new row
+        newRow.innerHTML = `
+        <td>
+            <select class="chosen-select form-control" name="medicationId" data-placeholder="Chọn thuốc" onchange="updatePrice(this)">
+                <option value="">Chọn thuốc</option>
+                ${Array.from(medicationTemplate.options).map(option => `
+                    <option value="${option.value}" data-price="${option.getAttribute('data-price')}">${option.text}</option>
+                `).join('')}
+            </select>
+        </td>
+        <td>
+            <input type="number" class="form-control" name="price" placeholder="Enter Price">
+        </td>
+        <td>
+            <input type="number" class="form-control" name="quantity" placeholder="Enter Quantity">
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button>
+        </td>
+    `;
+
+        // Append the new row to the medication body
+        medicationBody.appendChild(newRow);
+    }
     function addNewRow(examinationId) {
 
         const medicationBody = document.getElementById(`medicationBody-${examinationId}`);
