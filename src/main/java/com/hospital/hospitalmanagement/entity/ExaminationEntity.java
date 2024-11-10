@@ -25,7 +25,7 @@ import java.util.Objects;
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "quantities", type = String.class)
         }
 )
-public class ExaminationEntity {
+public class ExaminationEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

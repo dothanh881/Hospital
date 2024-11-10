@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.print.Doc;
 import java.util.HashMap;
@@ -163,7 +160,25 @@ public class AdmissionAPI {
 
 
 
+    @DeleteMapping("admission/delete/{id}")
+    public ResponseEntity<Map<String, String>> admission_del(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
 
+        try {
+            int updated = admissionRepository.admission_del(id);
+
+            if (updated > 0) {
+                response.put("message", "Xóa thành công");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Phiếu đăng kí không tồn tại");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            response.put("message", "Không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

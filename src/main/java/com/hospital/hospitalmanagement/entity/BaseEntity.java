@@ -15,8 +15,11 @@ import java.util.Date;
 @Getter
 @Setter
 public abstract class BaseEntity {
-    @Column(columnDefinition = "boolean default false")
+    @Column(name = "is_deleted",columnDefinition = "boolean default false")
     private Boolean deleted = false;
+
+    @Column(name = "is_active",columnDefinition = "boolean default true")
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

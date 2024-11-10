@@ -2,8 +2,11 @@ package com.hospital.hospitalmanagement.repository;
 
 import com.hospital.hospitalmanagement.entity.ExaminationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,4 +19,11 @@ public interface ExaminationRepository extends JpaRepository<ExaminationEntity, 
 
     List<ExaminationEntity> findByOutPatient_Patient_ID(Integer patientId);
 
+    @Query(value= "select  * from examination e where e.outpatient_id = :outpatientId and e.is_active = 1 and e.is_deleted = 0", nativeQuery =true )
+    List<ExaminationEntity> getAllExaminationByPatient(@Param(value ="outpatientId") Integer outpatientId );
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE examination SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
+    int examination_del(@Param("id") Integer id);
 }

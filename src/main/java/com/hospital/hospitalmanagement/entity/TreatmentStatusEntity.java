@@ -1,12 +1,13 @@
 package com.hospital.hospitalmanagement.entity;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "treatment_status")
-public class TreatmentStatusEntity {
+public class TreatmentStatusEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

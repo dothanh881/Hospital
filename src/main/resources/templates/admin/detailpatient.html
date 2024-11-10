@@ -291,7 +291,7 @@
 
 
                                                     <li>
-                                                        <a href="#">
+                                                        <a href="#" th:onclick="'deleteExamination(' + ${examination.ID} + ')'" >
                                                             <i class="ace-icon fa fa-trash-o "></i>
                                                             Xóa
                                                         </a>
@@ -486,7 +486,7 @@
 
 
                                                     <li>
-                                                        <a href="#">
+                                                        <a href="#" th:onclick="'deleteAdmission(' + ${admission.ID} + ')'" >
                                                             <i class="ace-icon fa fa-trash-o "></i>
                                                             Xóa
                                                         </a>
@@ -672,7 +672,7 @@
 
 
                                                                                                     <li>
-                                                                                                        <a href="#">
+                                                                                                        <a href="#" th:onclick="'deleteTreatment(' + ${treatment.ID} + ')'" >
                                                                                                             <i class="ace-icon fa fa-trash-o "></i>
                                                                                                             Xóa
                                                                                                         </a>
@@ -1096,6 +1096,70 @@
     //         }
     //     });
     // });
+
+    function deleteExamination(examinationId) {
+        if (confirm("Bạn có muốn xóa??")) {
+            $.ajax({
+                url: `/examination/delete/${examinationId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
+    function deleteAdmission(admissionId) {
+        if (confirm("Bạn có muốn xóa??")) {
+            $.ajax({
+                url: `/admission/delete/${admissionId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
+    function deleteTreatment(treatmentId) {
+        if (confirm("Bạn có muốn xóa??")) {
+            $.ajax({
+                url: `/treatment/delete/${treatmentId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
     function editAdmission(admissionId, modalId) {
         let formData = {
             admissionId: admissionId,

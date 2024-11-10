@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface TreatmentRepository extends JpaRepository<TreatmentEntity,Integer> {
@@ -24,4 +25,8 @@ public interface TreatmentRepository extends JpaRepository<TreatmentEntity,Integ
             @Param("medications") String medications,
             @Param("statusId") Integer statusId
     );
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE treatment SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
+    int treatment_del(@Param("id") Integer id);
 }

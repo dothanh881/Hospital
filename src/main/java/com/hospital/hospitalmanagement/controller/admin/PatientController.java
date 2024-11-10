@@ -44,7 +44,7 @@ public class PatientController {
     // lấy danh sách patient
     @GetMapping("/patients")
     public String listPatients(Model model) {
-        List<PatientEntity> patients = patientRepository.findAll();
+        List<PatientEntity> patients = patientRepository.findPatient_ByActive();
         List<Cities> cities = cityRepository.findAll();
         model.addAttribute("patients", patients);
         model.addAttribute("cities",cities);
@@ -54,10 +54,10 @@ public class PatientController {
     @GetMapping("patient/examination/{id}")
     public String ResgisterExamination(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
-        Optional<PatientEntity> patient = patientRepository.findById(id);
-        List<DoctorEntity> doctors = doctorRepository.findAll();
+        Optional<PatientEntity> patient = patientRepository.findPatient_Id(id);
+        List<DoctorEntity> doctors = doctorRepository.getAllDoctor();
         model.addAttribute("doctors", doctors);
-        List<MedicationEntity> medications = medicationRepository.findAll();
+        List<MedicationEntity> medications = medicationRepository.getAllMedication();
         model.addAttribute("medications", medications);
         if (patient.isPresent()) {
             // Add the patient to the model if found
@@ -74,19 +74,19 @@ public class PatientController {
     @GetMapping("patient/admission/{id}")
     public String ResgisterAdmission(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
-        Optional<PatientEntity> patient = patientRepository.findById(id);
+        Optional<PatientEntity> patient = patientRepository.findPatient_Id(id);
         // list doctor
-        List<DoctorEntity> doctors = doctorRepository.findAll();
+        List<DoctorEntity> doctors = doctorRepository.getAllDoctor();
         model.addAttribute("doctors", doctors);
         // list nurse
-        List<NurseEntity> nurses = nurseRepository.findAll();
+        List<NurseEntity> nurses = nurseRepository.getAllNurse();
         model.addAttribute("nurses", nurses);
 
         List<RoomEntity> rooms = roomRepository.findAll();
         model.addAttribute("rooms", rooms);
 
 
-        List<MedicationEntity> medications = medicationRepository.findAll();
+        List<MedicationEntity> medications = medicationRepository.getAllMedication();
         model.addAttribute("medications", medications);
         if (patient.isPresent()) {
             // Add the patient to the model if found
@@ -104,13 +104,18 @@ public class PatientController {
     @GetMapping("patient/edit/{id}")
     public String EditPatient(@PathVariable Integer id, Model model) {
         // Fetch the patient by ID
-        Optional<PatientEntity> patient = patientRepository.findById(id);
-        List<ExaminationEntity> examinations = examinationRepository.findByOutPatient_Patient_ID(id);
+        Optional<PatientEntity> patient = patientRepository.findPatient_Id(id);
+        List<ExaminationEntity> examinations = examinationRepository.getAllExaminationByPatient(id);
 
-        List<AdmissionEntity> admissions = admissionRepository.findByInPatient_Patient_ID(id);
+        List<AdmissionEntity> admissions = admissionRepository.getAllAdmissionByPatient(id);
         List<TreatmentStatusEntity> treatmentStatus = treatmentStatusRepository.findAll();
         // Prepare map to hold medications per examination
-
+        for (AdmissionEntity admission : admissions) {
+            // Filter out inactive or deleted treatments
+            admission.setTreatments(admission.getTreatments().stream()
+                    .filter(treatment -> treatment.getActive() == true && treatment.getDeleted() == false)
+                    .collect(Collectors.toList()));
+        }
         model.addAttribute("examinations", examinations);
         model.addAttribute("admissions", admissions);
         model.addAttribute("treatmentStatus", treatmentStatus);
@@ -118,17 +123,17 @@ public class PatientController {
 
 
 
-        List<DoctorEntity> doctors = doctorRepository.findAll();
+        List<DoctorEntity> doctors = doctorRepository.getAllDoctor();
          model.addAttribute("doctors", doctors);
         // list nurse
-        List<NurseEntity> nurses = nurseRepository.findAll();
+        List<NurseEntity> nurses = nurseRepository.getAllNurse();
         model.addAttribute("nurses", nurses);
 
         List<RoomEntity> rooms = roomRepository.findAll();
         model.addAttribute("rooms", rooms);
 
 
-        List<MedicationEntity> medications = medicationRepository.findAll();
+        List<MedicationEntity> medications = medicationRepository.getAllMedication();
         model.addAttribute("medications", medications);
         if (patient.isPresent()) {
             // Add the patient to the model if found

@@ -5,14 +5,12 @@ import com.hospital.hospitalmanagement.entity.PatientEntity;
 import com.hospital.hospitalmanagement.entity.TreatmentEntity;
 import com.hospital.hospitalmanagement.models.dto.ExaminationDTO;
 import com.hospital.hospitalmanagement.models.dto.TreatmentDTO;
+import com.hospital.hospitalmanagement.repository.TreatmentRepository;
 import com.hospital.hospitalmanagement.service.TreatmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +21,9 @@ import java.util.Optional;
 public class TreatmentAPI {
     @Autowired
     private TreatmentService treatmentService;
+    @Autowired
+    private TreatmentRepository treatmentRepository;
+
 //    @PostMapping("/add")
 //    public ResponseEntity<Map<String, Object>> addTreatment(@RequestBody TreatmentDTO treatmentDTO) {
 //        Map<String, Object> response = new HashMap<>();
@@ -90,6 +91,26 @@ public class TreatmentAPI {
             response.put("message", "lỗi: " + e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Map<String, String>> treatment_del(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            int updated = treatmentRepository.treatment_del(id);
+
+            if (updated > 0) {
+                response.put("message", "Xóa thành công");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Quá trình điều trị không tồn tại");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            response.put("message", "Không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     }

@@ -3,6 +3,7 @@
     import com.hospital.hospitalmanagement.entity.*;
     import com.hospital.hospitalmanagement.models.dto.ExaminationDTO;
     import com.hospital.hospitalmanagement.models.dto.PatientDTO;
+    import com.hospital.hospitalmanagement.repository.ExaminationRepository;
     import com.hospital.hospitalmanagement.repository.OutPatientRepository;
     import com.hospital.hospitalmanagement.repository.PatientRepository;
     import com.hospital.hospitalmanagement.service.ExaminationService;
@@ -26,6 +27,8 @@
         private OutPatientRepository outPatientRepository;
         @Autowired
         private PatientRepository patientRepository;
+        @Autowired
+        private ExaminationRepository examinationRepository;
 
         @PostMapping("/add")
         public ResponseEntity<Map<String, Object>> addExamination(@RequestBody ExaminationDTO examinationDTO) {
@@ -106,5 +109,23 @@
             }
         }
 
+        @DeleteMapping("/delete/{id}")
+        public ResponseEntity<Map<String, String>> examination_del(@PathVariable Integer id) {
+            Map<String, String> response = new HashMap<>();
 
+            try {
+                int updated = examinationRepository.examination_del(id);
+
+                if (updated > 0) {
+                    response.put("message", "Xóa thành công");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+                    response.put("message", "Đợt khám không tồn tại");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                }
+            } catch (Exception e) {
+                response.put("message", "Không thành công: " + e.getMessage());
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }

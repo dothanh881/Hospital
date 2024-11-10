@@ -2,11 +2,18 @@ package com.hospital.hospitalmanagement.repository;
 
 import com.hospital.hospitalmanagement.entity.PatientEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface PatientRepository  extends JpaRepository<PatientEntity,Integer> {
 
     @Procedure(procedureName = "Patient_ups")
@@ -22,4 +29,17 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
             Integer p_districtId,
             Integer p_wardId
     );
+
+    @Query(value= "select  * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
+    List<PatientEntity> findPatient_ByActive();
+
+    @Query(value= "select  * from patient p where p.id = :id and p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
+    Optional<PatientEntity> findPatient_Id(@Param(value = "id") Integer id);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE patient SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
+    int softDeletePatient(@Param("id") Integer id);
+
 }

@@ -7,7 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "employee")
 @Inheritance(strategy = InheritanceType.JOINED) // Specifies the inheritance strategy
-public class EmployeeEntity {
+public class EmployeeEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

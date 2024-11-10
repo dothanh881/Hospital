@@ -134,8 +134,8 @@
                                                     </li>
 
                                                     <li>
-                                                        <a href="#">
-                                                            <i class="ace-icon fa fa-trash-o "></i>
+                                                        <a href="#" th:onclick="'deletePatient(' + ${patient.ID} + ')'" >
+                                                            <i class="ace-icon fa fa-trash-o"></i>
                                                             Xóa
                                                         </a>
                                                     </li>
@@ -454,10 +454,32 @@
 <script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
 
 <script>
+    function deletePatient(patientId) {
+        if (confirm("Bạn có muốn xóa bệnh nhân??")) {
+            $.ajax({
+                url: `/patient/delete/${patientId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
+
     function loadDistricts(cityId) {
         // Clear existing options
         const districtSelect = document.getElementById('districtId');
-        districtSelect.innerHTML = '<option value="" disabled selected>Select a district</option>';
+        districtSelect.innerHTML = '<option value="" disabled selected>Chọn quận/huyện</option>';
 
         // Fetch districts
         fetch(`/districts/${cityId}`)
@@ -478,7 +500,7 @@
     function loadWards(districtId) {
         // Clear existing options
         const wardSelect = document.getElementById('wardId');
-        wardSelect.innerHTML = '<option value="" disabled selected>Select a ward</option>';
+        wardSelect.innerHTML = '<option value="" disabled selected>Chọn phường/xã</option>';
 
         // Fetch wards
         fetch(`/wards/${districtId}`)

@@ -8,7 +8,7 @@ import java.util.Date;
 @Entity
 @Table(name = "patient") // tên bảng sẽ gen trong db
 
-public class PatientEntity {
+public class PatientEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

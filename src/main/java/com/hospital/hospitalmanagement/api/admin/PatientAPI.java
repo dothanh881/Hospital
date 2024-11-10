@@ -122,7 +122,25 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @DeleteMapping("patient/delete/{id}")
+    public ResponseEntity<Map<String, String>> deletePatient(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
 
+        try {
+            int updated = patientRepository.softDeletePatient(id);
+
+            if (updated > 0) {
+                response.put("message", "Xóa thành công");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Bệnh nhân không tồn tại.");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            response.put("message", "Không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // Delete a patient by ID
 //    @DeleteMapping("patient/delete/{id}")
 //    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
