@@ -10,6 +10,7 @@ import com.hospital.hospitalmanagement.service.TreatmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -94,6 +95,39 @@ public class TreatmentAPI {
         }
     }
 
+
+    @PostMapping("/edit")
+    @Transactional
+    public ResponseEntity<Map<String, Object>> editTreatment(@RequestParam("id") Integer treatmentId, @RequestBody TreatmentDTO treatmentDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+
+        treatmentDTO.setId(treatmentId);
+
+        try {
+
+            treatmentService.updateTreatment(treatmentDTO);
+
+            // Construct success response
+            response.put("status", "success");
+            response.put("message", "Cập nhật thành công!");
+            response.put("treatmentId", treatmentId); // Optionally return the examination ID
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Handle any errors
+            response.put("status", "error");
+            response.put("message", "Lỗi " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
+
+
+
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Map<String, String>> treatment_del(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
@@ -113,5 +147,8 @@ public class TreatmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
     }
 

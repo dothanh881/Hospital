@@ -23,7 +23,7 @@ public class MedicationEntity extends BaseEntity{
     @Column(name = "effect", length = 255)
     private String effect;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private BigDecimal price;
     @Column(name = "expiration_date", nullable = false)
     private Date expirationDate;

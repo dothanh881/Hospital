@@ -28,7 +28,7 @@ public class ExaminationMedicationEntity {
     @Column
     private int quantity;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private BigDecimal price;
 
 

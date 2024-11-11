@@ -157,6 +157,7 @@
             <div id="exTab1"class="container-fluid">
                 <div class="tab-content clearfix">
                     <!-- Tab 1: Overview -->
+
                     <div class="tab-pane active" id="1a">
 
 
@@ -176,8 +177,8 @@
                                         <div class="form-check">
                                             <input type="radio" class="form-check-input" name="gender" id="male" value="Nam" checked>
                                             <label class="form-check-label" for="male">Nam</label>
-                                                <input type="radio" class="form-check-input" name="gender" id="female" value="Nữ">
-                                                <label class="form-check-label" for="female">Nữ</label>
+                                            <input type="radio" class="form-check-input" name="gender" id="female" value="Nữ">
+                                            <label class="form-check-label" for="female">Nữ</label>
 
                                         </div>
                                     </div>
@@ -235,7 +236,7 @@
                                     </div>
                                 </div>
                             </div>
-<br>
+                            <br>
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-md-12 text-center">
@@ -247,7 +248,6 @@
 
 
                     </div>
-
                     <!-- Tab 2: Using nav-pills -->
                     <div class="tab-pane " id="2a">
                         <div class="row">
@@ -714,7 +714,7 @@
                                                                             <div class="modal fade independent-modal" th:id="'editTreatmentModal' + ${treatment.ID}" tabindex="-1" role="dialog" aria-labelledby="'modalLabel' + ${treatment.ID}" aria-hidden="true">
                                                                                 <div class="modal-dialog modal-lg" role="document">
                                                                                     <div class="modal-content">
-                                                                                        <form th:action="@{/editTreatment(id=${treatment.ID})}" method="post">
+                                                                                        <form th:action="@{/editTreatment(id=${treatment.ID})}" method="post" th:id="'form-' + ${treatment.ID}">
                                                                                             <div class="modal-header">
                                                                                                 <h5 class="modal-title" th:id="'modalLabel' + ${treatment.ID}">Cập nhật</h5>
                                                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -728,15 +728,23 @@
 
                                                                                                 <!-- Treatment Start Date -->
                                                                                                 <div class="form-group">
-                                                                                                    <label for="startDateTreatment">Ngày bắt đầu</label>
-                                                                                                    <input type="date" class="form-control" th:value="${#dates.format(treatment.startDate, 'yyyy-MM-dd')}" id="startDateTreatment" name="startDateTreatment" required />
+                                                                                                    <label th:for="'startDateTreatment-' + ${treatment.ID}">Ngày bắt đầu</label>
+                                                                                                    <input type="date"
+                                                                                                           class="form-control"
+                                                                                                           th:value="${#dates.format(treatment.startDate, 'yyyy-MM-dd')}"
+                                                                                                           th:id="'startDateTreatment-' + ${treatment.ID}"
+                                                                                                           name="startDateTreatment" required />
                                                                                                 </div>
 
-                                                                                                <!-- Treatment End Date -->
                                                                                                 <div class="form-group">
-                                                                                                    <label for="endDateTreatment">Ngày kết thúc</label>
-                                                                                                    <input type="date" class="form-control" th:value="${#dates.format(treatment.endDate, 'yyyy-MM-dd')}" id="endDateTreatment" name="endDateTreatment" />
+                                                                                                    <label th:for="'endDateTreatment-' + ${treatment.ID}">Ngày kết thúc</label>
+                                                                                                    <input type="date"
+                                                                                                           class="form-control"
+                                                                                                           th:value="${#dates.format(treatment.endDate, 'yyyy-MM-dd')}"
+                                                                                                           th:id="'endDateTreatment-' + ${treatment.ID}"
+                                                                                                           name="endDateTreatment" />
                                                                                                 </div>
+
 
                                                                                                 <!-- Medication Table -->
                                                                                                 <table class="table table-bordered medicationTable">
@@ -771,19 +779,25 @@
 
                                                                                                 <!-- Status Selector -->
                                                                                                 <div class="form-group">
-                                                                                                    <select id="treatmentStatus" name="statusId">
-                                                                                                        <option th:each="status : ${treatmentStatus}" th:value="${status.id}" th:text="${status.name}" th:selected="${status.id == treatment.treatmentStatusEntity.id}"></option>
+                                                                                                    <label th:for="'treatmentStatus-' + ${treatment.ID}">Trạng thái điều trị</label>
+                                                                                                    <select th:id="'treatmentStatus-' + ${treatment.ID}"
+                                                                                                            name="treatmentStatus"
+                                                                                                            class="form-control">
+                                                                                                        <option th:each="status : ${treatmentStatus}"
+                                                                                                                th:value="${status.id}"
+                                                                                                                th:text="${status.name}"
+                                                                                                                th:selected="${status.id == treatment.treatmentStatusEntity.id}">
+                                                                                                        </option>
                                                                                                     </select>
                                                                                                 </div>
                                                                                             </div>
 
                                                                                             <div class="modal-footer">
                                                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                                                                                <button type="button" class="btn btn-primary" th:onclick="|getFormDataAndSubmitTreatment(${treatment.ID}, 'editTreatmentModal${treatment.ID}')|">
-                                                                                                    Lưu
-                                                                                                </button>
+                                                                                                <button type="button" class="btn btn-primary" th:onclick="|getFormDataAndSubmitTreatment(${treatment.ID}, 'editTreatmentModal${treatment.ID}')|">Lưu</button>
                                                                                             </div>
                                                                                         </form>
+
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -1343,68 +1357,97 @@
             }
         });
     }
-    function getFormDataAndSubmitTreatment(treatmentId,modalId) {
+    function getFormDataAndSubmitTreatment(treatmentId, modalId) {
         const formData = {
             Id: treatmentId,
-            startDate: document.getElementById("startDateTreatment").value,
-            endDate: document.getElementById("endDateTreatment").value,
-            statusId: document.getElementById("treatmentStatus").value,
+            startDate: "",
+            endDate: "",
+            statusId: "",
             treatmentMedications: [],
             medications: ""  // Add an empty string for medications
         };
+
+        // Collect treatment start and end dates
+        const startDateElement = document.getElementById("startDateTreatment-" + treatmentId);
+        const endDateElement = document.getElementById("endDateTreatment-" + treatmentId);
+
+        if (startDateElement && endDateElement) {
+            formData.startDate = startDateElement.value;
+            formData.endDate = endDateElement.value;
+        } else {
+            console.error("Start or End date element not found");
+        }
+
+        // Collect treatment status
+        const statusElement = document.getElementById("treatmentStatus-" + treatmentId);
+        if (statusElement) {
+            formData.statusId = statusElement.value;
+        } else {
+            console.error("Treatment status element not found");
+        }
 
         // Collect medication rows
         const medicationRows = document.querySelectorAll(`#medicationBody-${treatmentId} tr`);
         const medicationIds = [];  // Array to store medication IDs for the comma-separated string
 
-        medicationRows.forEach(row => {
-            const medicationId = row.querySelector("select[name='medicationId']").value;
-            const price = row.querySelector("input[name='price']").value;
-            const quantity = row.querySelector("input[name='quantity']").value;
+        if (medicationRows.length > 0) {
+            medicationRows.forEach(row => {
+                const medicationId = row.querySelector("select[name='medicationId']").value;
+                const price = row.querySelector("input[name='price']").value;
+                const quantity = row.querySelector("input[name='quantity']").value;
 
-            if (medicationId && price && quantity) {
-                // Add the medicationId to the list for the comma-separated string
-                medicationIds.push(medicationId);
+                if (medicationId && price && quantity) {
+                    // Add the medicationId to the list for the comma-separated string
+                    medicationIds.push(medicationId);
 
-                // Add medication details to the examinationMedications array
-                formData.treatmentMedications.push({
-                    medicationId: medicationId,
-                    price: parseFloat(price),
-                    quantity: parseInt(quantity)
-                });
-            }
-        });
+                    // Add medication details to the treatmentMedications array
+                    formData.treatmentMedications.push({
+                        medicationId: medicationId,
+                        price: parseFloat(price),
+                        quantity: parseInt(quantity)
+                    });
+                }
+            });
+        } else {
+            console.error("No medication rows found for treatmentId:", treatmentId);
+        }
 
         // Set the medications attribute as a comma-separated string of medication IDs
         formData.medications = medicationIds.join(',');
+
         console.log(formData);
+
         // Call the API using AJAX
         $.ajax({
-            url: `/treatment/edit?id=${treatmentId}`,  // Corrected URL with the expected endpoint
+            url: `/treatment/edit?id=${treatmentId}`,
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
-                $('#alertMessage').text("Cập nhật thành công"); // Update the alert message
-                $(`#${modalId}`).modal('hide');  // Hide the modal with the specific ID
+                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                $('#alertMessage').text("Cập nhật thành công");
+                $(`#${modalId}`).modal('hide');
                 $('#postResultDiv').show().addClass('alert-fixed');
-
+                const activeTab = $('.tab-pane.active').attr('id');
+                $(`#${activeTab}`).load(location.href + ` #${activeTab} > *`, function() {
+                    console.log(`Active tab ${activeTab} reloaded successfully`);
+                });
 
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut();
                 }, 5000);
             },
             error: function(error) {
-                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
-                $('#alertMessage').text("Không thành công"); // Update the alert message
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                $('#alertMessage').text("Không thành công");
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
-                    $('#postResultDiv').fadeOut(); // Fade out the alert
+                    $('#postResultDiv').fadeOut();
                 }, 5000);
             }
         });
     }
+
     function addNewRowTreatmentEdit(treatmentId) {
 
         const medicationBody = document.getElementById(`medicationBody-${treatmentId}`);

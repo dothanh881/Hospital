@@ -20,7 +20,7 @@ public class MedicationImportEntity {
     @Temporal(TemporalType.DATE)
     private Date importDate;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private BigDecimal price;
     @Column(name = "quantity", nullable = false)
     private int quantity;
