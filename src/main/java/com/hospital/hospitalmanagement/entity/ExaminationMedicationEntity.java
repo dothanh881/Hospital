@@ -26,14 +26,14 @@ public class ExaminationMedicationEntity {
         private MedicationEntity medication;
 
     @Column
-    private int quantity;
+    private Integer quantity;
 
     @Column(precision = 10)
     private BigDecimal price;
 
 
 
-    public ExaminationMedicationEntity(ExaminationEntity examination, MedicationEntity medication, int quantity, BigDecimal price) {
+    public ExaminationMedicationEntity(ExaminationEntity examination, MedicationEntity medication, Integer quantity, BigDecimal price) {
         this.examination = examination;
         this.medication = medication;
         this.quantity = quantity;
@@ -55,6 +55,8 @@ public class ExaminationMedicationEntity {
         this.ID = ID;
     }
 
+
+
     public ExaminationEntity getExamination() {
         return examination;
     }
@@ -71,11 +73,11 @@ public class ExaminationMedicationEntity {
         this.medication = medication;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

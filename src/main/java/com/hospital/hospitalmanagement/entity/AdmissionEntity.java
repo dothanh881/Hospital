@@ -43,7 +43,7 @@ public class AdmissionEntity extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date dateOfDischarge;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private BigDecimal fee;
 
 
@@ -144,5 +144,14 @@ public class AdmissionEntity extends BaseEntity {
 
     public void setFee(BigDecimal fee) {
         this.fee = fee;
+    }
+    public BigDecimal getAdmissionTotal() {
+        BigDecimal total = fee != null ? fee : BigDecimal.ZERO; // Add base fee if it exists
+        if (treatments != null) {
+            for (TreatmentEntity treatment : treatments) {
+                total = total.add(treatment.getTreatmentTotal());  // Add treatment's total fee
+            }
+        }
+        return total;
     }
 }

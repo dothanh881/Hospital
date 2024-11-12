@@ -54,7 +54,7 @@ public class ExaminationEntity extends BaseEntity{
     @Column(length = 255)
     private String medications;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private BigDecimal fee;
 
     @OneToMany(mappedBy = "examination")
@@ -142,5 +142,17 @@ public class ExaminationEntity extends BaseEntity{
 
     public void setExaminationMedications(List<ExaminationMedicationEntity> examinationMedications) {
         this.examinationMedications = examinationMedications;
+    }
+    public BigDecimal getExaminationTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (examinationMedications != null) {
+            for (ExaminationMedicationEntity tm : examinationMedications) {
+                // Assuming TreatmentMedicationEntity has getPrice and getQuantity methods
+                BigDecimal price = tm.getPrice() != null ? tm.getPrice() : BigDecimal.ZERO;
+                Integer quantity = tm.getQuantity() != null ? tm.getQuantity() : 0;
+                total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+            }
+        }
+        return total;
     }
 }

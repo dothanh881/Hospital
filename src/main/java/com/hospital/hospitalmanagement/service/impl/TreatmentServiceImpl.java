@@ -42,8 +42,8 @@ public class TreatmentServiceImpl implements TreatmentService {
         Date endDate = treatmentDTO.getEndDate();
         String medications = treatmentDTO.getMedications();
         Integer statusId = treatmentDTO.getStatusId();
-
-        Integer treatmentId = treatmentRepository.addTreatment(admissionId, startDate, endDate, medications, statusId);
+        String description = treatmentDTO.getDescription();
+        Integer treatmentId = treatmentRepository.addTreatment(admissionId, startDate, endDate, medications, statusId,description);
         if (treatmentId != null) {
             // Process and set TreatmentMedication entities
             List<TreatmentMedicationEntity> newMedications = new ArrayList<>();
@@ -89,14 +89,16 @@ public class TreatmentServiceImpl implements TreatmentService {
             // Update examination fields
 
             treatment.setStartDate(treatmentDTO.getStartDate());
-            treatment.setEndDate(treatment.getEndDate());
+            treatment.setEndDate(treatmentDTO.getEndDate());
             TreatmentStatusEntity treatmentStatus = new TreatmentStatusEntity();
             treatmentStatus.setId(treatmentDTO.getStatusId());
             treatment.setTreatmentStatusEntity(treatmentStatus);
-            treatment.setMedications(treatment.getMedications());
+            treatment.setMedications(treatmentDTO.getMedications());
+            treatment.setDescription(treatmentDTO.getDescription());
 
 
             treatmentRepository.save(treatment);
+
             // Step 1: Retrieve the existing medications for this examination
             List<TreatmentMedicationEntity> existingMedications = treatmentMedicationRepository
                     .findByTreatment_ID(treatmentDTO.getId());

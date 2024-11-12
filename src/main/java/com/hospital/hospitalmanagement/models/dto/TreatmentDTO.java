@@ -13,6 +13,16 @@ public class TreatmentDTO {
     private Integer admissionId;
     private List<TreatmentMedicationDTO> treatmentMedications; // Updated to List
 
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public TreatmentDTO() {
     }
 

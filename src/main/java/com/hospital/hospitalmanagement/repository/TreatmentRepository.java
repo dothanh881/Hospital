@@ -23,7 +23,8 @@ public interface TreatmentRepository extends JpaRepository<TreatmentEntity,Integ
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("medications") String medications,
-            @Param("statusId") Integer statusId
+            @Param("statusId") Integer statusId,
+            @Param("description") String description
     );
     @Modifying
     @Transactional

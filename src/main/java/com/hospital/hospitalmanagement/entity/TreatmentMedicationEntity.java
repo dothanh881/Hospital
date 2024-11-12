@@ -13,7 +13,7 @@ public class TreatmentMedicationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
+    private Integer ID;
 
     @ManyToOne
     @JoinColumn(name = "treatment_Id")
@@ -24,14 +24,14 @@ public class TreatmentMedicationEntity {
     private MedicationEntity medication;
 
     @Column
-    private int quantity;
+    private Integer quantity;
 
     @Column(precision = 10)
     private BigDecimal price;
 
 
 
-    public TreatmentMedicationEntity(TreatmentEntity treatment, MedicationEntity medication, int quantity, BigDecimal price) {
+    public TreatmentMedicationEntity(TreatmentEntity treatment, MedicationEntity medication, Integer quantity, BigDecimal price) {
         this.treatment = treatment;
         this.medication = medication;
         this.quantity = quantity;
@@ -58,11 +58,11 @@ public class TreatmentMedicationEntity {
     public TreatmentMedicationEntity() {
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

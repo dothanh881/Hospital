@@ -126,4 +126,6 @@ public class MedicationEntity extends BaseEntity{
     public BigDecimal getPrice() {
         return price;
     }
+
+
 }

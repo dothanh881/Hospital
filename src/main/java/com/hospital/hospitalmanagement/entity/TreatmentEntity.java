@@ -2,6 +2,7 @@ package com.hospital.hospitalmanagement.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class TreatmentEntity extends BaseEntity{
     private TreatmentStatusEntity treatmentStatusEntity;
     @Column(name = "medications", length = 255)
     private String medications;
-
+    @Column(name = "description", length = 255)
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admission_Id", nullable = false)
@@ -43,6 +45,28 @@ public class TreatmentEntity extends BaseEntity{
     @OneToMany(mappedBy = "treatment")
     private List<TreatmentMedicationEntity>  treatmentMedication;
 
+
+
+    public BigDecimal getTreatmentTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (treatmentMedication != null) {
+            for (TreatmentMedicationEntity tm : treatmentMedication) {
+                // Assuming TreatmentMedicationEntity has getPrice and getQuantity methods
+                BigDecimal price = tm.getPrice() != null ? tm.getPrice() : BigDecimal.ZERO;
+                Integer quantity = tm.getQuantity() != null ? tm.getQuantity() : 0;
+                total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+            }
+        }
+        return total;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public TreatmentEntity() {
     }
