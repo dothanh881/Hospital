@@ -1,6 +1,9 @@
 package com.hospital.hospitalmanagement.repository;
 
+import com.hospital.hospitalmanagement.entity.Cities;
 import com.hospital.hospitalmanagement.entity.PatientEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,8 +33,14 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
             Integer p_wardId
     );
 
-    @Query(value= "select  * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
-    List<PatientEntity> findPatient_ByActive();
+
+//    @Query(value= "select  * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
+//    List<PatientEntity> findPatient_ByActive();
+
+
+    // Updated query to include pagination
+    @Query(value = "select * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery = true)
+    Page<PatientEntity> findPatient_ByActive(Pageable pageable);
 
     @Query(value= "select  * from patient p where p.id = :id and p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
     Optional<PatientEntity> findPatient_Id(@Param(value = "id") Integer id);
@@ -41,5 +50,8 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
     @Transactional
     @Query(value = "UPDATE patient SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
     int softDeletePatient(@Param("id") Integer id);
+    @Query("SELECT p.city FROM PatientEntity p WHERE p.ID = :patientId")
+    Cities findCityByPatientId(@Param("patientId") int patientId);
+
 
 }

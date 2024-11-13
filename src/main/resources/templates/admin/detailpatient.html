@@ -161,61 +161,70 @@
                     <div class="tab-pane active" id="1a">
 
 
-                        <form >
-                            <div class="row">
-                                <!-- Full Name -->
-                                <div class="col-md-9">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Họ và Tên</label>
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name" required>
-                                    </div>
+                        <form th:object="${patient}" id="editPatientForm">
+                            <div class="form-group row">
+                                <input type="hidden" id="patientId" name="id" th:value="${patient.ID}" />
+                                <!-- Last Name -->
+                                <div class="col-sm-5">
+                                    <label class="control-label" for="lastName">Họ</label>
+                                    <input type="text" id="lastName" name="lastName" placeholder="Họ" class="form-control" th:field="${patient.lastName}" required>
                                 </div>
 
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Gender:</label>
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input" name="gender" id="male" value="Nam" checked>
-                                            <label class="form-check-label" for="male">Nam</label>
-                                            <input type="radio" class="form-check-input" name="gender" id="female" value="Nữ">
-                                            <label class="form-check-label" for="female">Nữ</label>
+                                <!-- Full Name -->
+                                <div class="col-sm-5">
+                                    <label class="control-label" for="firstName">Tên</label>
+                                    <input type="text" id="firstName" name="firstName" placeholder="Tên" class="form-control" th:field="${patient.firstName}" required>
+                                </div>
 
+                                <!-- Gender -->
+                                <div class="col-sm-2">
+                                    <div class="mb-2">
+                                        <label class="form-label">Giới tính:</label>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" th:field="${patient.gender}" id="male" value="Nam">
+                                            <label class="form-check-label" for="male">Nam</label>
+                                            <input type="radio" class="form-check-input" th:field="${patient.gender}" id="female" value="Nữ">
+                                            <label class="form-check-label" for="female">Nữ</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <!-- City ID -->
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label for="cityId" class="form-label">City ID</label>
-                                        <input type="number" class="form-control" id="cityId" name="cityId" placeholder="City ID" readonly>
-                                    </div>
+                            <div class="form-group row">
+                                <!-- City -->
+                                <div class="col-sm-3">
+                                    <label class="control-label" for="cityId">Thành phố/tỉnh</label>
+                                    <select th:field="*{city.cityId}" id="cityId" class="form-control" required onchange="loadDistricts(this.value)">
+                                        <option value="" disabled selected>Chọn thành phố/tỉnh</option>
+                                        <option th:each="city : ${cities}" th:value="${city.cityId}"
+                                                th:selected="${city.cityId == patient.city.cityId}" th:text="${city.cityName}"></option>
+                                    </select>
                                 </div>
 
-                                <!-- District ID -->
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label for="districtId" class="form-label">District ID</label>
-                                        <input type="number" class="form-control" id="districtId" name="districtId" placeholder="District ID" readonly>
-                                    </div>
+                                <!-- District -->
+                                <div class="col-sm-3">
+                                    <label class="control-label" for="districtId">Quận/huyện</label>
+                                    <select th:field="*{district.districtId}" id="districtId" class="form-control" required onchange="loadWards(this.value)">
+                                        <option value="" disabled selected>Chọn quận/huyện</option>
+                                        <option th:each="district : ${districts}" th:value="${district.districtId}"
+                                                th:selected="${district.districtId == patient.district.districtId}" th:text="${district.districtName}"></option>
+                                    </select>
                                 </div>
 
-                                <!-- Ward ID -->
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label for="wardId" class="form-label">Ward ID</label>
-                                        <input type="number" class="form-control" id="wardId" name="wardId" placeholder="Ward ID" readonly>
-                                    </div>
+                                <!-- Ward -->
+                                <div class="col-sm-3">
+                                    <label class="control-label" for="wardId">Phường/xã</label>
+                                    <select th:field="*{ward.wardId}" id="wardId" class="form-control" required>
+                                        <option value="" disabled selected>Chọn Phường/xã</option>
+                                        <option th:each="ward : ${wards}" th:value="${ward.wardId}"
+                                                th:selected="${ward.wardId == patient.ward.wardId}" th:text="${ward.wardName}"></option>
+                                    </select>
                                 </div>
 
                                 <!-- Street -->
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label for="street" class="form-label">Street</label>
-                                        <input type="text" class="form-control" id="street" name="street" placeholder="Street Address" required>
-                                    </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label" for="street">Địa chỉ</label>
+                                    <input type="text" class="form-control" id="street" name="street" placeholder="Địa chỉ" th:field="*{street}" required>
                                 </div>
                             </div>
 
@@ -223,27 +232,31 @@
                                 <!-- Date of Birth -->
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="dob" class="form-label">Date of Birth</label>
-                                        <input type="date" class="form-control" id="dob" name="dob" required>
+                                        <label for="dob" class="form-label">Ngày sinh</label>
+                                        <input type="date" class="form-control" id="dob"
+                                               th:value="${#dates.format(patient.dateOfBirth, 'yyyy-MM-dd')}" required>
                                     </div>
                                 </div>
 
                                 <!-- Phone Number -->
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="phoneNumber" class="form-label">Phone Number</label>
-                                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" required>
+                                        <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="phoneNumber" placeholder="Số điện thoại" th:field="${patient.phoneNumber}" required>
                                     </div>
                                 </div>
                             </div>
+
                             <br>
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" id="submitPatientBtn" class="btn btn-primary">Lưu</button>
                                 </div>
                             </div>
                         </form>
+
+
 
 
 
@@ -1143,7 +1156,65 @@
     //         }
     //     });
     // });
+    // Function to handle form submission via AJAX
+    $(document).ready(function() {
+        $('#submitPatientBtn').click(function(event) {
+            event.preventDefault();  // Prevent default form submission
 
+            // Get patientId from hidden input field
+            var patientId = $('#patientId').val();
+
+            if (!patientId) {
+                alert("Patient ID is missing!");
+                return;  // Prevent the AJAX request if ID is missing
+            }
+
+            // Collect data manually from each input by their ID
+            var formData = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                dob: $('#dob').val(),
+                street: $('#street').val(),
+                phoneNumber: $('#phoneNumber').val(),
+                cityId: $('#cityId').val(),
+                districtId: $('#districtId').val(),
+                wardId: $('#wardId').val()
+            };
+
+            // Make AJAX request to update patient data
+            $.ajax({
+                url: `/patient/edit/${patientId}`,  // Use patientId dynamically in URL
+                type: 'PUT',  // Use PUT request for update
+                contentType: 'application/json',  // Set content type to JSON
+                data: JSON.stringify(formData),  // Convert form data to JSON
+                success: function(response) {
+                    // Display success message
+                    $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                    $('#alertMessage').text("Cập nhật thành công");
+                    $('#editPatientModal').modal('hide');  // Close the modal
+                    $('#postResultDiv').show().addClass('alert-fixed');
+                    const activeTab = $('.tab-pane.active').attr('id');
+                    $(`#${activeTab}`).load(location.href + ` #${activeTab} > *`, function() {
+                        console.log(`Active tab ${activeTab} reloaded successfully`);
+                    });
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                    $('#editPatientForm')[0].reset();  // Reset the form
+                },
+                error: function(xhr, status, error) {
+                    // Display error message
+                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                    $('#alertMessage').text("Không thành công");
+                    $('#postResultDiv').show().addClass('alert-fixed');
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                }
+            });
+        });
+    });
     function deleteExamination(examinationId) {
         if (confirm("Bạn có muốn xóa??")) {
             $.ajax({

@@ -1,0 +1,17 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!-- Define the navbar fragment -->
+<th:block th:fragment="pagination">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="/patients/page?p=${patients.number - 1}">Trước</a></li>
+            <li class="page-item"><a class="page-link" href="/patients/page?p=0">1</a></li>
+            <li class="page-item"><a class="page-link" href="/patients/page?p=${patients.number + 1}">Sau</a></li>
+            <li class="page-item"><a class="page-link" href="/patients/page?p=${patients.totalPages - 1}">Cuối</a></li>
+
+        </ul>
+    </nav>
+
+</th:block>

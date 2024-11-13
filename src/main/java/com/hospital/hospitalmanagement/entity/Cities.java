@@ -77,4 +77,28 @@ public class Cities {
     }
     @OneToMany(mappedBy = "city")
     List<PatientEntity> patientEntityList;
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
+    }
+
+    public Cities() {
+    }
+
+    public Cities(Integer cityId, String cityName) {
+        this.cityId = cityId;
+        this.cityName = cityName;
+    }
 }

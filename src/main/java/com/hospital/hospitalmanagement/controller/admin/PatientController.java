@@ -5,10 +5,15 @@ import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 import com.hospital.hospitalmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +26,10 @@ public class PatientController {
     private PatientRepository patientRepository;
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private DistrictRepository districtRepository;
+    @Autowired
+    private WardRepository wardRepository;
     @Autowired
     private DoctorRepository doctorRepository;
     @Autowired
@@ -42,13 +51,23 @@ public class PatientController {
 
 
     // lấy danh sách patient
-    @GetMapping("/patients")
-    public String listPatients(Model model) {
-        List<PatientEntity> patients = patientRepository.findPatient_ByActive();
+    @GetMapping("/patients/page")
+    public String paginate(Model model, @RequestParam("p") Optional<Integer> p) {
+        // Default page size is 10
+        Pageable pageable = (Pageable) PageRequest.of(p.orElse(0), 10);  // Correct Pageable class
+
+        // Get active patients with pagination
+        Page<PatientEntity> patients = patientRepository.findPatient_ByActive(pageable);
+
+        // Get all cities for the dropdown
         List<Cities> cities = cityRepository.findAll();
+
+        // Add patients and cities to the model
         model.addAttribute("patients", patients);
-        model.addAttribute("cities",cities);
-        return "admin/patient"; // tra ve page patient.html
+        model.addAttribute("cities", cities);
+
+        // Return the page template
+        return "admin/patient";  // Adjust this to your view template
     }
 
     @GetMapping("patient/examination/{id}")
@@ -109,6 +128,9 @@ public class PatientController {
 
         List<AdmissionEntity> admissions = admissionRepository.getAllAdmissionByPatient(id);
         List<TreatmentStatusEntity> treatmentStatus = treatmentStatusRepository.findAll();
+
+
+
         // Prepare map to hold medications per examination
         for (AdmissionEntity admission : admissions) {
             // Filter out inactive or deleted treatments
@@ -116,6 +138,19 @@ public class PatientController {
                     .filter(treatment -> treatment.getActive() == true && treatment.getDeleted() == false)
                     .collect(Collectors.toList()));
         }
+
+        List<Cities> cities = cityRepository.findAll();
+        List<Districts> districts = districtRepository.findByCity_CityIdOrderByOrderIdAsc(patient.get().getCity().getCityId());
+        List<Wards> wards = wardRepository.findByDistrict_DistrictIdOrderByOrderIdAsc(patient.get().getDistrict().getDistrictId());
+
+
+        model.addAttribute("cities", cities);
+        model.addAttribute("districts", districts);
+        model.addAttribute("wards", wards);
+
+
+
+
         model.addAttribute("examinations", examinations);
         model.addAttribute("admissions", admissions);
         model.addAttribute("treatmentStatus", treatmentStatus);

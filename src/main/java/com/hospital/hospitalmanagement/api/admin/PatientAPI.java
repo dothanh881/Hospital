@@ -6,7 +6,10 @@ import com.hospital.hospitalmanagement.entity.PatientEntity;
 import com.hospital.hospitalmanagement.entity.Wards;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 
+import com.hospital.hospitalmanagement.repository.CityRepository;
+import com.hospital.hospitalmanagement.repository.DistrictRepository;
 import com.hospital.hospitalmanagement.repository.PatientRepository;
+import com.hospital.hospitalmanagement.repository.WardRepository;
 import com.hospital.hospitalmanagement.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,10 +34,21 @@ public class PatientAPI {
 //    }
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    DistrictRepository districtRepository;
+
+    @Autowired
+    CityRepository cityRepository;
+
+    @Autowired
+    WardRepository wardRepository;
 
 
 
-//    @GetMapping("/patients")
+
+
+
+    //    @GetMapping("/patients")
 //    public ResponseEntity<List<PatientEntity>> getAllPatient(){
 //        List<PatientEntity> patients = patientRepository.findAll();
 //        return new ResponseEntity<>(patients, HttpStatus.OK);
@@ -88,40 +102,57 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
 
     // Update a patient by ID
     @PutMapping("patient/edit/{id}")
-    public ResponseEntity<PatientEntity> updatePatient(@PathVariable Integer id, @RequestBody PatientDTO patientDetails) {
-        Optional<PatientEntity> existingPatient = patientRepository.findById(id);
+    public ResponseEntity<Map<String,String>> updatePatient(@PathVariable Integer id, @RequestBody PatientDTO patientDetails) {
 
-        if (existingPatient.isPresent()) {
+
+        try {
+            Optional<PatientEntity> existingPatient = patientRepository.findById(id);
+
 
 
             PatientEntity patient = existingPatient.get();
 
+            // Update patient fields
             patient.setFirstName(patientDetails.getFirstName());
             patient.setLastName(patientDetails.getLastName());
-            patient.setGender(patientDetails.getGender());
             patient.setDateOfBirth(patientDetails.getDob());
             patient.setStreet(patientDetails.getStreet());
             patient.setPhoneNumber(patientDetails.getPhoneNumber());
-            Cities city = new Cities();
-            city.setCityId(patientDetails.getCityId());
-            patient.setCity(city);
+
+            // Set City, District, and Ward (check if they exist)
+            Optional<Cities> city = cityRepository.findById(patientDetails.getCityId());
+            if (city.isPresent()) {
+                patient.setCity(city.get());
+            } else {
+                return new ResponseEntity<>(Map.of("message", "City not found"), HttpStatus.BAD_REQUEST);
+            }
+
+            Optional<Districts> district = districtRepository.findById(patientDetails.getDistrictId());
+            if (district.isPresent()) {
+                patient.setDistrict(district.get());
+            } else {
+                return new ResponseEntity<>(Map.of("message", "District not found"), HttpStatus.BAD_REQUEST);
+            }
+
+            Optional<Wards> ward = wardRepository.findById(patientDetails.getWardId());
+            if (ward.isPresent()) {
+                patient.setWard(ward.get());
+            } else {
+                return new ResponseEntity<>(Map.of("message", "Ward not found"), HttpStatus.BAD_REQUEST);
+            }
 
 
-            Districts district = new Districts();
-            district.setDistrictId(patientDetails.getDistrictId());
-            patient.setDistrict(district);
+            patientRepository.save(patient);
 
+            // Return success response
+            return new ResponseEntity<>(Map.of("message", "Patient updated successfully"), HttpStatus.OK);
 
-            Wards ward = new Wards();
-            ward.setWardId(patientDetails.getWardId());
-            patient.setWard(ward);
-
-            PatientEntity updatedPatient = patientRepository.save(patient);
-            return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @DeleteMapping("patient/delete/{id}")
     public ResponseEntity<Map<String, String>> deletePatient(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
