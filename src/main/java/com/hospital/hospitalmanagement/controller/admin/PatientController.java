@@ -4,6 +4,7 @@ package com.hospital.hospitalmanagement.controller.admin;
 import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 import com.hospital.hospitalmanagement.repository.*;
+import com.hospital.hospitalmanagement.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,26 +50,80 @@ public class PatientController {
     @Autowired
     private TreatmentStatusRepository treatmentStatusRepository;
 
+@GetMapping("/home")
+public String homePage(Model model)
+{
+    return "admin/index";
+}
+
 
     // lấy danh sách patient
-    @GetMapping("/patients/page")
-    public String paginate(Model model, @RequestParam("p") Optional<Integer> p) {
-        // Default page size is 10
-        Pageable pageable = (Pageable) PageRequest.of(p.orElse(0), 10);  // Correct Pageable class
+//    @GetMapping("/patients/page")
+//    public String paginate(Model model, @RequestParam("p") Optional<Integer> p) {
+//        // Default page size is 10
+//        Pageable pageable = (Pageable) PageRequest.of(p.orElse(0), 10);  // Correct Pageable class
+//
+//        // Get active patients with pagination
+//        Page<PatientEntity> patients = patientRepository.findPatient_ByActivePage(pageable);
+//
+//        // Get all cities for the dropdown
+//        List<Cities> cities = cityRepository.findAll();
+//
+//        // Add patients and cities to the model
+//        model.addAttribute("patients", patients);
+//        model.addAttribute("cities", cities);
+//
+//        // Return the page template
+//        return "admin/patient";  // Adjust this to your view template
+//    }
+//    @GetMapping("/")
+//    public String getAllPatient(Model model) {
+//
+//
+//
+//
+//        List<PatientEntity> patients = patientRepository.findPatient_ByActive();
+//
+//        // Get all cities for the dropdown
+//        List<Cities> cities = cityRepository.findAll();
+//
+//        // Add patients and cities to the model
+//        model.addAttribute("patients", patients);
+//        model.addAttribute("cities", cities);
+//
+//        // Return the page template
+//        return "admin/index";  // Adjust this to your view template
+//    }
 
-        // Get active patients with pagination
-        Page<PatientEntity> patients = patientRepository.findPatient_ByActive(pageable);
-
-        // Get all cities for the dropdown
+    @Autowired
+    IPatientService iPatientService;
+    @GetMapping("/patients/{pageNo}")
+        public String patientPage(@PathVariable("pageNo") int pageNo, Model model){
+                Page<PatientEntity> patiens = iPatientService.pagePatients(pageNo);
         List<Cities> cities = cityRepository.findAll();
-
-        // Add patients and cities to the model
-        model.addAttribute("patients", patients);
         model.addAttribute("cities", cities);
+                model.addAttribute("size", patiens.getSize());
+        model.addAttribute("totalPages", patiens.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("patients", patiens);
 
-        // Return the page template
-        return "admin/patient";  // Adjust this to your view template
+    return "admin/patient";
+
+        }
+    @GetMapping("/patients-search/{pageNo}")
+    public String searchPatient(@PathVariable("pageNo") int pageNo, Model model,@RequestParam Map<String, Object> searchParams ){
+        Page<PatientEntity> patients = iPatientService.searchPatients(searchParams,pageNo);
+        List<Cities> cities = cityRepository.findAll();
+        model.addAttribute("cities", cities);
+        model.addAttribute("size", patients.getSize());
+        model.addAttribute("totalPages", patients.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("patients", patients);
+
+        return "admin/patient-result";
+
     }
+
 
     @GetMapping("patient/examination/{id}")
     public String ResgisterExamination(@PathVariable Integer id, Model model) {

@@ -10,12 +10,20 @@
 
         <ul class="nav nav-list">
             <li class="active">
-                <a th:href="@{/patients}">
+                <a th:href="@{/home}">
                     <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <b class="arrow"></b>
+            </li>
+            <li class="active">
+                <a th:href="@{/patients/0}">
+                    <i class="menu-icon fa fa-users"></i>
                     <span class="menu-text"> Danh sách bệnh nhân </span>
                 </a>
                 <b class="arrow"></b>
             </li>
+
         </ul><!-- /.nav-list -->
 
 <!--        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">-->

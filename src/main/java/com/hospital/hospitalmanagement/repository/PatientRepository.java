@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -40,8 +41,10 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
 
     // Updated query to include pagination
     @Query(value = "select * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery = true)
-    Page<PatientEntity> findPatient_ByActive(Pageable pageable);
+    Page<PatientEntity> findPatient_ByActivePage(Pageable pageable);
 
+    @Query(value = "select * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery = true)
+    List<PatientEntity> findPatient_ByActive();
     @Query(value= "select  * from patient p where p.id = :id and p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
     Optional<PatientEntity> findPatient_Id(@Param(value = "id") Integer id);
 
@@ -54,4 +57,16 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
     Cities findCityByPatientId(@Param("patientId") int patientId);
 
 
+    @Query(value = "SELECT * FROM patient p WHERE "
+            + "p.is_active = 1 AND p.is_deleted = 0 AND "
+            + "(:fullName IS NULL OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
+            + "(:phoneNumber IS NULL OR p.phone_number = :phoneNumber)",
+            countQuery = "SELECT COUNT(*) FROM patient p WHERE "
+                    + "p.is_active = 1 AND p.is_deleted = 0 AND "
+                    + "(:fullName IS NULL OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
+                    + "(:phoneNumber IS NULL OR p.phone_number = :phoneNumber)",
+            nativeQuery = true)
+    Page<PatientEntity> searchPatients(@Param("fullName") String fullName,
+                                       @Param("phoneNumber") String phoneNumber,
+                                       Pageable pageable);
 }

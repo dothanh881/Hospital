@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="">
+
+<!--head-->
+<div th:replace="/admin/layout/head :: head"></div>
+<!--head-->
+
+<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+        <use xlink:href="#check-circle-fill"></use>
+    </svg>
+    <div id="alertMessage" th:text="${alertMessage}"></div>
+    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+</div>
+<body class="no-skin">
+
+
+<!--navbar-top-->
+<div th:replace="/admin/layout/navbar-top :: navbar-top"></div>
+<!--navbar-top-->
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+
+
+    <!--        menu-left-->
+    <div th:replace="/admin/layout/menu-left :: menu-left"></div>
+    <!--        menu-left-->
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+
+
+
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- /.nav-search -->
+            </div>
+
+            <div class="page-content">
+                <div class="ace-settings-container" >
+
+
+
+                    <!-- /.ace-settings-box -->
+                </div><!-- /.ace-settings-container -->
+
+
+                <section class="content">
+                    <div class="container-fluid">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h3>150</h3>
+
+                                        <p>New Orders</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-bag"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                                        <p>Bounce Rate</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-stats-bars"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-warning">
+                                    <div class="inner">
+                                        <h3>44</h3>
+
+                                        <p>User Registrations</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-person-add"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-danger">
+                                    <div class="inner">
+                                        <h3>65</h3>
+
+                                        <p>Unique Visitors</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- filter -->
+
+                <!-- LISTPATIENT			 -->
+
+
+
+            </div>
+        </div>
+        <canvas id="patientChart" width="400" height="200"></canvas>
+    </div>
+
+
+
+</div>
+<!--[if !IE]> -->
+<script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
+
+<script>
+    function deletePatient(patientId) {
+        if (confirm("Bạn có muốn xóa bệnh nhân??")) {
+            $.ajax({
+                url: `/patient/delete/${patientId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
+
+    function loadDistricts(cityId) {
+        // Clear existing options
+        const districtSelect = document.getElementById('districtId');
+        districtSelect.innerHTML = '<option value="" disabled selected>Chọn quận/huyện</option>';
+
+        // Fetch districts
+        fetch(`/districts/${cityId}`)
+            .then(response => response.json())
+            .then(districts => {
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.districtId; // Adjust this if your field name is different
+                    option.textContent = district.districtName; // Adjust to your attribute
+                    districtSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching districts:', error);
+            });
+    }
+
+    function loadWards(districtId) {
+        // Clear existing options
+        const wardSelect = document.getElementById('wardId');
+        wardSelect.innerHTML = '<option value="" disabled selected>Chọn phường/xã</option>';
+
+        // Fetch wards
+        fetch(`/wards/${districtId}`)
+            .then(response => response.json())
+            .then(wards => {
+                wards.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.wardId; // Adjust this if your field name is different
+                    option.textContent = ward.wardName; // Adjust to your attribute
+                    wardSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching wards:', error);
+            });
+    }
+</script>
+<script>
+
+
+    // Add new row to the table when the button is clicked
+
+    // Remove row from the table
+    $(document).on('click', '.remove-row', function() {
+        $(this).closest('tr').remove();  // Remove the specific row
+        calculateTotal(); // Recalculate total after removing a row
+    });
+
+
+    // Function to calculate total price of medications + examination fee
+
+
+
+</script>
+
+
+
+
+<!--[if IE]>
+<script th:src="@{/admin/assets/js/jquery.1.11.1.min.js}"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+<script type="text/javascript" th:src="@{/admin/assets/js/jquery.min.js}"></script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script th:src='@{/assets/js/jquery1x.min.js}'><"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if('ontouchstart' in document.documentElement) document.write("<script th:src='@{/assets/js/jquery.mobile.custom.min.js}'><"+"/script>");
+</script>
+<script th:src="@{/admin/assets/js/bootstrap.min.js}"></script>
+
+<!-- Page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script th:src="@{/assets/js/excanvas.min.js}"></script>
+<![endif]-->
+<!--                    <script th:src="@{/assets/js/jquery-ui.custom.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.ui.touch-punch.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.easypiechart.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.sparkline.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.pie.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.resize.min.js}"></script>-->
+
+<!-- Ace scripts -->
+<!--                    <script th:src="@{/assets/js/ace-elements.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/ace.min.js}"></script>-->
+
+</body>
+</html>

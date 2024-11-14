@@ -27,7 +27,7 @@
 
 
 
-<!--        menu-left-->
+    <!--        menu-left-->
     <div th:replace="/admin/layout/menu-left :: menu-left"></div>
     <!--        menu-left-->
 
@@ -104,8 +104,15 @@
                         <!--  table area -->
                         <div class="row">
                             <div class="col-xs-12">
-                                <table id="patientsTable" class="table table-striped table-bordered table-hover">
-<!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
+                                <p th:if="${size == 0} ">No Products</p>
+                                <div th:if = "${success}" class = "text-center alert alert-success">
+                                    <p th:text = "${success}"></p>
+                                </div>
+                                <div th:if = "${error}" class="text-center alert alert-danger">
+                                    <p th:text = "${error}"></p>
+                                </div>
+                                <table id="myTable" class="table table-striped table-bordered table-hover" th:if = "${size > 0}">
+                                    <!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
 
                                     <thead>
                                     <tr>
@@ -183,9 +190,9 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                        <br>
+                                <br>
 
-<!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
+                                <!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
 
 
                             </div>
@@ -197,7 +204,7 @@
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
-                                    <a class="page-link" th:href="@{'/patient/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
+                                    <a class="page-link" th:href="@{'/patients/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
                                 </li>
 
                                 <!-- Page number links (loop through available pages) -->
@@ -446,16 +453,18 @@
 </script>
 <script>
     function search(pageNo = 0) {
-        // Serialize form data
-        const searchParams = $("#searchForm").serialize(); // Will gather fullName and phoneNumber parameters
+        // Serialize form data (including the full name and phone number search)
+        const searchParams = $("#searchForm").serialize();
 
-        // Make the AJAX request to the /patients-search/{pageNo} endpoint
+        // Make the AJAX request to the /patients-search/{pageNo} endpoint with search parameters
         $.ajax({
-            url: `/patients-search/${pageNo}?${searchParams}`, // Include pageNo in the URL
+            url: `/patients-search/${pageNo}?${searchParams}`,
             type: 'GET',
             success: function(data) {
-                // Handle the response data and update the table
-                console.log('OK:', data);
+                // Update the table or view with the new data
+                $("#results").html(data);  // Assuming you return the HTML content for the table
+
+                // Optionally, update pagination controls here
             },
             error: function(error) {
                 console.error('There was an error with the search:', error);
@@ -463,11 +472,11 @@
         });
     }
 
+    // Function to populate the table with data from the API response
 
     function clearForm() {
         // Reset the form fields
         $("#searchForm")[0].reset();
-        search(0); // Optionally trigger a search on clear
     }
     function addNewRow() {
         var newRow = '<tr>' +
@@ -624,7 +633,7 @@
 
 
 
-        function addExamination(){
+    function addExamination(){
         $('#addExamination').modal();
     }
 

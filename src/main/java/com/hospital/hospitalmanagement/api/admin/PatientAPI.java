@@ -10,10 +10,15 @@ import com.hospital.hospitalmanagement.repository.CityRepository;
 import com.hospital.hospitalmanagement.repository.DistrictRepository;
 import com.hospital.hospitalmanagement.repository.PatientRepository;
 import com.hospital.hospitalmanagement.repository.WardRepository;
+import com.hospital.hospitalmanagement.service.IPatientService;
 import com.hospital.hospitalmanagement.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,6 +32,8 @@ public class PatientAPI {
 
     @Autowired
     PatientService patientService;
+    @Autowired
+    IPatientService iPatientService;
 //    @PostMapping("/upsert")
 //    public ResponseEntity<String> upsertPatient(@RequestBody PatientEntity patientEntity) {
 //        patientService.upsertPatient(patientEntity);
@@ -182,5 +189,43 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //        }
 //    }
+
+//    @GetMapping("patient/search/{pageNo}")
+//    public ResponseEntity<Page<PatientEntity>> searchPatients(
+//            @RequestParam Map<String, Object> searchParams,
+//            @RequestParam Optional<Integer> page,
+//            @RequestParam Optional<Integer> size) {
+//
+//        // Default pagination values
+//        int pageNumber = page.orElse(0);
+//        int pageSize = size.orElse(10);
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//
+//        // Pass the search parameters to the service layer
+//        Page<PatientEntity> patients = iPatientService.searchPatients(searchParams, pageable);
+//
+//        return ResponseEntity.ok(patients);
+//    }
+@GetMapping("patient/search/{pageNo}")
+public ResponseEntity<Map<String, Object>> searchPatient(
+        @PathVariable("pageNo") int pageNo,
+        @RequestParam Map<String, Object> searchParams) {
+
+    // Fetch patients data based on the search parameters and page number
+    Page<PatientEntity> patients = iPatientService.searchPatients(searchParams, pageNo);
+
+    // Fetch cities data for dropdown (if required for the front-end)
+    List<Cities> cities = cityRepository.findAll();
+
+    // Prepare the response data
+    Map<String, Object> response = new HashMap<>();
+    response.put("patients", patients.getContent());
+    response.put("size", patients.getSize());
+    response.put("totalPages", patients.getTotalPages());
+    response.put("currentPage", pageNo);
+    response.put("cities", cities); // Optional, if you want to send city data for the front-end
+
+    return ResponseEntity.ok(response); // Send JSON response
+}
 }
 
