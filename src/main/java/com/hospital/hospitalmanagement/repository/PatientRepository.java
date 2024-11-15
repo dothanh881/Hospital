@@ -59,12 +59,12 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
 
     @Query(value = "SELECT * FROM patient p WHERE "
             + "p.is_active = 1 AND p.is_deleted = 0 AND "
-            + "(:fullName IS NULL OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
-            + "(:phoneNumber IS NULL OR p.phone_number = :phoneNumber)",
+            + "(:fullName IS NULL OR :fullName = '' OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
+            + "(:phoneNumber IS NULL OR :phoneNumber = '' OR p.phone_number LIKE :phoneNumber)",
             countQuery = "SELECT COUNT(*) FROM patient p WHERE "
                     + "p.is_active = 1 AND p.is_deleted = 0 AND "
-                    + "(:fullName IS NULL OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
-                    + "(:phoneNumber IS NULL OR p.phone_number = :phoneNumber)",
+                    + "(:fullName IS NULL OR :fullName = '' OR CONCAT(p.last_name, ' ', p.first_name) LIKE :fullName) AND "
+                    + "(:phoneNumber IS NULL OR :phoneNumber = '' OR p.phone_number LIKE :phoneNumber)",
             nativeQuery = true)
     Page<PatientEntity> searchPatients(@Param("fullName") String fullName,
                                        @Param("phoneNumber") String phoneNumber,

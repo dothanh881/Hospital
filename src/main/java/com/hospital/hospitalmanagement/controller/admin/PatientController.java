@@ -114,12 +114,16 @@ public String homePage(Model model)
     public String searchPatient(@PathVariable("pageNo") int pageNo, Model model,@RequestParam Map<String, Object> searchParams ){
         Page<PatientEntity> patients = iPatientService.searchPatients(searchParams,pageNo);
         List<Cities> cities = cityRepository.findAll();
+        String queryString = searchParams.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .collect(Collectors.joining("&"));
+        model.addAttribute("searchParams", searchParams);
+        model.addAttribute("queryString", queryString);  // Add queryString to the model
         model.addAttribute("cities", cities);
         model.addAttribute("size", patients.getSize());
         model.addAttribute("totalPages", patients.getTotalPages());
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("patients", patients);
-
         return "admin/patient-result";
 
     }

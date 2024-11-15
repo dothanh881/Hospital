@@ -54,28 +54,23 @@
                         <div class="form-group col-sm-6">
                             <label class="col-sm-4 control-label no-padding-right" for="fullName">Họ tên</label>
                             <div class="col-sm-8">
-                                <input type="text" id="fullName"  name="fullName"  placeholder="Họ và tên" class="form-control" />
+                                <input type="text" id="fullName" name="fullName" th:value="${searchParams['fullName']}" placeholder="Họ và tên" class="form-control" />
                             </div>
                         </div>
-
                         <div class="form-group col-sm-6">
                             <label class="col-sm-4 control-label no-padding-right" for="phoneNumberSearch">Số điện thoại</label>
                             <div class="col-sm-8">
-                                <input type="text" id="phoneNumberSearch" name="phoneNumberSearch" placeholder="Số điện thoại" class="form-control" />
+                                <input type="text" id="phoneNumberSearch" name="phoneNumberSearch" th:value="${searchParams['phoneNumberSearch']}" placeholder="Số điện thoại" class="form-control" />
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-sm-12 text-center">
-                            <div class="container">
-                                <button type="submit" class="btn btn-primary" onclick="search()">Search</button>
-                                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
-                            </div>
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Hủy</button>
                         </div>
                     </div>
                 </form>
-
 
                 <div class="ace-settings-container" >
 
@@ -200,27 +195,63 @@
 
 
 
+<!--                        <nav aria-label="Page navigation example">-->
+<!--                            <ul class="pagination justify-content-end">-->
+<!--                                &lt;!&ndash; Previous page link (disable if on the first page) &ndash;&gt;-->
+<!--                                <li class="page-item" th:if="${currentPage != 0}">-->
+<!--                                    <a class="page-link" th:href="@{'/patients-search/'+ (${currentPage - 1}) + ${#strings.isEmpty(searchParams) ? '' : '?'+#httpParameters.createQueryString(searchParams)}}" href="#" tabindex="-1">Trước</a>-->
+
+<!--                                </li>-->
+
+<!--                                &lt;!&ndash; Page number links (loop through available pages) &ndash;&gt;-->
+<!--                                <li class="page-item" th:each="i : ${#numbers.sequence(1,totalPages)}"-->
+<!--                                    th:classappend="${currentPage == i - 1 ? ' active' : ''}">-->
+<!--                                    <a class="page-link" th:if="${searchParams == null || searchParams.isEmpty()}"-->
+<!--                                       th:href="@{'/patients-search/' + (${i - 1})}" href="#">-->
+<!--                                        <span th:text="${i}"></span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+
+
+
+<!--                                &lt;!&ndash; Last page link &ndash;&gt;-->
+<!--                                <li class="page-item" th:if="${currentPage + 1 != totalPages}">-->
+<!--                                    <a class="page-link" th:href="@{'/patients-search/'+ (${currentPage + 1}) + ${#strings.isEmpty(searchParams) ? '' : '?'+#httpParameters.createQueryString(searchParams)}}" href="#">Sau</a>-->
+
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
-                                    <a class="page-link" th:href="@{'/patients/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
+                                    <a class="page-link"
+                                       th:href="@{${'/patients-search/' + (currentPage - 1) + '?' + queryString}}"
+                                       href="#" tabindex="-1">Trước</a>
                                 </li>
 
                                 <!-- Page number links (loop through available pages) -->
-                                <li class="page-item" th:each="i : ${#numbers.sequence(1,totalPages)}"
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
                                     th:classappend="${currentPage == i - 1 ? ' active' : ''}">
-                                    <a class="page-link" th:href="@{'/patients/' + ${i - 1}}"  href="#" ><span th:text ="${i}"></span></a>
+                                    <a class="page-link"
+                                       th:href="@{${'/patients-search/' + (i - 1) + '?' + queryString}}">
+                                        <span th:text="${i}"></span>
+                                    </a>
                                 </li>
 
-
-
-                                <!-- Last page link -->
+                                <!-- Next page link (disable if on the last page) -->
                                 <li class="page-item" th:if="${currentPage + 1 != totalPages}">
-                                    <a class="page-link" th:href="@{'/patients/' + ${currentPage + 1}}" href="#">Sau</a>
+                                    <a class="page-link"
+                                       th:href="@{${'/patients-search/' + (currentPage + 1) + '?' + queryString}}"
+                                       href="#">Sau</a>
                                 </li>
                             </ul>
                         </nav>
+
+
+
+
+
 
 
 
@@ -339,24 +370,24 @@
 
                                         <!-- Phone Number -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="phoneNumber">Phone Number</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="phoneNumberadd">Phone Number</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="form-control" value="" required>
+                                                <input type="text" id="phoneNumberadd" name="phoneNumberadd" placeholder="Phone number" class="form-control" value="" required>
                                             </div>
                                         </div>
 
-                                        <!-- Form Actions -->
-<!--                                        <div class="clearfix form-actions">-->
-<!--                                            <div class="col-md-offset-3 col-md-9">-->
-<!--                                                <button class="btn btn-info" type="submit" id="btnSubmit">-->
-<!--                                                    <i class="ace-icon fa fa-check bigger-110"></i> Submit-->
-<!--                                                </button>-->
-<!--                                                &nbsp; &nbsp; &nbsp;-->
-<!--                                                <button class="btn btn-default" type="reset" id="btnReset">-->
-<!--                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Reset-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                         Form Actions
+                                        <div class="clearfix form-actions">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button class="btn btn-info" type="button" id="btnSubmit">
+                                                    <i class="ace-icon fa fa-check bigger-110"></i> Submit
+                                                </button>
+                                                &nbsp; &nbsp; &nbsp;
+                                                <button class="btn btn-default" type="reset" id="btnReset">
+                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Reset
+                                                </button>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
 
@@ -584,7 +615,7 @@
         // Perform AJAX request to the API
         $.ajax({
             type: "POST",
-            url: "patient/add", // Make sure the URL matches the endpoint
+            url: "/patient/add", // Make sure the URL matches the endpoint
             data: JSON.stringify(data),
             contentType: "application/json", // Important to specify JSON content
             dataType: 'json', // Expect JSON response

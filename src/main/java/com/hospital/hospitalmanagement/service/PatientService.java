@@ -44,10 +44,14 @@ public class PatientService implements IPatientService {
         Pageable pageable = PageRequest.of(pageNo,10);
         // Extract parameters from the map, providing null if missing
         String fullName = (String) param.getOrDefault("fullName", null);
-        String phoneNumber = (String) param.getOrDefault("phoneNumber", null);
+        String phoneNumber = (String) param.getOrDefault("phoneNumberSearch", null);
         if (fullName != null && !fullName.isEmpty()) {
-            fullName = "%" + fullName + "%"; // Add wildcards for partial matching
+            fullName = "%" + fullName + "%"; // Wildcards for LIKE
         }
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            phoneNumber = "%" + phoneNumber + "%"; // Wildcards for LIKE
+        }
+
 
         // Call the repository method with dynamic criteria
         return patientRepository.searchPatients(fullName,phoneNumber, pageable);

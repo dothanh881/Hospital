@@ -69,8 +69,8 @@
                     <div class="row">
                         <div class="col-sm-12 text-center">
                             <div class="container">
-                                <button type="submit" class="btn btn-primary" onclick="search()">Search</button>
-                                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
-                                    <a class="page-link" th:href="@{'/patient/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
+                                    <a class="page-link" th:href="@{'/patients/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
                                 </li>
 
                                 <!-- Page number links (loop through available pages) -->
@@ -254,7 +254,7 @@
                                     <form class="form-horizontal" role="form" id="patient-info-form">
                                         <!-- First Name -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="firstName">First Name</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="firstName">Hoj</label>
                                             <div class="col-sm-9">
                                                 <input type="text" id="firstName" name="firstName" placeholder="First name" class="form-control" value="" required>
                                             </div>
@@ -338,18 +338,18 @@
                                             </div>
                                         </div>
 
-                                        <!-- Form Actions -->
-<!--                                        <div class="clearfix form-actions">-->
-<!--                                            <div class="col-md-offset-3 col-md-9">-->
-<!--                                                <button class="btn btn-info" type="submit" id="btnSubmit">-->
-<!--                                                    <i class="ace-icon fa fa-check bigger-110"></i> Submit-->
-<!--                                                </button>-->
-<!--                                                &nbsp; &nbsp; &nbsp;-->
-<!--                                                <button class="btn btn-default" type="reset" id="btnReset">-->
-<!--                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Reset-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+
+                                        <div class="clearfix form-actions">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button class="btn btn-info" type="button" id="btnSubmit">
+                                                    <i class="ace-icon fa fa-check bigger-110"></i> Submit
+                                                </button>
+                                                &nbsp; &nbsp; &nbsp;
+                                                <button class="btn btn-default" type="reset" id="btnReset">
+                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Reset
+                                                </button>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
 
@@ -445,23 +445,23 @@
     }
 </script>
 <script>
-    function search(pageNo = 0) {
-        // Serialize form data
-        const searchParams = $("#searchForm").serialize(); // Will gather fullName and phoneNumber parameters
-
-        // Make the AJAX request to the /patients-search/{pageNo} endpoint
-        $.ajax({
-            url: `/patients-search/${pageNo}?${searchParams}`, // Include pageNo in the URL
-            type: 'GET',
-            success: function(data) {
-                // Handle the response data and update the table
-                console.log('OK:', data);
-            },
-            error: function(error) {
-                console.error('There was an error with the search:', error);
-            }
-        });
-    }
+    // function search(pageNo = 0) {
+    //     // Serialize form data
+    //     const searchParams = $("#searchForm").serialize(); // Will gather fullName and phoneNumber parameters
+    //
+    //     // Make the AJAX request to the /patients-search/{pageNo} endpoint
+    //     $.ajax({
+    //         url: `/patients-search/${pageNo}?${searchParams}`, // Include pageNo in the URL
+    //         type: 'GET',
+    //         success: function(data) {
+    //             // Handle the response data and update the table
+    //             console.log('OK:', data);
+    //         },
+    //         error: function(error) {
+    //             console.error('There was an error with the search:', error);
+    //         }
+    //     });
+    // }
 
 
     function clearForm() {
@@ -575,7 +575,7 @@
         // Perform AJAX request to the API
         $.ajax({
             type: "POST",
-            url: "patient/add", // Make sure the URL matches the endpoint
+            url: "/patient/add", // Make sure the URL matches the endpoint
             data: JSON.stringify(data),
             contentType: "application/json", // Important to specify JSON content
             dataType: 'json', // Expect JSON response
