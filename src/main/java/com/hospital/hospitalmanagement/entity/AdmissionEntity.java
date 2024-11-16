@@ -48,7 +48,7 @@ public class AdmissionEntity extends BaseEntity {
 
 
 
-    public AdmissionEntity() {
+    public AdmissionEntity(){
     }
 
     public AdmissionEntity(Integer ID, InPatientEntity inPatient, DoctorEntity doctor, NurseEntity nurse, List<TreatmentEntity> treatments, Date dateAdmission, String diagnosis, RoomEntity room, Date dateOfDischarge, BigDecimal fee) {

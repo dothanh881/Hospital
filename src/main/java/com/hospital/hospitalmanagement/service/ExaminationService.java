@@ -9,4 +9,7 @@ public interface ExaminationService {
     public void addExamination(ExaminationDTO examinationDTO);
 
     public ResponseEntity<Map<String, Object>> updateExamination(ExaminationDTO examinationDTO);
+    // Method to get the count of examinations per month for a given year
+    public Map<Integer, Long> getExaminationCountsByMonth(int year);
+
 }

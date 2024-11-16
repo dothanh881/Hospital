@@ -10,4 +10,7 @@ import java.util.List;
 public interface NurseRepository extends JpaRepository<NurseEntity,Integer> {
     @Query(value= "select * from nurse n  left join employee e on e.id = n.id where e.is_active = 1 and e.is_deleted = 0", nativeQuery =true )
     List<NurseEntity> getAllNurse();
+
+    @Query( value = "SELECT COUNT(*) FROM nurse n left join employee e ON n.id = e.id  where e.is_active = 1 and e.is_deleted = 0 ", nativeQuery = true)
+    long countNurse();
 }

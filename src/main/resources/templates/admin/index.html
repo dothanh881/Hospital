@@ -61,68 +61,48 @@
 
                 <section class="content">
                     <div class="container-fluid">
-                        <!-- Small boxes (Stat box) -->
-                        <div class="row">
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-info">
-                                    <div class="inner">
-                                        <h3>150</h3>
+                        <div class="row g-3">
+                            <!-- Small box -->
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card text-white bg-info">
+                                    <div class="card-body">
+                                        <h3 class="card-title display-4 font-weight-bold" th:text="${totalInpatient}">0</h3>
+                                        <p class="card-text">Bệnh nhân nội trú</p>
 
-                                        <p>New Orders</p>
                                     </div>
-                                    <div class="icon">
-                                        <i class="ion ion-bag"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="btn btn-info d-block text-white">Thông tin chi tiết </a>
                                 </div>
                             </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-success">
-                                    <div class="inner">
-                                        <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                                        <p>Bounce Rate</p>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card text-white bg-success">
+                                    <div class="card-body">
+                                        <h3 class="card-title display-4 font-weight-bold" th:text="${totalOutpatient}">0</h3>
+                                        <p class="card-text">Bệnh nhân ngoại trú </p>
+                                        <i class="fa fa-chart-bar fa-3x"></i>
                                     </div>
-                                    <div class="icon">
-                                        <i class="ion ion-stats-bars"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="btn btn-success d-block text-white">Thông tin chi tiết</a>
                                 </div>
                             </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-warning">
-                                    <div class="inner">
-                                        <h3>44</h3>
-
-                                        <p>User Registrations</p>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card text-white bg-warning">
+                                    <div class="card-body">
+                                        <h3 class="card-title display-4 font-weight-bold" th:text="${totalDoctor}">0</h3>
+                                        <p class="card-text">Bác sĩ</p>
+                                        <i class="fa fa-user-plus fa-3x"></i>
                                     </div>
-                                    <div class="icon">
-                                        <i class="ion ion-person-add"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="btn btn-warning d-block text-white">Thông tin chi tiết </a>
                                 </div>
                             </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-danger">
-                                    <div class="inner">
-                                        <h3>65</h3>
-
-                                        <p>Unique Visitors</p>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="card text-white bg-danger">
+                                    <div class="card-body">
+                                        <h3 class="card-title display-4 font-weight-bold " th:text="${totalNurse}">0</h3>
+                                        <p class="card-text">Y tá</p>
+                                        <i class="fa fa-chart-pie fa-3x"></i>
                                     </div>
-                                    <div class="icon">
-                                        <i class="ion ion-pie-graph"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="btn btn-danger d-block text-white">Thông tin chi tiết </a>
                                 </div>
                             </div>
-                            <!-- ./col -->
                         </div>
                     </div>
                 </section>
@@ -131,11 +111,21 @@
 
                 <!-- LISTPATIENT			 -->
 
+            <hr>
 
 
+
+                <hr>
+                <h1>Đăng kí nội trú <span id="year"></span></h1>
+                <canvas id="admissionsChart" width="200" height="100"></canvas>
+
+                <br>
+                <hr>
+                <h1>Đăng kí khám bệnh <span id="yearExamination"></span></h1>
+                <canvas id="examinationChart" width="200" height="100"></canvas>
             </div>
         </div>
-        <canvas id="patientChart" width="400" height="200"></canvas>
+
     </div>
 
 
@@ -208,6 +198,121 @@
                 console.error('Error fetching wards:', error);
             });
     }
+</script>
+<script>
+    // Function to fetch examination stats
+    function fetchExaminationStats(year) {
+        fetch(`/examination/stats?year=${year}`)
+            .then(response => response.json())
+            .then(data => {
+                renderExaminationChart(data);
+            })
+            .catch(error => {
+                console.error('Error fetching examination stats:', error);
+            });
+    }
+
+    // Function to render chart using Chart.js
+    function renderExaminationChart(data) {
+        const months = [];
+        const counts = [];
+
+        for (let month = 1; month <= 12; month++) {
+            months.push(getMonthName(month));
+            counts.push(data[month] || 0); // Default to 0 if no data for the month
+        }
+
+        const ctx = document.getElementById('examinationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Examinations',
+                    data: counts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Light teal color
+                    borderColor: 'rgba(75, 192, 192, 1)', // Darker teal for borders
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive to screen size
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Helper function to get month names from numbers
+    function getMonthName(monthNumber) {
+        const months = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+        return months[monthNumber - 1];
+    }
+
+    // Get current year and fetch stats for examination
+    const currentYear = new Date().getFullYear();
+    document.getElementById('yearExamination').innerText = currentYear;
+    fetchExaminationStats(currentYear);
+
+    // ----------------------------------admission
+    // Fetch the data from the backend
+    function fetchAdmissionStats(year) {
+        fetch(`/admission/stats?year=${year}`)
+            .then(response => response.json())
+            .then(data => {
+                renderAdmissionChart(data);
+            })
+            .catch(error => {
+                console.error('Error fetching admission stats:', error);
+            });
+    }
+
+    // Render the Chart.js chart
+    function renderAdmissionChart(data) {
+        const months = [];
+        const counts = [];
+
+        for (let month = 1; month <= 12; month++) {
+            months.push(getMonthName(month));
+            counts.push(data[month] || 0); // Default to 0 if no data for the month
+        }
+
+        const ctx = document.getElementById('admissionsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Admissions',
+                    data: counts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Light teal color
+                    borderColor: 'rgba(75, 192, 192, 1)', // Darker teal for borders
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive to screen size
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Fetch the stats for the current year
+    document.getElementById('year').innerText = currentYear;
+    fetchAdmissionStats(currentYear);
 </script>
 <script>
 

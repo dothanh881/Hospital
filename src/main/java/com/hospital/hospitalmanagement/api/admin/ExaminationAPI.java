@@ -128,4 +128,14 @@
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+
+
+
+
+        // Endpoint to get examination statistics for a particular year
+        @GetMapping("/stats")
+        public ResponseEntity<Map<Integer, Long>> getExaminationStats(@RequestParam int year) {
+            Map<Integer, Long> stats = examinationService.getExaminationCountsByMonth(year);
+            return ResponseEntity.ok(stats);
+        }
     }

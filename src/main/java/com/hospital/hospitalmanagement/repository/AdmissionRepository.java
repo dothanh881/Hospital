@@ -2,6 +2,9 @@ package com.hospital.hospitalmanagement.repository;
 
 import com.hospital.hospitalmanagement.entity.AdmissionEntity;
 import com.hospital.hospitalmanagement.entity.ExaminationEntity;
+import com.hospital.hospitalmanagement.entity.PatientEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdmissionRepository extends JpaRepository<AdmissionEntity,Integer> {
 
@@ -20,4 +24,16 @@ public interface AdmissionRepository extends JpaRepository<AdmissionEntity,Integ
     @Transactional
     @Query(value = "UPDATE admission SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
     int admission_del(@Param("id") Integer id);
+
+    @Query("SELECT MONTH(a.dateAdmission) AS month, COUNT(a) AS count " +
+            "FROM AdmissionEntity a " +
+            "WHERE YEAR(a.dateAdmission) = :year AND a.active = true AND a.deleted = false " +
+            "GROUP BY MONTH(a.dateAdmission) " +
+            "ORDER BY month")
+    List<Object[]> countAdmissionsByMonth(@Param("year") int year);
+
+    @Query(value = "select * from admission a  where a.is_active = 1 and a.is_deleted = 0", nativeQuery = true)
+    Page<AdmissionEntity> findAdmission_ByActivePage(Pageable pageable);
+
+
 }

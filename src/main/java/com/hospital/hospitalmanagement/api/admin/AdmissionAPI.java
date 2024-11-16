@@ -4,6 +4,7 @@ import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.AdmissionDTO;
 import com.hospital.hospitalmanagement.models.dto.ExaminationDTO;
 import com.hospital.hospitalmanagement.repository.*;
+import com.hospital.hospitalmanagement.service.AdmissionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,8 @@ public class AdmissionAPI {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AdmissionService admissionService;
 
     @Autowired
     private DoctorRepository doctorRepository; // New repository for Doctor
@@ -182,8 +185,11 @@ public class AdmissionAPI {
 
 
 
-
-
+    @GetMapping("/admission/stats")
+    public ResponseEntity<Map<Integer, Long>> getAdmissionStats(@RequestParam int year) {
+        Map<Integer, Long> stats = admissionService.getAdmissionCountsByMonth(year);
+        return ResponseEntity.ok(stats);
+    }
 
 
 

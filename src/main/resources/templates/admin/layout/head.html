@@ -17,7 +17,7 @@
         <!-- Page Specific Plugin Styles -->
         <!-- Text Fonts -->
         <link rel="stylesheet" th:href="@{/admin/assets/fonts/fonts.googleapis.com.css}" />
-
+        <link rel="stylesheet" th:href="@{/admin/assets/css/daterangepicker.min.css}" />
         <!-- ACE Styles -->
         <link rel="stylesheet" th:href="@{/admin/assets/css/ace.min.css}" class="ace-main-stylesheet" id="main-ace-style" />
 
@@ -30,6 +30,7 @@
         <link rel="stylesheet" th:href="@{/assets/css/ace-ie.min.css}" />
         <![endif]-->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <!-- ACE Settings Handler -->
         <script th:src="@{/admin/assets/js/ace-extra.min.js}"></script>
 
@@ -39,6 +40,94 @@
         <script th:src="@{/admin/assets/js/respond.min.js}"></script>
         <![endif]-->
         <style>
+            #admissionsChart {
+                max-width: 1200px; /* Set a max width for the chart */
+                height: 300px; /* Set height for the chart */
+                margin: 0 auto; /* Center the chart horizontally */
+            }
+            h1 {
+                text-align: center;
+                font-size: 2em;
+            }
+            #examinationChart {
+                max-width: 1200px; /* Set a max width for the chart */
+                height: 300px; /* Set height for the chart */
+                margin: 0 auto; /* Center the chart horizontally */
+            }
+
+            .bg-info {
+                background-color: #007bff !important; /* Brighter blue */
+                border: none;
+                color: #ffffff !important; /* Black text for contrast */
+            }
+
+            .bg-success {
+                background-color: #28a745 !important; /* Vibrant green */
+                border: none;
+                color: #ffffff !important; /* Black text for contrast */
+            }
+
+            .bg-warning {
+                background-color: #ffc107 !important; /* Bright yellow */
+                color: #ffffff !important; /* Black text for contrast */
+                border: none;
+            }
+
+            .bg-danger {
+                background-color: #dc3545 !important; /* Rich red */
+                border: none;
+                color: #ffffff !important; /* Black text for contrast */
+            }
+
+            .card {
+                border-radius: 10px; /* Slightly rounded corners */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            }
+
+            .card-body i {
+                float: right; /* Align icon to the right */
+            }
+            .card-title {
+                font-size: 2.5rem; /* Larger font size for title */
+                font-weight: bold; /* Bold titles */
+            }
+
+            .card-body {
+                padding: 1.5rem; /* Increased padding for better spacing */
+            }
+
+            .btn {
+                font-size: 1rem; /* Standard button font size */
+                text-align: center; /* Center text inside buttons */
+                padding: 0.75rem; /* Adjusted padding for balanced button size */
+                border-radius: 5px; /* Slightly rounded corners for buttons */
+            }
+
+            .btn-info {
+                background-color: #0056b3 !important; /* Matching button color for Info card */
+                border-color: #0056b3 !important;
+            }
+
+            .btn-success {
+                background-color: #218838 !important; /* Matching button color for Success card */
+                border-color: #218838 !important;
+            }
+
+            .btn-warning {
+                background-color: #e0a800 !important; /* Matching button color for Warning card */
+                border-color: #e0a800 !important;
+
+            }
+
+            .btn-danger {
+                background-color: #c82333 !important; /* Matching button color for Danger card */
+                border-color: #c82333 !important;
+            }
+
+            .card-body i {
+                float: right; /* Align the icon to the right */
+                margin-top: -10px; /* Adjust vertical alignment of icons */
+            }
             body {
                 font-family: 'PT Serif', 'Times New Roman', serif;
             }

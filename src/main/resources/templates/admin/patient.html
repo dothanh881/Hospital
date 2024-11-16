@@ -254,23 +254,23 @@
                                     <form class="form-horizontal" role="form" id="patient-info-form">
                                         <!-- First Name -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="firstName">Hoj</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="firstName">Họ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="firstName" name="firstName" placeholder="First name" class="form-control" value="" required>
+                                                <input type="text" id="firstName" name="firstName" placeholder="Họ" class="form-control" value="" required>
                                             </div>
                                         </div>
 
                                         <!-- Last Name -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="lastName">Last Name</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="lastName">Tên</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="lastName" name="lastName" placeholder="Last name" class="form-control" value="" required>
+                                                <input type="text" id="lastName" name="lastName" placeholder="Tên" class="form-control" value="" required>
                                             </div>
                                         </div>
 
                                         <!-- Date of Birth -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="dob">Date of Birth</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="dob">Ngày sinh</label>
                                             <div class="col-sm-9">
                                                 <input type="date" id="dob" name="dob" class="form-control" value="" required>
                                             </div>
@@ -278,7 +278,7 @@
 
                                         <!-- Gender -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right">Gender</label>
+                                            <label class="col-sm-3 control-label no-padding-right">Giới tính</label>
                                             <div class="col-sm-9">
                                                 <label class="radio-inline">
                                                     <input type="radio" name="gender" value="Nam" checked> Nam
@@ -291,19 +291,19 @@
 
                                         <!-- Street Address -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="street">Street</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="street">Địa chỉ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="street" name="street" placeholder="Street address" class="form-control" value="" required>
+                                                <input type="text" id="street" name="street" placeholder="Địa chỉ" class="form-control" value="" required>
                                             </div>
                                         </div>
 
                                         <!-- City ID -->
                                         <!-- City Dropdown -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="cityId">City</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="cityId">Tỉnh/Thành phố</label>
                                             <div class="col-sm-9">
                                                 <select name="cityId" id="cityId" class="form-control" required onchange="loadDistricts(this.value)">
-                                                    <option value="" disabled selected>Select a city</option>
+                                                    <option value="" disabled selected>Chọn tỉnh/thành phố</option>
                                                     <option th:each="city : ${cities}" th:value="${city.cityId}" th:text="${city.cityName}"></option>
                                                 </select>
                                             </div>
@@ -311,20 +311,20 @@
 
                                         <!-- District Dropdown -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="districtId">District</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="districtId">Quận/Huyện</label>
                                             <div class="col-sm-9">
                                                 <select name="districtId" id="districtId" class="form-control" required onchange="loadWards(this.value)">
-                                                    <option value="" disabled selected>Select a district</option>
+                                                    <option value="" disabled selected>Chọn quận/huyện</option>
                                                     <!-- Districts will be populated here -->
                                                 </select>
                                             </div>
                                         </div>
                                         <!-- Ward Dropdown -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="wardId">Ward</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="wardId">Phường/Xã</label>
                                             <div class="col-sm-9">
                                                 <select name="wardId" id="wardId" class="form-control" required>
-                                                    <option value="" disabled selected>Select a ward</option>
+                                                    <option value="" disabled selected>Chọn phưỡng xã</option>
                                                     <!-- Wards will be populated here -->
                                                 </select>
                                             </div>
@@ -332,9 +332,9 @@
 
                                         <!-- Phone Number -->
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label no-padding-right" for="phoneNumber">Phone Number</label>
+                                            <label class="col-sm-3 control-label no-padding-right" for="phoneNumber">Số điện thoại</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="form-control" value="" required>
+                                                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại" class="form-control" value="" required>
                                             </div>
                                         </div>
 
@@ -342,11 +342,11 @@
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button class="btn btn-info" type="button" id="btnSubmit">
-                                                    <i class="ace-icon fa fa-check bigger-110"></i> Submit
+                                                    <i class="ace-icon fa fa-check bigger-110"></i> Lưu
                                                 </button>
                                                 &nbsp; &nbsp; &nbsp;
                                                 <button class="btn btn-default" type="reset" id="btnReset">
-                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Reset
+                                                    <i class="ace-icon fa fa-undo bigger-110"></i> Hủy
                                                 </button>
                                             </div>
                                         </div>

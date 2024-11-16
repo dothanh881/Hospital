@@ -12,5 +12,5 @@ import java.util.Optional;
 
 public interface OutPatientRepository extends JpaRepository<OutPatientEntity, Integer> {
     Optional<OutPatientEntity> findByPatient_ID(Integer patientId);
-
-}
+    @Query( value = "SELECT COUNT(*) FROM patient i right join outpatient inp ON inp.outpatient_id = i.id where i.is_active = 1 and i.is_deleted = 0 ", nativeQuery = true)
+    long countOutPatients();}

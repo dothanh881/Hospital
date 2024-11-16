@@ -26,4 +26,13 @@ public interface ExaminationRepository extends JpaRepository<ExaminationEntity, 
     @Transactional
     @Query(value = "UPDATE examination SET is_active = 0, is_deleted = 1 WHERE id = :id", nativeQuery = true)
     int examination_del(@Param("id") Integer id);
+
+    @Query(value = "SELECT MONTH(e.examination_date) AS month, COUNT(*) AS count " +
+            "FROM examination e " +
+            "WHERE YEAR(e.examination_date) = :year and e.is_active = 1 and e.is_deleted = 0 " +
+            "GROUP BY MONTH(e.examination_date) " +
+            "ORDER BY month", nativeQuery = true)
+    List<Object[]> countExaminationsByMonth(@Param("year") int year);
+
+
 }

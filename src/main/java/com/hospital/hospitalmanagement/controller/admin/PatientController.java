@@ -26,6 +26,10 @@ public class PatientController {
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
+    private InPatientRepository inPatientRepository;
+    @Autowired
+    private OutPatientRepository outPatientRepository;
+    @Autowired
     private CityRepository cityRepository;
     @Autowired
     private DistrictRepository districtRepository;
@@ -53,47 +57,17 @@ public class PatientController {
 @GetMapping("/home")
 public String homePage(Model model)
 {
+    Long totalInpatient = inPatientRepository.countInPatients();
+    Long totalOutpatient = outPatientRepository.countOutPatients();
+    Long totalDoctor = doctorRepository.countDoctor();
+    Long totalNurse = nurseRepository.countNurse();
+    model.addAttribute("totalInpatient", totalInpatient);
+    model.addAttribute("totalOutpatient", totalOutpatient);
+    model.addAttribute("totalDoctor", totalDoctor);
+    model.addAttribute("totalNurse", totalNurse);
+
     return "admin/index";
 }
-
-
-    // lấy danh sách patient
-//    @GetMapping("/patients/page")
-//    public String paginate(Model model, @RequestParam("p") Optional<Integer> p) {
-//        // Default page size is 10
-//        Pageable pageable = (Pageable) PageRequest.of(p.orElse(0), 10);  // Correct Pageable class
-//
-//        // Get active patients with pagination
-//        Page<PatientEntity> patients = patientRepository.findPatient_ByActivePage(pageable);
-//
-//        // Get all cities for the dropdown
-//        List<Cities> cities = cityRepository.findAll();
-//
-//        // Add patients and cities to the model
-//        model.addAttribute("patients", patients);
-//        model.addAttribute("cities", cities);
-//
-//        // Return the page template
-//        return "admin/patient";  // Adjust this to your view template
-//    }
-//    @GetMapping("/")
-//    public String getAllPatient(Model model) {
-//
-//
-//
-//
-//        List<PatientEntity> patients = patientRepository.findPatient_ByActive();
-//
-//        // Get all cities for the dropdown
-//        List<Cities> cities = cityRepository.findAll();
-//
-//        // Add patients and cities to the model
-//        model.addAttribute("patients", patients);
-//        model.addAttribute("cities", cities);
-//
-//        // Return the page template
-//        return "admin/index";  // Adjust this to your view template
-//    }
 
     @Autowired
     IPatientService iPatientService;

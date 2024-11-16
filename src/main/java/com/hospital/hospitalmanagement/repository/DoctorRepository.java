@@ -11,4 +11,6 @@ import java.util.List;
 public interface DoctorRepository extends JpaRepository<DoctorEntity,Integer> {
     @Query(value= "select  * from doctor d left join employee e ON e.id = d.id where e.is_active = 1 and e.is_deleted = 0", nativeQuery =true )
     List<DoctorEntity> getAllDoctor();
+    @Query( value = "SELECT COUNT(*) FROM doctor d left join employee e ON d.id = e.id  where e.is_active = 1 and e.is_deleted = 0 ", nativeQuery = true)
+    long countDoctor();
 }

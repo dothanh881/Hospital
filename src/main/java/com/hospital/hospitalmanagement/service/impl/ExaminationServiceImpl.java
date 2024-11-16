@@ -174,20 +174,26 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
     }
 
+    @Override
+    // Method to get the count of examinations per month for a given year
+    public Map<Integer, Long> getExaminationCountsByMonth(int year) {
+        List<Object[]> results = examinationRepository.countExaminationsByMonth(year);
+        Map<Integer, Long> monthCounts = new HashMap<>();
 
+        // Initialize map with all months (to handle months with no data)
+        for (int i = 1; i <= 12; i++) {
+            monthCounts.put(i, 0L);
+        }
 
+        // Populate with actual data
+        for (Object[] result : results) {
+            Integer month = (Integer) result[0];
+            Long count = (Long) result[1];
+            monthCounts.put(month, count);
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        return monthCounts;
+    }
 
 
 }
