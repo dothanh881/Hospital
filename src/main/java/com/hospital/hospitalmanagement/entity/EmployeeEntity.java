@@ -29,7 +29,7 @@ public class EmployeeEntity extends BaseEntity{
     @Column(nullable = false)
     private String gender;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -102,7 +102,7 @@ public class EmployeeEntity extends BaseEntity{
 
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private User user;
 
     public User getUser() {

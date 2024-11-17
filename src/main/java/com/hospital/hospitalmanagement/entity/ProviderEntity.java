@@ -28,7 +28,7 @@ public class ProviderEntity {
     @ManyToOne
     @JoinColumn(name = "wardId")
     private Wards ward;
-    @Column(name = "phoneNumber", length = 15)
+    @Column(name = "phoneNumber", length = 15, unique = true, nullable = false)
     private String phoneNumber;
 
 

@@ -54,20 +54,20 @@
                         <div class="form-group col-sm-6">
                             <label class="col-sm-4 control-label no-padding-right" for="fullName">Họ tên</label>
                             <div class="col-sm-8">
-                                <input type="text" id="fullName" name="fullName" th:value="${searchParams['fullName']}" placeholder="Họ và tên" class="form-control" />
+                                <input type="text" id="fullName" name="fullName" th:attr="value=${searchParams['fullName']}" placeholder="Họ và tên" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group col-sm-6">
                             <label class="col-sm-4 control-label no-padding-right" for="phoneNumberSearch">Số điện thoại</label>
                             <div class="col-sm-8">
-                                <input type="text" id="phoneNumberSearch" name="phoneNumberSearch" th:value="${searchParams['phoneNumberSearch']}" placeholder="Số điện thoại" class="form-control" />
+                                <input type="text" id="phoneNumberSearch" name="phoneNumberSearch" th:attr="value=${searchParams['phoneNumberSearch']}" placeholder="Số điện thoại" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 text-center">
                             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Hủy</button>
+                            <button type="button" class="btn btn-secondary mx-2" onclick="clearForm()">Hủy</button>
                         </div>
                     </div>
                 </form>
@@ -96,19 +96,17 @@
 
                 <div class="row">
                     <div class="col-xs-12">
+
+
                         <!--  table area -->
                         <div class="row">
                             <div class="col-xs-12">
-                                <p th:if="${size == 0} ">No Products</p>
-                                <div th:if = "${success}" class = "text-center alert alert-success">
-                                    <p th:text = "${success}"></p>
-                                </div>
-                                <div th:if = "${error}" class="text-center alert alert-danger">
-                                    <p th:text = "${error}"></p>
-                                </div>
+
                                 <table id="myTable" class="table table-striped table-bordered table-hover" th:if = "${size > 0}">
                                     <!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
-
+                                    <tr th:if="${patients == null or patients.totalElements == 0}" class="text-center">
+                                        <td colspan="10">Không có dữ liệu</td>
+                                    </tr>
                                     <thead>
                                     <tr>
                                         <th style="width: 70px;text-align: center;">STT</th>
@@ -221,7 +219,7 @@
 <!--                                </li>-->
 <!--                            </ul>-->
 <!--                        </nav>-->
-                        <nav aria-label="Page navigation example">
+                        <nav aria-label="Page navigation example" th:if="${patients != null and patients.totalElements > 0}">
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
@@ -506,8 +504,15 @@
     // Function to populate the table with data from the API response
 
     function clearForm() {
-        // Reset the form fields
-        $("#searchForm")[0].reset();
+        const form = document.getElementById('searchForm');
+        form.reset(); // Reset fields to initial HTML-rendered values
+
+        // Clear dynamic values for fields
+        document.querySelectorAll('input, select').forEach(field => {
+            if (field.type !== 'submit' && field.type !== 'reset') {
+                field.value = '';
+            }
+        });
     }
     function addNewRow() {
         var newRow = '<tr>' +

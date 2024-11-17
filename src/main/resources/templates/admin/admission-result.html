@@ -55,16 +55,16 @@
 
                     <!-- Doctor Selection -->
                     <div class="row">
-                        <!-- Doctor Selection -->
                         <div class="col-md-6">
                             <div class="form-group row">
                                 <label for="doctorId" class="col-sm-2 col-form-label text-right">Bác sĩ</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control chosen-select" id="doctorId" name="doctorId" >
-                                        <option value="">Chọn...</option>
+                                    <select class="form-control chosen-select" id="doctorId" name="doctorId">
+                                        <option  value="">Chọn...</option>
                                         <option th:each="doctor : ${doctors}"
                                                 th:value="${doctor.ID}"
-                                                th:text="${'Bs. ' + doctor.firstName + ' ' + doctor.lastName}">
+                                                th:text="${'Bs. ' + doctor.firstName + ' ' + doctor.lastName}"
+                                            >
                                         </option>
                                     </select>
                                 </div>
@@ -76,11 +76,12 @@
                             <div class="form-group row">
                                 <label for="nurseId" class="col-sm-2 col-form-label text-right">Y tá</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control chosen-select" id="nurseId" name="nurseId" >
-                                        <option value="">Chọn...</option>
+                                    <select class="form-control chosen-select"  id="nurseId" name="nurseId">
+                                        <option value=""  >Chọn...</option>
                                         <option th:each="nurse : ${nurses}"
                                                 th:value="${nurse.ID}"
-                                                th:text="${'Yta. ' + nurse.firstName + ' ' + nurse.lastName}">
+                                                th:text="${'Yta. ' + nurse.firstName + ' ' + nurse.lastName}"
+                                            >
                                         </option>
                                     </select>
                                 </div>
@@ -97,7 +98,7 @@
                             <div class="form-group row">
                                 <label for="fromDateAdmission" class="col-sm-2 col-form-label text-right">Ngày nhập viện (Từ ngày)</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control " id="fromDateAdmission" name="fromDateAdmission" >
+                                    <input type="date" class="form-control " id="fromDateAdmission" name="fromDateAdmission" th:attr="value=${searchParams['fromDateAdmission']}" >
                                 </div>
                             </div>
                         </div>
@@ -105,7 +106,7 @@
                             <div class="form-group row">
                                 <label for="toDateAdmission" class="col-sm-2 col-form-label text-right">Ngày nhập viện (đến ngày)</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control " id="toDateAdmission" name="toDateAdmission" >
+                                    <input type="date" class="form-control " id="toDateAdmission" name="toDateAdmission" th:attr="value=${searchParams['toDateAdmission']}" >
                                 </div>
                             </div>
                         </div>
@@ -118,7 +119,7 @@
                             <div class="form-group row">
                                 <label for="fromDateChargeOf" class="col-sm-2 col-form-label text-right">Ngày xuất viện (Từ ngày)</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control " id="fromDateChargeOf" name="fromDateChargeOf" >
+                                    <input type="date" class="form-control " id="fromDateChargeOf" name="fromDateChargeOf" th:attr="value=${searchParams['fromDateChargeOf']}" >
                                 </div>
                             </div>
                         </div>
@@ -126,7 +127,7 @@
                             <div class="form-group row">
                                 <label for="toDateChargeOf" class="col-sm-2 col-form-label text-right">Ngày xuất viện (đến ngày)</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control " id="toDateChargeOf" name="toDateChargeOf" >
+                                    <input type="date" class="form-control " id="toDateChargeOf" name="toDateChargeOf" th:attr="value=${searchParams['toDateChargeOf']}">
                                 </div>
                             </div>
                         </div>
@@ -136,7 +137,7 @@
                             <div class="form-group row">
                                 <label for="patientCode" class="col-sm-2 col-form-label text-right">Mã bệnh nhân</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="patientCode" name="patientCode" >
+                                     <input type="text" class="form-control" id="patientCode" name="patientCode" value="" th:attr="value=${searchParams['patientCode']}">
 
                                 </div>
                             </div>
@@ -147,6 +148,7 @@
                         <div class="col-md-12 text-center mt-3">
                             <button type="submit" class="btn btn-primary mx-2">Tìm kiếm</button>
                             <button type="button" class="btn btn-secondary mx-2" onclick="clearForm()">Hủy</button>
+
                         </div>
                     </div>
                 </form>
@@ -180,17 +182,18 @@
                         <!--  table area -->
                         <div class="row">
                             <div class="col-xs-12">
-                                <p th:if="${size == 0} ">No Products</p>
-                                <div th:if = "${success}" class = "text-center alert alert-success">
-                                    <p th:text = "${success}"></p>
-                                </div>
-                                <div th:if = "${error}" class="text-center alert alert-danger">
-                                    <p th:text = "${error}"></p>
-                                </div>
-                                <table id="admissionTable" class="table table-striped table-bordered table-hover" th:if = "${size > 0}">
+
+                                <table id="admissionTable" class="table table-striped table-bordered table-hover">
                                     <!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
+                                    <tr th:if="${admissions == null or admissions.totalElements == 0}" class="text-center">
+                                        <td colspan="10">Không có dữ liệu</td>
+                                    </tr>
+
 
                                     <thead>
+
+
+
                                     <tr>
                                         <th style="width: 70px;text-align: center;">STT</th>
                                         <th style="width: 60px;text-align: center;">Xử Lý</th>
@@ -208,6 +211,7 @@
                                     <tbody>
                                     <!-- Iterate over the patients list -->
                                     <tr th:each="admission, iterStat : ${admissions}">
+
                                         <td th:text="${(admissions.number * admissions.size) + iterStat.count}" style="text-align: center;"></td> <!-- Row number -->
                                         <td>
                                             <div class="btn-group">
@@ -706,12 +710,12 @@
 
 
 
-                        <nav aria-label="Page navigation example">
+                        <nav aria-label="Page navigation example" th:if="${admissions != null and admissions.totalElements > 0}">
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
                                     <a class="page-link"
-                                       th:href="@{${'/admission-search/' + (currentPage - 1) + '?' + queryString}}"
+                                       th:href="@{${'/admissions-search/' + (currentPage - 1) + '?' + queryString}}"
                                        href="#" tabindex="-1">Trước</a>
                                 </li>
 
@@ -719,7 +723,7 @@
                                 <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
                                     th:classappend="${currentPage == i - 1 ? ' active' : ''}">
                                     <a class="page-link"
-                                       th:href="@{${'/admission-search/' + (i - 1) + '?' + queryString}}">
+                                       th:href="@{${'/admissions-search/' + (i - 1) + '?' + queryString}}">
                                         <span th:text="${i}"></span>
                                     </a>
                                 </li>
@@ -727,7 +731,7 @@
                                 <!-- Next page link (disable if on the last page) -->
                                 <li class="page-item" th:if="${currentPage + 1 != totalPages}">
                                     <a class="page-link"
-                                       th:href="@{${'/admission-search/' + (currentPage + 1) + '?' + queryString}}"
+                                       th:href="@{${'/admissions-search/' + (currentPage + 1) + '?' + queryString}}"
                                        href="#">Sau</a>
                                 </li>
                             </ul>
@@ -1219,9 +1223,15 @@
         $(".chosen-select").chosen(); // Re-initialize chosen-select for the new row
     }
     function clearForm() {
-        // Reset the form fields
-        $("#searchForm")[0].reset();
-        search(0); // Optionally trigger a search on clear
+        const form = document.getElementById('searchForm');
+        form.reset(); // Reset fields to initial HTML-rendered values
+
+        // Clear dynamic values for fields
+        document.querySelectorAll('input, select').forEach(field => {
+            if (field.type !== 'submit' && field.type !== 'reset') {
+                field.value = '';
+            }
+        });
     }
 
 

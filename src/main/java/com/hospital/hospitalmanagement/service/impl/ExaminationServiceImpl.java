@@ -8,6 +8,7 @@ import com.hospital.hospitalmanagement.repository.DoctorRepository;
 import com.hospital.hospitalmanagement.repository.ExaminationMedicationRepository;
 import com.hospital.hospitalmanagement.repository.ExaminationRepository;
 import com.hospital.hospitalmanagement.repository.MedicationRepository;
+import com.hospital.hospitalmanagement.repository.custom.ExaminationRepositoryCustom;
 import com.hospital.hospitalmanagement.service.ExaminationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,8 @@ public class ExaminationServiceImpl implements ExaminationService {
     private DoctorRepository doctorRepository;
     @Autowired
     private ExaminationMedicationRepository examinationMedicationRepository;
+    @Autowired
+    private ExaminationRepositoryCustom examinationRepositoryCustom;
     @Override
     public void addExamination(ExaminationDTO examinationDTO) {
         // Prepare parameters for stored procedure
@@ -200,6 +203,15 @@ public class ExaminationServiceImpl implements ExaminationService {
         Pageable pageable = PageRequest.of(pageNo, 10);
         Page<ExaminationEntity> pageExaminations = examinationRepository.findExamination_ByActivePage(pageable);
         return pageExaminations;
+    }
+
+    @Override
+    public Page<ExaminationEntity> searchExamination(Map<String, Object> param, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo,10);
+        // Extract parameters from the map, providing null if missing
+
+        // Call the repository method with dynamic criteria
+        return examinationRepositoryCustom.searchExamination(param, pageable);
     }
 
 

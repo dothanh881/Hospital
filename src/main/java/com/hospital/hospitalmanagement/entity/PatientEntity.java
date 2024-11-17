@@ -34,16 +34,16 @@ public class PatientEntity extends BaseEntity{
     @Column(name = "lastName", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "dob")
+    @Column(name = "dob",nullable = false)
     private Date dateOfBirth;
 
-    @Column(name = "gender", length = 10)
+    @Column(name = "gender", nullable = false, length = 10)
     private String gender;
 
     @Column(name = "street", length = 255)
     private String street;
 
-    @Column(name = "phoneNumber", length = 15)
+    @Column(name = "phoneNumber", length = 15,nullable = false, unique = true)
     private String phoneNumber;
 
     @ManyToOne

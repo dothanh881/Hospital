@@ -15,4 +15,6 @@ public interface ExaminationService {
     // Method to get the count of examinations per month for a given year
     public Map<Integer, Long> getExaminationCountsByMonth(int year);
     Page<ExaminationEntity> pageExaminations(int pageNo);
+    Page<ExaminationEntity> searchExamination(Map<String,Object> param, int pageNo);
+
 }

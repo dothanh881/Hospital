@@ -66,6 +66,10 @@ public class AdmissionController {
     @GetMapping("/admissions-search/{pageNo}")
     public String searchAdmission(@PathVariable("pageNo") int pageNo, Model model,@RequestParam Map<String, Object> searchParams ){
         Page<AdmissionEntity> admissions = admissionService.searchAdmission(searchParams,pageNo);
+        if (admissions == null) {
+            // Handle null case (optional)
+            admissions = Page.empty(); // or create an empty Page object to prevent null access
+        }
         String queryString = searchParams.entrySet().stream()
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
                 .collect(Collectors.joining("&"));
