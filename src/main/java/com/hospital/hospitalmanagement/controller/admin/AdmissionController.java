@@ -30,8 +30,16 @@ public class AdmissionController {
     @Autowired
     private TreatmentStatusRepository treatmentStatusRepository;
     @GetMapping("/admissions/{pageNo}")
-    public String patientPage(@PathVariable("pageNo") int pageNo, Model model){
+    public String AdmissionPage(@PathVariable("pageNo") int pageNo, Model model){
         Page<AdmissionEntity> admissions = admissionService.pageAdmissions(pageNo);
+
+        // Prepare map to hold medications per examination
+        for (AdmissionEntity admission : admissions) {
+            // Filter out inactive or deleted treatments
+            admission.setTreatments(admission.getTreatments().stream()
+                    .filter(treatment -> treatment.getActive() == true && treatment.getDeleted() == false)
+                    .collect(Collectors.toList()));
+        }
         List<TreatmentStatusEntity> treatmentStatus = treatmentStatusRepository.findAll();
         model.addAttribute("treatmentStatus", treatmentStatus);
         List<DoctorEntity> doctors = doctorRepository.getAllDoctor();
@@ -63,6 +71,13 @@ public class AdmissionController {
                 .collect(Collectors.joining("&"));
 
 
+        // Prepare map to hold medications per examination
+        for (AdmissionEntity admission : admissions) {
+            // Filter out inactive or deleted treatments
+            admission.setTreatments(admission.getTreatments().stream()
+                    .filter(treatment -> treatment.getActive() == true && treatment.getDeleted() == false)
+                    .collect(Collectors.toList()));
+        }
 
         List<TreatmentStatusEntity> treatmentStatus = treatmentStatusRepository.findAll();
         model.addAttribute("treatmentStatus", treatmentStatus);
@@ -87,7 +102,7 @@ public class AdmissionController {
         model.addAttribute("totalPages", admissions.getTotalPages());
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("admissions", admissions);
-        return "admin/admisison-result";
+        return "admin/admission-result";
 
     }
 }

@@ -1,6 +1,9 @@
 package com.hospital.hospitalmanagement.repository;
 
+import com.hospital.hospitalmanagement.entity.AdmissionEntity;
 import com.hospital.hospitalmanagement.entity.ExaminationEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,6 +36,7 @@ public interface ExaminationRepository extends JpaRepository<ExaminationEntity, 
             "GROUP BY MONTH(e.examination_date) " +
             "ORDER BY month", nativeQuery = true)
     List<Object[]> countExaminationsByMonth(@Param("year") int year);
-
+    @Query(value = "select * from examination e  where e.is_active = 1 and e.is_deleted = 0", nativeQuery = true)
+    Page<ExaminationEntity> findExamination_ByActivePage(Pageable pageable);
 
 }

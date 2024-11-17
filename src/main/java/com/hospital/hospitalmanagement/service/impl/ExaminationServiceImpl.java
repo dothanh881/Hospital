@@ -1,9 +1,6 @@
 package com.hospital.hospitalmanagement.service.impl;
 
-import com.hospital.hospitalmanagement.entity.DoctorEntity;
-import com.hospital.hospitalmanagement.entity.ExaminationEntity;
-import com.hospital.hospitalmanagement.entity.ExaminationMedicationEntity;
-import com.hospital.hospitalmanagement.entity.MedicationEntity;
+import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.ExaminationDTO;
 import com.hospital.hospitalmanagement.models.dto.ExaminationMedicationDTO;
 import com.hospital.hospitalmanagement.models.dto.MedicationDTO;
@@ -13,6 +10,9 @@ import com.hospital.hospitalmanagement.repository.ExaminationRepository;
 import com.hospital.hospitalmanagement.repository.MedicationRepository;
 import com.hospital.hospitalmanagement.service.ExaminationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -193,6 +193,13 @@ public class ExaminationServiceImpl implements ExaminationService {
         }
 
         return monthCounts;
+    }
+
+    @Override
+    public Page<ExaminationEntity> pageExaminations(int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10);
+        Page<ExaminationEntity> pageExaminations = examinationRepository.findExamination_ByActivePage(pageable);
+        return pageExaminations;
     }
 
 

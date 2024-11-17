@@ -144,7 +144,7 @@ public class ExaminationEntity extends BaseEntity{
         this.examinationMedications = examinationMedications;
     }
     public BigDecimal getExaminationTotal() {
-        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal total = fee != null ? fee : BigDecimal.ZERO; // Add base fee if it exists
         if (examinationMedications != null) {
             for (ExaminationMedicationEntity tm : examinationMedications) {
                 // Assuming TreatmentMedicationEntity has getPrice and getQuantity methods
