@@ -4,12 +4,16 @@ package com.hospital.hospitalmanagement.controller.admin;
 import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 import com.hospital.hospitalmanagement.repository.*;
+import com.hospital.hospitalmanagement.service.EmployeeService;
 import com.hospital.hospitalmanagement.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Controller
 
-public class PatientController {
+public class PatientController extends BaseController {
 
     @Autowired
     private PatientRepository patientRepository;
@@ -53,10 +57,25 @@ public class PatientController {
 
     @Autowired
     private TreatmentStatusRepository treatmentStatusRepository;
+    @Autowired
+    private EmployeeService employeeService;
 
 @GetMapping("/home")
 public String homePage(Model model)
 {
+    // Get the authenticated user (User)
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    String username = authentication.getName();  // This will be the user's username (or email, depending on your setup)
+//
+//    // Retrieve the Employee entity based on the logged-in user
+//    Optional<EmployeeEntity> employee = employeeService.findByUserUsername(username);
+//
+//    if (employee.isPresent()) {
+//        model.addAttribute("employee", employee.get());
+//    } else {
+//        model.addAttribute("error", "Employee not found");
+//        return "errorPage";  // Or any other error page
+//    }
     Long totalInpatient = inPatientRepository.countInPatients();
     Long totalOutpatient = outPatientRepository.countOutPatients();
     Long totalDoctor = doctorRepository.countDoctor();
@@ -71,6 +90,7 @@ public String homePage(Model model)
 
     @Autowired
     IPatientService iPatientService;
+
     @GetMapping("/patients/{pageNo}")
         public String patientPage(@PathVariable("pageNo") int pageNo, Model model){
                 Page<PatientEntity> patiens = iPatientService.pagePatients(pageNo);

@@ -53,6 +53,7 @@
 
                 <div class="page-header">
                 <h3>Thông tin hồ sơ</h3>
+                    <span th:text="${employee.department != null ? employee.department.id : 'No department'}"></span>
 
                 </div>
 
@@ -94,11 +95,6 @@
 
 
 
-                                    <div class="hr hr12 dotted"></div>
-
-
-
-                                    <div class="hr hr16 dotted"></div>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-9">
@@ -110,22 +106,22 @@
                                     <form class="profile-user-info profile-user-info-striped">
                                         <!-- Username -->
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> Username </div>
+                                            <div class="profile-info-name col-md-3"> Tên tài khoản </div>
                                             <div class="profile-info-value col-md-9">
-                                                <input type="text" id="username" class="form-control" value="alexdoe" />
+                                                <input type="text" id="username" name="username" class="form-control" value="" th:value="${employee.user.username}" />
                                             </div>
                                         </div>
 
                                         <!-- Location -->
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> Location </div>
+                                            <div class="profile-info-name col-md-3">Họ và tên </div>
                                             <div class="profile-info-value col-md-9">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <input type="text" id="country" class="form-control" value="Netherlands" />
+                                                        <input type="text" id="firstName" class="form-control" value="" name="firstName" th:value="${employee.firstName}" />
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <input type="text" id="city" class="form-control" value="Amsterdam" />
+                                                        <input type="text" id="lastName" class="form-control" value="" name="lastName" th:value="${employee.lastName}" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -133,37 +129,118 @@
 
                                         <!-- Age -->
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> Age </div>
+                                            <div class="profile-info-name col-md-3"> Ngày sinh </div>
                                             <div class="profile-info-value col-md-9">
-                                                <input type="number" id="age" class="form-control" value="38" />
+                                                <input type="date" id="dob" class="form-control" name="dob" value="" th:value="${employee.dob}" />
                                             </div>
                                         </div>
 
                                         <!-- Joined Date -->
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> Joined </div>
+                                            <div class="profile-info-name col-md-3">Giới tính </div>
                                             <div class="profile-info-value col-md-9">
-                                                <input type="date" id="signup" class="form-control" value="2010-06-20" />
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" th:field="${employee.gender}" id="male" value="Nam">
+                                                <label class="form-check-label" for="male">Nam</label>
+                                                <input type="radio" class="form-check-input" th:field="${employee.gender}" id="female" value="Nữ">
+                                                <label class="form-check-label" for="female">Nữ</label>
                                             </div>
+                                                </div>
                                         </div>
 
                                         <!-- Last Online -->
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> Last Online </div>
+                                            <div class="profile-info-name col-md-3"> Địa chỉ </div>
                                             <div class="profile-info-value col-md-9">
-                                                <input type="text" id="login" class="form-control" value="3 hours ago" />
+                                            <div class="form-group row">
+                                                <!-- City -->
+                                                <div class="col-sm-3">
+                                                    <label class="control-label" for="cityId">Thành phố/tỉnh</label>
+                                                    <select th:value="${employee.city.cityId}"  id="cityId" class="form-control" required onchange="loadDistricts(this.value)">
+                                                        <option value="" disabled selected>Chọn thành phố/tỉnh</option>
+                                                        <option th:each="city : ${cities}" th:value="${city.cityId}"
+                                                                th:selected="${city.cityId == employee.city.cityId}" th:text="${city.cityName}"></option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- District -->
+                                                <div class="col-sm-3">
+                                                    <label class="control-label" for="districtId">Quận/huyện</label>
+                                                    <select  th:value="${employee.district.districtId}"  id="districtId" class="form-control" required onchange="loadWards(this.value)">
+                                                        <option value="" disabled selected>Chọn quận/huyện</option>
+                                                        <option th:each="district : ${districts}" th:value="${district.districtId}"
+                                                                th:selected="${district.districtId == employee.district.districtId}" th:text="${district.districtName}"></option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Ward -->
+                                                <div class="col-sm-3">
+                                                    <label class="control-label" for="wardId">Phường/xã</label>
+                                                    <select  th:value="${employee.ward.wardId}"  id="wardId" class="form-control" >
+                                                        <option value="" disabled selected>Chọn Phường/xã</option>
+                                                        <option th:each="ward : ${wards}" th:value="${ward.wardId}"
+                                                                th:selected="${ward.wardId == employee.ward.wardId}" th:text="${ward.wardName}"></option>
+                                                    </select >
+                                                </div>
+
+                                                <!-- Street -->
+                                                <div class="col-sm-3">
+                                                    <label class="form-label" for="street">Địa chỉ</label>
+                                                    <input type="text" class="form-control" id="street" name="street" placeholder="Địa chỉ" th:value="${employee.street}" >
+                                                </div>
+                                            </div>
                                             </div>
                                         </div>
 
-                                        <!-- About Me -->
+
+
                                         <div class="profile-info-row row">
-                                            <div class="profile-info-name col-md-3"> About Me </div>
+                                            <div class="profile-info-name col-md-3"> Thông tin </div>
                                             <div class="profile-info-value col-md-9">
-                                                <textarea id="about" class="form-control" rows="4">Editable as WYSIWYG</textarea>
+                                                <div class="form-group row">
+                                                    <!-- City -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="SDT">SĐT</label>
+                                                        <input type="text" id="SDT" class="form-control" value="" name="SDT" th:value="${employee.phoneNumber}" />
+                                                    </div>
+
+                                                    <!-- District -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="specialty">Chuyên ngành</label>
+                                                        <input type="text" id="specialty" class="form-control" value="" name="specialty" th:value="${employee.specialty}" />
+                                                    </div>
+
+                                                    <!-- Ward -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="degreeYear">Năm cấp bằng</label>
+                                                        <input type="text" id="degreeYear" class="form-control" value="" name="degreeYear" th:value="${employee.degreeYear}" />
+                                                    </div>
+
+                                                    <!-- Street -->
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label" for="startDate">Ngày bắt đầu làm việc</label>
+                                                        <input type="text" class="form-control" id="startDate" name="startDate"  th:value="${employee.startDate}" >
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <!-- About Me -->
 
-                                        <!-- Submit Button -->
+
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3"> Tòa nhà </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <select th:value="${employee.department?.id}" id="departmentId" class="form-control">
+                                                    <option value="" disabled selected>Chọn tòa nhà</option>
+                                                    <option th:each="department : ${departments}"
+                                                            th:value="${department.id}"
+                                                            th:selected="${employee.department != null and department.id == employee.department.id}"
+                                                            th:text="${department.title}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                                                         <!-- Submit Button -->
                                         <div class="profile-info-row row">
                                             <div class="col-md-12 text-right">
                                                 <button type="submit" class="btn btn-primary">Lưu</button>

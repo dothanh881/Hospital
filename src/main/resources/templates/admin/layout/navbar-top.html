@@ -30,24 +30,26 @@
                             <img class="nav-user-photo"
                                  th:src="@{/admin/assets/avatars/user.jpg}"
                                  alt="User's Photo" />
-                            <span class="user-info">
-                                <small>Xin chào,</small>
-                                Jason
-                            </span>
+                            <span class="user-info" th:if="${employee != null}">
+    <small>Xin chào,</small>
+    <span th:text="${employee.user != null ? employee.user.username : 'Guest'}">Jason</span>
+</span>
+
                             <i class="ace-icon fa fa-caret-down"></i>
                         </a>
 
                         <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 
                             <li>
-                                <a th:href="@{/profile}">
+                                <a th:href="@{/profile/{id}(id=${employee.id})}">
                                     <i class="ace-icon fa fa-user"></i>
                                     Hồ sơ
                                 </a>
                             </li>
+
                             <li class="divider"></li>
                             <li>
-                                <a href="#">
+                                <a th:href="@{/logout}">
                                     <i class="ace-icon fa fa-power-off"></i>
                                     Đăng xuất
                                 </a>

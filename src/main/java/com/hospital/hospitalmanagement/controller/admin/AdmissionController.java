@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-public class AdmissionController {
+public class AdmissionController extends BaseController{
     @Autowired
     AdmissionService admissionService;
     @Autowired

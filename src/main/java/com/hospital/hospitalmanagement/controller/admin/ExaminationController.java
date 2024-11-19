@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-public class ExaminationController {
+public class ExaminationController extends BaseController {
 
     @Autowired
     ExaminationService examinationService;

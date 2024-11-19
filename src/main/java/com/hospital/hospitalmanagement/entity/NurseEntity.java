@@ -10,13 +10,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "nurse")
-public class NurseEntity extends  EmployeeEntity{
+public class NurseEntity extends EmployeeEntity{
 
 
 
     @OneToMany(mappedBy = "nurse")
     private List<AdmissionEntity> admissions;
-
+    public Integer getId() {
+        return super.getID();  // Inherit id from EmployeeEntity
+    }
     public NurseEntity(List<AdmissionEntity> admissions) {
         this.admissions = admissions;
     }

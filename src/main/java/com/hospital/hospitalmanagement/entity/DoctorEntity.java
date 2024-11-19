@@ -26,6 +26,9 @@ public class DoctorEntity extends EmployeeEntity {
         this.department = department;
     }
 
+    public Integer getId() {
+        return super.getID();  // Inherit id from EmployeeEntity
+    }
     @OneToOne(mappedBy = "headDoctor")
     private DepartmentEntity department;
     @OneToMany(mappedBy = "doctor")

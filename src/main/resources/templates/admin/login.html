@@ -63,7 +63,7 @@
 
                   <div class="space-6"></div>
 
-                  <form id="formLogin" action="/login" method="POST">
+                  <form id="formLogin" action="/j_spring_security_check" method="POST">
                     <fieldset>
                       <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -84,7 +84,7 @@
                       <div class="clearfix">
 
 
-                        <button type="button" class="width-45 pull-right btn btn-sm btn-primary">
+                        <button type="submit" class="width-45 pull-right btn btn-sm btn-primary">
                           <i class="ace-icon fa fa-key"></i>
                           <span class="bigger-110">Đăng nhập</span>
                         </button>
@@ -251,7 +251,34 @@
 <script type="text/javascript">
   window.jQuery || document.write("<script src='assets/js/jquery.min.js'>"+"<"+"/script>");
 </script>
+<!--<script type="text/javascript">-->
+<!--  document.getElementById("formLogin").addEventListener("submit", function(e) {-->
+<!--    e.preventDefault(); // Prevent form's default submission-->
 
+<!--    const formData = new FormData(this);-->
+<!--    const data = new URLSearchParams(formData);-->
+
+<!--    fetch("/login", {-->
+<!--      method: "POST",-->
+<!--      headers: {-->
+<!--        "Content-Type": "application/x-www-form-urlencoded",-->
+<!--      },-->
+<!--      body: data,-->
+<!--    })-->
+<!--            .then((response) => {-->
+<!--              if (response.ok) {-->
+<!--                window.location.href = "/home"; // Redirect to home page-->
+<!--              } else {-->
+<!--                return response.text().then((text) => {-->
+<!--                  alert("Login failed: " + text);-->
+<!--                });-->
+<!--              }-->
+<!--            })-->
+<!--            .catch((error) => {-->
+<!--              console.error("Error during login:", error);-->
+<!--            });-->
+<!--  });-->
+<!--</script>-->
 <!-- <![endif]-->
 
 <!--[if IE]>

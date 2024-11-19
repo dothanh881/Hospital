@@ -1,6 +1,7 @@
 package com.hospital.hospitalmanagement.repository;
 
 import com.hospital.hospitalmanagement.entity.AdmissionEntity;
+import com.hospital.hospitalmanagement.entity.EmployeeEntity;
 import com.hospital.hospitalmanagement.entity.ExaminationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,5 +39,6 @@ public interface ExaminationRepository extends JpaRepository<ExaminationEntity, 
     List<Object[]> countExaminationsByMonth(@Param("year") int year);
     @Query(value = "select * from examination e  where e.is_active = 1 and e.is_deleted = 0", nativeQuery = true)
     Page<ExaminationEntity> findExamination_ByActivePage(Pageable pageable);
+
 
 }
