@@ -40,7 +40,7 @@ public class EmployeeEntity extends BaseEntity{
     private String specialty;
 
     @Column( nullable = false)
-    private int degreeYear;
+    private Integer degreeYear;
 
 
     @ManyToOne
@@ -75,8 +75,8 @@ public class EmployeeEntity extends BaseEntity{
     @Column(nullable = false)
     private Date startDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)  // This will load department along with Employee
+    @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
     // No-arg constructor

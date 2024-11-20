@@ -20,9 +20,8 @@ public class DepartmentEntity extends BaseEntity {
     private String title;
 
     @OneToOne
-    @JoinColumn(name = "doctor_Id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "doctor_id")  // This should be the column that links to the doctor who is the headDoctor
     private DoctorEntity headDoctor;
-
 
 
     @OneToMany(mappedBy = "department")

@@ -2,6 +2,7 @@ package com.hospital.hospitalmanagement.controller.admin;
 
 import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.repository.CityRepository;
+import com.hospital.hospitalmanagement.repository.DepartmentRepository;
 import com.hospital.hospitalmanagement.repository.DistrictRepository;
 import com.hospital.hospitalmanagement.repository.WardRepository;
 import com.hospital.hospitalmanagement.service.DepartmentService;
@@ -23,6 +24,8 @@ public class profileController extends BaseController {
     private WardRepository wardRepository;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @GetMapping("/profile/{id}")
     public String showProfilePage(@PathVariable("id") Integer id, Model model) {

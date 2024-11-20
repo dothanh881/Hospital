@@ -16,19 +16,13 @@ public class DoctorEntity extends EmployeeEntity {
     }
 
 
-    @Override
-    public DepartmentEntity getDepartment() {
-        return department;
-    }
 
-    @Override
-    public void setDepartment(DepartmentEntity department) {
-        this.department = department;
-    }
+
 
     public Integer getId() {
         return super.getID();  // Inherit id from EmployeeEntity
     }
+
     @OneToOne(mappedBy = "headDoctor")
     private DepartmentEntity department;
     @OneToMany(mappedBy = "doctor")

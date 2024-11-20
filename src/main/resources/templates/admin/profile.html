@@ -53,7 +53,6 @@
 
                 <div class="page-header">
                 <h3>Thông tin hồ sơ</h3>
-                    <span th:text="${employee.department != null ? employee.department.id : 'No department'}"></span>
 
                 </div>
 
@@ -72,9 +71,6 @@
                             <div id="user-profile-1" class="user-profile row">
                                 <div class="col-xs-12 col-sm-3 center">
                                     <div>
-												<span class="profile-picture">
-													<img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="assets/avatars/profile-pic.jpg" />
-												</span>
 
                                         <div class="space-4"></div>
 
@@ -83,7 +79,7 @@
                                                 <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
                                                     <i class="ace-icon fa fa-circle light-green"></i>
                                                     &nbsp;
-                                                    <span class="white">Alex M. Doe</span>
+
                                                 </a>
 
 
@@ -104,11 +100,12 @@
 
 
                                     <form class="profile-user-info profile-user-info-striped">
+                                        <input type="hidden" id="employeeId" name="id" th:value="${employee.ID}" />
                                         <!-- Username -->
                                         <div class="profile-info-row row">
                                             <div class="profile-info-name col-md-3"> Tên tài khoản </div>
                                             <div class="profile-info-value col-md-9">
-                                                <input type="text" id="username" name="username" class="form-control" value="" th:value="${employee.user.username}" />
+                                                <input type="text" id="username" name="username" class="form-control" value="" th:value="${employee.user.username}"  readonly/>
                                             </div>
                                         </div>
 
@@ -231,13 +228,14 @@
                                             <div class="profile-info-name col-md-3"> Tòa nhà </div>
                                             <div class="profile-info-value col-md-9">
                                                 <select th:value="${employee.department?.id}" id="departmentId" class="form-control">
-                                                    <option value="" disabled selected>Chọn tòa nhà</option>
+                                                    <option value="" disabled selected th:text="${employee.department == null ? 'No Department Assigned' : 'Select Department'}"></option>
                                                     <option th:each="department : ${departments}"
                                                             th:value="${department.id}"
-                                                            th:selected="${employee.department != null and department.id == employee.department.id}"
+                                                            th:selected="${employee.department?.id == department.id}"
                                                             th:text="${department.title}">
                                                     </option>
                                                 </select>
+
                                             </div>
                                         </div>
                                                                          <!-- Submit Button -->
@@ -271,6 +269,63 @@
 <!--[if !IE]> -->
 <script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
 
+
+<script>
+    $(document).ready(function() {
+        // Trigger when the form is submitted
+        $('form.profile-user-info').on('submit', function(event) {
+            event.preventDefault();  // Prevent form submission (page reload)
+            var employeeId = $('#employeeId').val();
+            // Collect form data
+            var formData = {
+                username: $('#username').val(),
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                dob: $('#dob').val(),
+                gender: $("input[name='gender']:checked").val(),
+                cityId: $('#cityId').val(),
+                districtId: $('#districtId').val(),
+                wardId: $('#wardId').val(),
+                street: $('#street').val(),
+                phoneNumber: $('#SDT').val(),
+                specialty: $('#specialty').val(),
+                degreeYear: $('#degreeYear').val(),
+                startDate: $('#startDate').val(),
+                departmentId: $('#departmentId').val()
+            };
+            console.log("Form Data:", formData);
+            // Call the API using AJAX
+            $.ajax({
+                url: '/employee/' + employeeId,  // Replace `employeeId` with the actual employee ID
+                type: 'PUT', // Use PUT or PATCH for editing
+                contentType: 'application/json',  // Send data as JSON
+                data: JSON.stringify(formData),  // Convert form data to JSON
+                success: function(response) {
+                    // Display success message
+                    $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                    $('#alertMessage').text("Cập nhật thành công");
+
+                    $('#postResultDiv').show().addClass('alert-fixed');
+
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                    $('#editPatientForm')[0].reset();  // Reset the form
+                },
+                error: function(xhr, status, error) {
+                    // Display error message
+                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                    $('#alertMessage').text("Không thành công");
+                    $('#postResultDiv').show().addClass('alert-fixed');
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                }
+            });
+        });
+    });
+</script>
 <script>
     function deletePatient(patientId) {
         if (confirm("Bạn có muốn xóa bệnh nhân??")) {
@@ -509,18 +564,7 @@
         $('#assignmentBuildingModal').modal();
     }
 </script>
-<script>
-    function addPatient() {
-        $('#addPatient').modal();
-    }
 
-
-
-    function addExamination(){
-        $('#addExamination').modal();
-    }
-
-</script>
 
 
 <!--[if IE]>
