@@ -2,18 +2,17 @@ package com.hospital.hospitalmanagement.api.admin;
 
 import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.EmployeeDTO;
-import com.hospital.hospitalmanagement.repository.CityRepository;
-import com.hospital.hospitalmanagement.repository.DistrictRepository;
-import com.hospital.hospitalmanagement.repository.EmployeeRepository;
-import com.hospital.hospitalmanagement.repository.WardRepository;
-import com.hospital.hospitalmanagement.repository.DepartmentRepository;  // Import DepartmentRepository
+import com.hospital.hospitalmanagement.models.dto.PatientDTO;
+import com.hospital.hospitalmanagement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/employee")
@@ -21,6 +20,8 @@ public class EmployeeAPI {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Autowired
+    DoctorRepository doctorRepository;
     @Autowired
     DistrictRepository districtRepository;
 
@@ -99,4 +100,77 @@ public class EmployeeAPI {
         }
     }
 
+
+
+    @PostMapping("/doctor/add")
+    public ResponseEntity<Map<String, Object>> addDoctor(@RequestBody EmployeeDTO employeeDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Create EmployeeEntity
+            EmployeeEntity employee = new EmployeeEntity();
+            employee.setFirstName(employeeDTO.getFirstName());
+            employee.setLastName(employeeDTO.getLastName());
+            employee.setGender(employeeDTO.getGender());
+            employee.setDob(employeeDTO.getDob());
+            employee.setStreet(employeeDTO.getStreet());
+            employee.setPhoneNumber(employeeDTO.getPhoneNumber());
+
+            // Setting city, district, and ward based on IDs
+            Cities city = new Cities();
+            city.setCityId(employeeDTO.getCityId());
+            employee.setCity(city);
+
+            Districts district = new Districts();
+            district.setDistrictId(employeeDTO.getDistrictId());
+            employee.setDistrict(district);
+
+            Wards ward = new Wards();
+            ward.setWardId(employeeDTO.getWardId());
+            employee.setWard(ward);
+
+            employee.setSpecialty(employeeDTO.getSpecialty());
+            employee.setDegreeYear(employeeDTO.getDegreeYear());
+            employee.setStartDate(employeeDTO.getStartDate());
+
+            DepartmentEntity department = new DepartmentEntity();
+            department.setId(employeeDTO.getDepartmentId());
+            employee.setDepartment(department);
+
+            String generatedCode = generateRandomCode("D", 3); // Prefix "D" and 6 random digits
+            employee.setCode(generatedCode);
+
+
+            // Save EmployeeEntity to generate ID
+            EmployeeEntity savedEmployee = employeeRepository.save(employee);
+
+            // Generate the code using the generated ID
+
+
+            // Update the EmployeeEntity with the generated code
+            employeeRepository.save(savedEmployee);
+
+            // Create DoctorEntity and associate with EmployeeEntity
+            DoctorEntity doctor = new DoctorEntity();
+            doctor.setID(savedEmployee.getID()); // Use the ID from EmployeeEntity
+
+            // Save the DoctorEntity
+            doctorRepository.save(doctor);
+
+            response.put("message", "Thêm mới bác sĩ thành công!");
+            response.put("employee", savedEmployee);
+            return new ResponseEntity<>(response, HttpStatus.CREATED); // HTTP 201 for created resource
+        } catch (Exception e) {
+            response.put("message", "Thêm mới bác sĩ không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // HTTP 500 for server error
+        }
+    }
+    private String generateRandomCode(String prefix, int length) {
+        Random random = new Random();
+        StringBuilder code = new StringBuilder(prefix);
+        for (int i = 0; i < length; i++) {
+            code.append(random.nextInt(10)); // Append a random digit (0-9)
+        }
+        return code.toString();
+    }
 }
