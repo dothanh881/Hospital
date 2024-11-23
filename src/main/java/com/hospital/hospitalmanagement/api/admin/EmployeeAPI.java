@@ -4,6 +4,7 @@ import com.hospital.hospitalmanagement.entity.*;
 import com.hospital.hospitalmanagement.models.dto.EmployeeDTO;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 import com.hospital.hospitalmanagement.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,76 +102,150 @@ public class EmployeeAPI {
     }
 
 
-
+    @Transactional
     @PostMapping("/doctor/add")
     public ResponseEntity<Map<String, Object>> addDoctor(@RequestBody EmployeeDTO employeeDTO) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // Create EmployeeEntity
-            EmployeeEntity employee = new EmployeeEntity();
-            employee.setFirstName(employeeDTO.getFirstName());
-            employee.setLastName(employeeDTO.getLastName());
-            employee.setGender(employeeDTO.getGender());
-            employee.setDob(employeeDTO.getDob());
-            employee.setStreet(employeeDTO.getStreet());
-            employee.setPhoneNumber(employeeDTO.getPhoneNumber());
+            // Create DoctorEntity directly
+            DoctorEntity doctor = new DoctorEntity();
+            doctor.setFirstName(employeeDTO.getFirstName());
+            doctor.setLastName(employeeDTO.getLastName());
+            doctor.setGender(employeeDTO.getGender());
+            doctor.setDob(employeeDTO.getDob());
+            doctor.setStreet(employeeDTO.getStreet());
+            doctor.setPhoneNumber(employeeDTO.getPhoneNumber());
 
-            // Setting city, district, and ward based on IDs
+            // Set additional fields
             Cities city = new Cities();
             city.setCityId(employeeDTO.getCityId());
-            employee.setCity(city);
+            doctor.setCity(city);
 
             Districts district = new Districts();
             district.setDistrictId(employeeDTO.getDistrictId());
-            employee.setDistrict(district);
+            doctor.setDistrict(district);
 
             Wards ward = new Wards();
             ward.setWardId(employeeDTO.getWardId());
-            employee.setWard(ward);
-
-            employee.setSpecialty(employeeDTO.getSpecialty());
-            employee.setDegreeYear(employeeDTO.getDegreeYear());
-            employee.setStartDate(employeeDTO.getStartDate());
+            doctor.setWard(ward);
 
             DepartmentEntity department = new DepartmentEntity();
             department.setId(employeeDTO.getDepartmentId());
-            employee.setDepartment(department);
+            doctor.setDepartment(department);
 
-            String generatedCode = generateRandomCode("D", 3); // Prefix "D" and 6 random digits
-            employee.setCode(generatedCode);
+            doctor.setSpecialty(employeeDTO.getSpecialty());
+            doctor.setDegreeYear(employeeDTO.getDegreeYear());
+            doctor.setStartDate(employeeDTO.getStartDate());
 
+            // Generate and set code
+            String generatedCode = String.format("D%03d", new Random().nextInt(1000));
+            doctor.setCode(generatedCode);
 
-            // Save EmployeeEntity to generate ID
-            EmployeeEntity savedEmployee = employeeRepository.save(employee);
-
-            // Generate the code using the generated ID
-
-
-            // Update the EmployeeEntity with the generated code
-            employeeRepository.save(savedEmployee);
-
-            // Create DoctorEntity and associate with EmployeeEntity
-            DoctorEntity doctor = new DoctorEntity();
-            doctor.setID(savedEmployee.getID()); // Use the ID from EmployeeEntity
-
-            // Save the DoctorEntity
-            doctorRepository.save(doctor);
+            // Save the DoctorEntity (polymorphic save)
+            DoctorEntity savedDoctor = doctorRepository.save(doctor);
 
             response.put("message", "Thêm mới bác sĩ thành công!");
-            response.put("employee", savedEmployee);
-            return new ResponseEntity<>(response, HttpStatus.CREATED); // HTTP 201 for created resource
+            response.put("doctor", savedDoctor);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             response.put("message", "Thêm mới bác sĩ không thành công: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // HTTP 500 for server error
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    private String generateRandomCode(String prefix, int length) {
-        Random random = new Random();
-        StringBuilder code = new StringBuilder(prefix);
-        for (int i = 0; i < length; i++) {
-            code.append(random.nextInt(10)); // Append a random digit (0-9)
+    @DeleteMapping("/doctor/delete/{id}")
+    public ResponseEntity<Map<String, String>> doctor_del(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            int updated = employeeRepository.softDeleteEmployee(id);
+
+            if (updated > 0) {
+                response.put("message", "Xóa thành công");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Quá trình điều trị không tồn tại");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            response.put("message", "Không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return code.toString();
+    }
+
+    @DeleteMapping("/nurse/delete/{id}")
+    public ResponseEntity<Map<String, String>> nurse_del(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            int updated = employeeRepository.softDeleteEmployee(id);
+
+            if (updated > 0) {
+                response.put("message", "Xóa thành công");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Quá trình điều trị không tồn tại");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            response.put("message", "Không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Autowired
+    private NurseRepository nurseRepository;
+
+
+    @Transactional
+    @PostMapping("/nurse/add")
+    public ResponseEntity<Map<String, Object>> addNurse(@RequestBody EmployeeDTO employeeDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Create DoctorEntity directly
+            NurseEntity nurse = new NurseEntity();
+            nurse.setFirstName(employeeDTO.getFirstName());
+            nurse.setLastName(employeeDTO.getLastName());
+            nurse.setGender(employeeDTO.getGender());
+            nurse.setDob(employeeDTO.getDob());
+            nurse.setStreet(employeeDTO.getStreet());
+            nurse.setPhoneNumber(employeeDTO.getPhoneNumber());
+
+            // Set additional fields
+            Cities city = new Cities();
+            city.setCityId(employeeDTO.getCityId());
+            nurse.setCity(city);
+
+            Districts district = new Districts();
+            district.setDistrictId(employeeDTO.getDistrictId());
+            nurse.setDistrict(district);
+
+            Wards ward = new Wards();
+            ward.setWardId(employeeDTO.getWardId());
+            nurse.setWard(ward);
+
+            DepartmentEntity department = new DepartmentEntity();
+            department.setId(employeeDTO.getDepartmentId());
+            nurse.setDepartment(department);
+
+            nurse.setSpecialty(employeeDTO.getSpecialty());
+            nurse.setDegreeYear(employeeDTO.getDegreeYear());
+            nurse.setStartDate(employeeDTO.getStartDate());
+
+            // Generate and set code
+            String generatedCode = String.format("N%03d", new Random().nextInt(1000));
+            nurse.setCode(generatedCode);
+
+            // Save the DoctorEntity (polymorphic save)
+            NurseEntity saveNurse = nurseRepository.save(nurse);
+
+            response.put("message", "Thêm mới y tá thành công!");
+            response.put("doctor", saveNurse);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            response.put("message", "Thêm mới y tá không thành công: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

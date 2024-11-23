@@ -27,7 +27,7 @@
 
 
 
-<!--        menu-left-->
+    <!--        menu-left-->
     <div th:replace="/admin/layout/menu-left :: menu-left"></div>
     <!--        menu-left-->
 
@@ -38,10 +38,10 @@
                     try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                 </script>
 
-
                 <ul class="breadcrumb">
-                    <li class="active"><h4>Danh sách bệnh nhân</h4></li>
+                    <li class="active"><h4>Danh sách y tá</h4></li>
                 </ul><!-- /.breadcrumb -->
+
 
                 <!-- /.nav-search -->
             </div>
@@ -51,7 +51,7 @@
             <br>
 
             <div class="page-content">
-                <form id="searchForm" class="form-horizontal" role="form" th:action="@{/patients-search/0}" method="get">
+                <form id="searchForm" class="form-horizontal" role="form" th:action="@{/nurses-search/0}" method="get">
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="col-sm-4 control-label no-padding-right" for="fullName">Họ tên</label>
@@ -91,7 +91,7 @@
                 <div class="page-header">
 
 
-                    <button class="btn btn-xs btn-success mr-5" title="AddPatient" onclick="addPatient();">
+                    <button class="btn btn-xs btn-success mr-5" title="AddDoctor" onclick="addDoctor();">
                         <i class="ace-icon fa fa-plus bigger-160"></i>
                         <span>Thêm mới</span>
                     </button>
@@ -107,7 +107,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <table id="patientsTable" class="table table-striped table-bordered table-hover">
-<!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
+                                    <!--                                    <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="dynamic-table_length"><label>Display <select name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm" jf-ext-cache-id="28"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records</label></div></div><div class="col-xs-6"><div id="dynamic-table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dynamic-table" jf-ext-cache-id="15"></label></div></div></div><table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" role="grid" aria-describedby="dynamic-table_info">-->
 
                                     <thead>
                                     <tr>
@@ -125,8 +125,8 @@
                                     </thead>
                                     <tbody>
                                     <!-- Iterate over the patients list -->
-                                    <tr th:each="patient, iterStat : ${patients}">
-                                        <td th:text="${(patients.number * patients.size) + iterStat.count}" style="text-align: center;"></td> <!-- Row number -->
+                                    <tr th:each="nurse, iterStat : ${nurses}">
+                                        <td th:text="${(nurses.number * nurses.size) + iterStat.count}" style="text-align: center;"></td> <!-- Row number -->
                                         <td>
                                             <div class="btn-group">
 
@@ -140,31 +140,31 @@
 
 
                                                     <li>
-                                                        <a th:href="@{/patient/edit/{id}(id=${patient.ID})}">
+                                                        <a th:href="@{/nurse/edit/{id}(id=${nurse.ID})}">
                                                             <i class="ace-icon fa fa-pencil "></i>
                                                             Chi tiêt
                                                         </a>
 
 
                                                     </li>
-                                                    <li>
-                                                        <a th:href="@{/patient/examination/{id}(id=${patient.ID})}">
-                                                            <i class="ace-icon fa fa-bars"></i>
-                                                            Đăng kí khám bệnh
-                                                        </a>
-                                                    </li>
+                                                    <!--                                                    <li>-->
+                                                    <!--                                                        <a th:href="@{/patient/examination/{id}(id=${patient.ID})}">-->
+                                                    <!--                                                            <i class="ace-icon fa fa-bars"></i>-->
+                                                    <!--                                                            Đăng kí khám bệnh-->
+                                                    <!--                                                        </a>-->
+                                                    <!--                                                    </li>-->
+
+                                                    <!--                                                    <li>-->
+                                                    <!--                                                        <a  th:href="@{/patient/admission/{id}(id=${patient.ID})}">-->
+                                                    <!--                                                            <i class="ace-icon fa fa-search "></i>-->
+                                                    <!--                                                            Đăng kí nhập viện-->
+                                                    <!--                                                        </a>-->
+
+
+                                                    <!--                                                    </li>-->
 
                                                     <li>
-                                                        <a  th:href="@{/patient/admission/{id}(id=${patient.ID})}">
-                                                            <i class="ace-icon fa fa-search "></i>
-                                                            Đăng kí nhập viện
-                                                        </a>
-
-
-                                                    </li>
-
-                                                    <li>
-                                                        <a href="#" th:onclick="'deletePatient(' + ${patient.ID} + ')'" >
+                                                        <a href="#" th:onclick="'deleteNurse(' + ${nurse.ID} + ')'" >
                                                             <i class="ace-icon fa fa-trash-o"></i>
                                                             Xóa
                                                         </a>
@@ -175,19 +175,19 @@
                                             </div>
 
                                         </td>
-                                        <td th:text="${patient.firstName + ' ' + patient.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
-                                        <td th:text="${patient.gender}"></td> <!-- Patient gender -->
-                                        <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
-                                        <td th:text="${patient.street}"></td> <!-- Address -->
-                                        <td th:text="${patient.ward?.WardName}"></td> <!-- Ward -->
-                                        <td th:text="${patient.district?.DistrictName}"></td> <!-- District -->
-                                        <td th:text="${patient.city?.CityName}"></td>
+                                        <td th:text="${nurse.firstName + ' ' + nurse.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
+                                        <td th:text="${nurse.gender}"></td> <!-- Patient gender -->
+                                        <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(nurse.dob, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
+                                        <td th:text="${nurse.street}"></td> <!-- Address -->
+                                        <td th:text="${nurse.ward?.WardName}"></td> <!-- Ward -->
+                                        <td th:text="${nurse.district?.DistrictName}"></td> <!-- District -->
+                                        <td th:text="${nurse.city?.CityName}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                        <br>
+                                <br>
 
-<!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
+                                <!--                                <div class="row"><div class="col-xs-6"><div class="dataTables_info" id="dynamic-table_info" role="status" aria-live="polite">Showing 1 to 10 of 23 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dynamic-table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dynamic-table" tabindex="0"><a href="#">3</a></li><li class="paginate_button next" aria-controls="dynamic-table" tabindex="0" id="dynamic-table_next"><a href="#">Next</a></li></ul></div></div></div></div>-->
 
 
                             </div>
@@ -199,20 +199,20 @@
                             <ul class="pagination justify-content-end">
                                 <!-- Previous page link (disable if on the first page) -->
                                 <li class="page-item" th:if="${currentPage != 0}">
-                                    <a class="page-link" th:href="@{'/patients/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
+                                    <a class="page-link" th:href="@{'/nurses-search/'+ ${currentPage - 1}}" href="#" tabindex="-1">Trước</a>
                                 </li>
 
                                 <!-- Page number links (loop through available pages) -->
                                 <li class="page-item" th:each="i : ${#numbers.sequence(1,totalPages)}"
                                     th:classappend="${currentPage == i - 1 ? ' active' : ''}">
-                                    <a class="page-link" th:href="@{'/patients/' + ${i - 1}}"  href="#" ><span th:text ="${i}"></span></a>
+                                    <a class="page-link" th:href="@{'/nurses-search/' + ${i - 1}}"  href="#" ><span th:text ="${i}"></span></a>
                                 </li>
 
 
 
                                 <!-- Last page link -->
                                 <li class="page-item" th:if="${currentPage + 1 != totalPages}">
-                                    <a class="page-link" th:href="@{'/patients/' + ${currentPage + 1}}" href="#">Sau</a>
+                                    <a class="page-link" th:href="@{'/nurses-search/' + ${currentPage + 1}}" href="#">Sau</a>
                                 </li>
                             </ul>
                         </nav>
@@ -242,7 +242,7 @@
                     <!-- LISTPATIENT			 -->
 
                     <!-- formAddPatient -->
-                    <div class="modal fade" id="addPatient">
+                    <div class="modal fade" id="addDoctor">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <!-- Modal Header -->
@@ -253,33 +253,33 @@
 
                                 <!-- Modal Body -->
                                 <div class="modal-body">
-                                    <form class="form-horizontal" role="form" id="patient-info-form">
+                                    <form class="form-horizontal" role="form" id="doctor-info-form">
                                         <!-- First Name -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="firstName">Họ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="firstName" name="firstName" placeholder="Họ" class="form-control" value="" required>
+                                                <input type="text" id="firstName" name="firstName" placeholder="Họ" class="form-control" required>
                                             </div>
                                         </div>
 
                                         <!-- Last Name -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="lastName">Tên</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="lastName" name="lastName" placeholder="Tên" class="form-control" value="" required>
+                                                <input type="text" id="lastName" name="lastName" placeholder="Tên" class="form-control" required>
                                             </div>
                                         </div>
 
                                         <!-- Date of Birth -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="dob">Ngày sinh</label>
                                             <div class="col-sm-9">
-                                                <input type="date" id="dob" name="dob" class="form-control" value="" required>
+                                                <input type="date" id="dob" name="dob" class="form-control" required>
                                             </div>
                                         </div>
 
                                         <!-- Gender -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right">Giới tính</label>
                                             <div class="col-sm-9">
                                                 <label class="radio-inline">
@@ -291,17 +291,16 @@
                                             </div>
                                         </div>
 
-                                        <!-- Street Address -->
-                                        <div class="form-group">
+                                        <!-- Address Section -->
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="street">Địa chỉ</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="street" name="street" placeholder="Địa chỉ" class="form-control" value="" required>
+                                                <input type="text" id="street" name="street" placeholder="Địa chỉ" class="form-control" required>
                                             </div>
                                         </div>
 
                                         <!-- City ID -->
-                                        <!-- City Dropdown -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="cityId">Tỉnh/Thành phố</label>
                                             <div class="col-sm-9">
                                                 <select name="cityId" id="cityId" class="form-control" required onchange="loadDistricts(this.value)">
@@ -311,8 +310,8 @@
                                             </div>
                                         </div>
 
-                                        <!-- District Dropdown -->
-                                        <div class="form-group">
+                                        <!-- District ID -->
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="districtId">Quận/Huyện</label>
                                             <div class="col-sm-9">
                                                 <select name="districtId" id="districtId" class="form-control" required onchange="loadWards(this.value)">
@@ -321,29 +320,61 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <!-- Ward Dropdown -->
-                                        <div class="form-group">
+
+                                        <!-- Ward ID -->
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="wardId">Phường/Xã</label>
                                             <div class="col-sm-9">
                                                 <select name="wardId" id="wardId" class="form-control" required>
-                                                    <option value="" disabled selected>Chọn phưỡng xã</option>
+                                                    <option value="" disabled selected>Chọn phường xã</option>
                                                     <!-- Wards will be populated here -->
                                                 </select>
                                             </div>
                                         </div>
 
                                         <!-- Phone Number -->
-                                        <div class="form-group">
+                                        <div class="form-group row">
                                             <label class="col-sm-3 control-label no-padding-right" for="phoneNumber">Số điện thoại</label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại" class="form-control" value="" required>
+                                                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại" class="form-control" required>
                                             </div>
                                         </div>
 
+                                        <!-- Specialty and Degree Info -->
+                                        <div class="form-group row">
+                                            <div class="col-sm-4">
+                                                <label class="control-label" for="specialty">Chuyên ngành</label>
+                                                <input type="text" id="specialty" class="form-control" name="specialty" placeholder="Nhập chuyên ngành" />
+                                            </div>
 
+                                            <!-- Degree Year -->
+                                            <div class="col-sm-4">
+                                                <label class="control-label" for="degreeYear">Năm cấp bằng</label>
+                                                <input type="number" id="degreeYear" class="form-control" name="degreeYear" placeholder="vd:2004" />
+                                            </div>
+
+                                            <!-- Start Date -->
+                                            <div class="col-sm-4">
+                                                <label class="form-label" for="startDate">Ngày bắt đầu làm việc</label>
+                                                <input type="date" class="form-control" id="startDate" name="startDate">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 control-label no-padding-right" for="departmentId">Tòa nhà</label>
+                                            <div class="col-sm-9">
+                                                <select  id="departmentId" class="form-control">
+                                                    <option value="" >Chọn tòa nhà</option>
+                                                    <option th:each="department : ${departments}"
+                                                            th:value="${department.id}"
+                                                            th:text="${department.title}">
+                                                    </option>
+                                                </select>                                            </div>
+                                        </div>
+                                        <!-- Submit & Reset Buttons -->
                                         <div class="clearfix form-actions">
                                             <div class="col-md-offset-3 col-md-9">
-                                                <button class="btn btn-info" type="button" id="btnSubmit">
+                                                <button class="btn btn-info" type="submit" id="btnSubmit">
                                                     <i class="ace-icon fa fa-check bigger-110"></i> Lưu
                                                 </button>
                                                 &nbsp; &nbsp; &nbsp;
@@ -353,6 +384,7 @@
                                             </div>
                                         </div>
                                     </form>
+
                                 </div>
 
                                 <!-- Modal Footer -->
@@ -382,10 +414,73 @@
 <script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
 
 <script>
-    function deletePatient(patientId) {
-        if (confirm("Bạn có muốn xóa bệnh nhân??")) {
+    $(document).ready(function() {
+        // Trigger when the form is submitted
+        $('#doctor-info-form').on('submit', function(event) {
+            event.preventDefault();  // Prevent form submission (page reload)
+
+            // Collect form data
+            var formData = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                dob: $('#dob').val(),
+                gender: $("input[name='gender']:checked").val(),
+                street: $('#street').val(),
+                cityId: $('#cityId').val(),
+                districtId: $('#districtId').val(),
+                wardId: $('#wardId').val(),
+                phoneNumber: $('#phoneNumber').val(),
+                specialty: $('#specialty').val(),
+                degreeYear: $('#degreeYear').val(),
+                startDate: $('#startDate').val(),
+                departmentId: $('#departmentId').val()
+            };
+            console.log(formData);
+            // Call the API using AJAX for creating a new doctor
             $.ajax({
-                url: `/patient/delete/${patientId}`,
+                url: '/employee/nurse/add',  // Change to the appropriate endpoint for adding a doctor
+                type: 'POST',  // Use POST for creating a new resource
+                contentType: 'application/json',  // Send data as JSON
+                data: JSON.stringify(formData),  // Convert form data to JSON
+                success: function(response) {
+                    // Display success message
+                    $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                    $('#alertMessage').text("Thêm y tá thành công");
+                    $('#addDoctor').modal('hide');
+                    $('#postResultDiv').show().addClass('alert-fixed');
+
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '/nurses/0'; // Redirect to patients page
+                    }, 1000);
+
+                    $('#doctor-info-form')[0].reset();  // Reset the form
+                },
+                error: function(xhr, status, error) {
+                    // Display error message
+                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                    $('#alertMessage').text("Không thành công");
+
+                    $('#postResultDiv').show().addClass('alert-fixed');
+
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function deleteNurse(nurseId) {
+        if (confirm("Bạn có muốn xóa??")) {
+            $.ajax({
+                url: `/employee/nurse/delete/${nurseId}`,
                 type: 'DELETE',
                 success: function(data) {
                     if (data.message === "Xóa thành công") {
@@ -471,22 +566,6 @@
         $("#searchForm")[0].reset();
         search(0); // Optionally trigger a search on clear
     }
-    function addNewRow() {
-        var newRow = '<tr>' +
-            '<td>' +
-            '<select class="chosen-select form-control" id="form-field-select-3" data-placeholder="Choose a State...">' +
-            '<option value="">  </option>' +
-            '<option value="AL">Alabama</option>' +
-            '<option value="CA">California</option>' +
-            '<option value="NY">New York</option>' +
-            '</select>' +
-            '</td>' +
-            '<td><input type="text" class="form-control" name="dosage"></td>' +
-            '<td><input type="text" class="form-control" name="frequency"></td>' +
-            '<td><button type="button" class="btn btn-danger remove-row">Remove</button></td>' +
-            '</tr>';
-        $('#medicationBody').append(newRow);  // Append the new row to the tbody
-    }
 
     // Add new row to the table when the button is clicked
 
@@ -561,58 +640,6 @@
 
 </script>
 
-<script>
-    $('#btnSubmit').click(function(event) {
-        event.preventDefault();
-        var data = {};
-        var formData = $('#patient-info-form').serializeArray();
-
-        $.each(formData, function() {
-            data[this.name] = this.value; // Convert array to object
-        });
-
-        // Log form data for debugging
-        console.log("Form Data:", data);
-
-        // Perform AJAX request to the API
-        $.ajax({
-            type: "POST",
-            url: "/patient/add", // Make sure the URL matches the endpoint
-            data: JSON.stringify(data),
-            contentType: "application/json", // Important to specify JSON content
-            dataType: 'json', // Expect JSON response
-            success: function(response) {
-                console.log("Success:", response);
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
-                $('#alertMessage').text(response.message); // Update the alert message
-                $('#addPatient').modal('hide');
-                $('#postResultDiv').show().addClass('alert-fixed');
-                // Reload the table content
-                $('#myTable').load(location.href + ' #myTable', function() {
-                    console.log("Table reloaded successfully");
-                });
-
-                setTimeout(function() {
-                    $('#postResultDiv').fadeOut();
-                }, 5000);
-
-                // Reset the form
-                $('#patient-info-form')[0].reset();
-
-            },
-            error: function(xhr, status, error) {
-                console.log("Failed:", status, error);
-                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
-                $('#alertMessage').text("Failed to add patient. Please check the console for more details."); // Update the alert message
-                $('#postResultDiv').show().addClass('alert-fixed');
-                setTimeout(function() {
-                    $('#postResultDiv').fadeOut(); // Fade out the alert
-                }, 5000);
-
-            }
-        });
-    });
-</script>
 
 <script>
     function assignmentBuilding(){
@@ -620,13 +647,13 @@
     }
 </script>
 <script>
-    function addPatient() {
-        $('#addPatient').modal();
+    function addDoctor() {
+        $('#addDoctor').modal();
     }
 
 
 
-        function addExamination(){
+    function addExamination(){
         $('#addExamination').modal();
     }
 

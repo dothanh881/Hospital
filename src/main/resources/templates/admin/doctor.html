@@ -38,7 +38,9 @@
                     try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                 </script>
 
-
+                <ul class="breadcrumb">
+                    <li class="active"><h4>Danh sách bác sĩ</h4></li>
+                </ul><!-- /.breadcrumb -->
 
 
                 <!-- /.nav-search -->
@@ -137,14 +139,14 @@
                                                 <ul class="dropdown-menu dropdown-primary">
 
 
-<!--                                                    <li>-->
-<!--                                                        <a th:href="@{/doctor/edit/{id}(id=${doctor.ID})}">-->
-<!--                                                            <i class="ace-icon fa fa-pencil "></i>-->
-<!--                                                            Chi tiêt-->
-<!--                                                        </a>-->
+                                                    <li>
+                                                        <a th:href="@{/doctor/edit/{id}(id=${doctor.ID})}">
+                                                            <i class="ace-icon fa fa-pencil "></i>
+                                                            Chi tiêt
+                                                        </a>
 
 
-<!--                                                    </li>-->
+                                                    </li>
 <!--                                                    <li>-->
 <!--                                                        <a th:href="@{/patient/examination/{id}(id=${patient.ID})}">-->
 <!--                                                            <i class="ace-icon fa fa-bars"></i>-->
@@ -161,12 +163,12 @@
 
 <!--                                                    </li>-->
 
-<!--                                                    <li>-->
-<!--                                                        <a href="#" th:onclick="'deleteDoctor(' + ${doctor.ID} + ')'" >-->
-<!--                                                            <i class="ace-icon fa fa-trash-o"></i>-->
-<!--                                                            Xóa-->
-<!--                                                        </a>-->
-<!--                                                    </li>-->
+                                                    <li>
+                                                        <a href="#" th:onclick="'deleteDoctor(' + ${doctor.ID} + ')'" >
+                                                            <i class="ace-icon fa fa-trash-o"></i>
+                                                            Xóa
+                                                        </a>
+                                                    </li>
 
 
                                                 </ul>
@@ -444,13 +446,16 @@
                     // Display success message
                     $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
                     $('#alertMessage').text("Thêm bác sĩ thành công");
-
+                    $('#addDoctor').modal('hide');
                     $('#postResultDiv').show().addClass('alert-fixed');
 
                     // Hide the message after 5 seconds
                     setTimeout(function() {
                         $('#postResultDiv').fadeOut();
-                    }, 5000);
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '/doctors/0'; // Redirect to patients page
+                    }, 1000);
 
                     $('#doctor-info-form')[0].reset();  // Reset the form
                 },
@@ -472,10 +477,10 @@
 </script>
 
 <script>
-    function deletePatient(patientId) {
-        if (confirm("Bạn có muốn xóa bệnh nhân??")) {
+    function deleteDoctor(doctorId) {
+        if (confirm("Bạn có muốn xóa??")) {
             $.ajax({
-                url: `/patient/delete/${patientId}`,
+                url: `/employee/doctor/delete/${doctorId}`,
                 type: 'DELETE',
                 success: function(data) {
                     if (data.message === "Xóa thành công") {

@@ -1,9 +1,9 @@
 package com.hospital.hospitalmanagement.service.impl;
 
 import com.hospital.hospitalmanagement.entity.DoctorEntity;
-import com.hospital.hospitalmanagement.entity.PatientEntity;
-import com.hospital.hospitalmanagement.repository.DoctorRepository;
-import com.hospital.hospitalmanagement.service.DoctorService;
+import com.hospital.hospitalmanagement.entity.NurseEntity;
+import com.hospital.hospitalmanagement.repository.NurseRepository;
+import com.hospital.hospitalmanagement.service.NurseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,18 +13,18 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class DoctorServiceImpl implements DoctorService {
+public class NurseServiceImpl implements NurseService {
     @Autowired
-    private DoctorRepository doctorRepository;
+    private NurseRepository nurseRepository;
     @Override
-    public Page<DoctorEntity> pageDoctor(int pageNo) {
+    public Page<NurseEntity> pageNurse(int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10);
-        Page<DoctorEntity> pageDoctor = doctorRepository.findDoctor_ByActivePage(pageable);
-        return pageDoctor;
+        Page<NurseEntity> pageNurse = nurseRepository.findNurse_ByActivePage(pageable);
+        return pageNurse;
     }
 
     @Override
-    public Page<DoctorEntity> searchDoctor(Map<String, Object> param, int pageNo) {
+    public Page<NurseEntity> searchNurse(Map<String, Object> param, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo,10);
         // Extract parameters from the map, providing null if missing
         String fullName = (String) param.getOrDefault("fullName", null);
@@ -38,6 +38,6 @@ public class DoctorServiceImpl implements DoctorService {
 
 
         // Call the repository method with dynamic criteria
-        return doctorRepository.searchDoctor(fullName,phoneNumber, pageable);
+        return nurseRepository.searchNurse(fullName,phoneNumber, pageable);
     }
 }

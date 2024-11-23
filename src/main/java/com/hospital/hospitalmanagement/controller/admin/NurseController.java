@@ -1,12 +1,10 @@
 package com.hospital.hospitalmanagement.controller.admin;
 
 import com.hospital.hospitalmanagement.entity.*;
-import com.hospital.hospitalmanagement.repository.CityRepository;
-import com.hospital.hospitalmanagement.repository.DistrictRepository;
-import com.hospital.hospitalmanagement.repository.DoctorRepository;
-import com.hospital.hospitalmanagement.repository.WardRepository;
+import com.hospital.hospitalmanagement.repository.*;
 import com.hospital.hospitalmanagement.service.DepartmentService;
 import com.hospital.hospitalmanagement.service.DoctorService;
+import com.hospital.hospitalmanagement.service.NurseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -21,53 +19,52 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-public class DoctorController extends BaseController{
-
-        @Autowired
-        private DoctorService doctorService;
+public class NurseController extends BaseController {
     @Autowired
-    private DoctorRepository doctorRepository;
-        @Autowired
-        private CityRepository cityRepository;
-        @Autowired
+    private NurseService nurseService;
+    @Autowired
+    private NurseRepository nurseRepository;
+    @Autowired
+    private CityRepository cityRepository;
+    @Autowired
     private DepartmentService departmentService;
     @Autowired
     private DistrictRepository districtRepository;
     @Autowired
     private WardRepository wardRepository;
 
-    @GetMapping("/doctors/{pageNo}")
-    public String doctorPage(@PathVariable("pageNo") int pageNo, Model model){
-        Page<DoctorEntity> doctors = doctorService.pageDoctor(pageNo);
+    @GetMapping("/nurses/{pageNo}")
+    public String nursePage(@PathVariable("pageNo") int pageNo, Model model){
+        Page<NurseEntity> nurses = nurseService.pageNurse(pageNo);
         List<Cities> cities = cityRepository.findAll();
         List<DepartmentEntity> departments = departmentService.findDepartments_ByActivePage();
 
         model.addAttribute("departments", departments);
         model.addAttribute("cities", cities);
-        model.addAttribute("size", doctors.getSize());
-        model.addAttribute("totalPages", doctors.getTotalPages());
+        model.addAttribute("size", nurses.getSize());
+        model.addAttribute("totalPages", nurses.getTotalPages());
         model.addAttribute("currentPage", pageNo);
-        model.addAttribute("doctors", doctors);
+        model.addAttribute("nurses", nurses);
 
-        return "admin/doctor";
+        return "admin/nurse";
 
     }
-    @GetMapping("/doctor/edit/{id}")
-    public String showDoctorPage(@PathVariable("id") Integer id, Model model) {
-        Optional<DoctorEntity> doctorOptional = doctorRepository.findById(id);
+    @GetMapping("/nurse/edit/{id}")
+    public String showNursePage(@PathVariable("id") Integer id, Model model) {
+        Optional<NurseEntity> optionalNurse = nurseRepository.findById(id);
 
-        if (doctorOptional.isEmpty()) {
+        if (optionalNurse.isEmpty()) {
             // Handle the case where the doctor does not exist
-            model.addAttribute("errorMessage", "Doctor not found!");
+            model.addAttribute("errorMessage", "Nurse not found!");
             return "errorPage"; // Redirect to an error page or another appropriate response
         }
 
-        DoctorEntity doctor = doctorOptional.get(); // Safely unwrap the DoctorEntity
+        NurseEntity nurse = optionalNurse.get(); // Safely unwrap the DoctorEntity
 
         // Fetch related data
         List<Cities> cities = cityRepository.findAll();
-        List<Districts> districts = districtRepository.findByCity_CityIdOrderByOrderIdAsc(doctor.getCity().getCityId());
-        List<Wards> wards = wardRepository.findByDistrict_DistrictIdOrderByOrderIdAsc(doctor.getDistrict().getDistrictId());
+        List<Districts> districts = districtRepository.findByCity_CityIdOrderByOrderIdAsc(nurse.getCity().getCityId());
+        List<Wards> wards = wardRepository.findByDistrict_DistrictIdOrderByOrderIdAsc(nurse.getDistrict().getDistrictId());
         List<DepartmentEntity> departments = departmentService.findDepartments_ByActivePage();
 
         // Add attributes to the model
@@ -75,13 +72,13 @@ public class DoctorController extends BaseController{
         model.addAttribute("districts", districts);
         model.addAttribute("wards", wards);
         model.addAttribute("departments", departments);
-        model.addAttribute("doctor", doctor);
+        model.addAttribute("nurse", nurse);
 
-        return "admin/doctordetail"; // Render the appropriate view
+        return "admin/nursedetail"; // Render the appropriate view
     }
-    @GetMapping("/doctors-search/{pageNo}")
+    @GetMapping("/nurses-search/{pageNo}")
     public String searchDoctor(@PathVariable("pageNo") int pageNo, Model model,@RequestParam Map<String, Object> searchParams ){
-        Page<DoctorEntity> doctors = doctorService.searchDoctor(searchParams,pageNo);
+        Page<NurseEntity> nurses = nurseService.searchNurse(searchParams,pageNo);
         List<Cities> cities = cityRepository.findAll();
         List<DepartmentEntity> departments = departmentService.findDepartments_ByActivePage();
         String queryString = searchParams.entrySet().stream()
@@ -90,14 +87,15 @@ public class DoctorController extends BaseController{
         model.addAttribute("searchParams", searchParams);
         model.addAttribute("queryString", queryString);  // Add queryString to the model
         model.addAttribute("cities", cities);
-        model.addAttribute("size", doctors.getSize());
-        model.addAttribute("totalPages", doctors.getTotalPages());
+        model.addAttribute("size", nurses.getSize());
+        model.addAttribute("totalPages", nurses.getTotalPages());
         model.addAttribute("currentPage", pageNo);
-        model.addAttribute("doctors", doctors);
+        model.addAttribute("nurses", nurses);
         model.addAttribute("departments", departments);
 
-        return "admin/doctor-result";
+        return "admin/nurse-result";
 
     }
+
 
 }

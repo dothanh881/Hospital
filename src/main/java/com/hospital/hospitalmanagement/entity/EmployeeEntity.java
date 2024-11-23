@@ -13,7 +13,7 @@ public class EmployeeEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String code;
 
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class EmployeeEntity extends BaseEntity{
     @Column( nullable = false)
     private String specialty;
 
-    @Column( nullable = false)
+    @Column
     private Integer degreeYear;
 
 
@@ -63,11 +63,11 @@ public class EmployeeEntity extends BaseEntity{
         this.specialty = specialty;
     }
 
-    public int getDegreeYear() {
+    public Integer getDegreeYear() {
         return degreeYear;
     }
 
-    public void setDegreeYear(int degreeYear) {
+    public void setDegreeYear(Integer degreeYear) {
         this.degreeYear = degreeYear;
     }
 

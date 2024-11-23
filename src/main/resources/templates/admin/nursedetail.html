@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:c="">
+
+<!--head-->
+<div th:replace="/admin/layout/head :: head"></div>
+<!--head-->
+
+<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+        <use xlink:href="#check-circle-fill"></use>
+    </svg>
+    <div id="alertMessage" th:text="${alertMessage}"></div>
+    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+</div>
+<body class="no-skin">
+
+
+<!--navbar-top-->
+<div th:replace="/admin/layout/navbar-top :: navbar-top"></div>
+<!--navbar-top-->
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+
+
+    <!--        menu-left-->
+    <div th:replace="/admin/layout/menu-left :: menu-left"></div>
+    <!--        menu-left-->
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+
+
+
+
+                <!-- /.nav-search -->
+            </div>
+
+
+
+            <br>
+
+            <div class="page-content">
+
+
+                <div class="page-header">
+                    <h3>Thông tin hồ sơ</h3>
+
+                </div>
+
+                <!-- filter -->
+
+                <!-- LISTPATIENT			 -->
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+
+
+                        <div class="hr dotted"></div>
+
+                        <div>
+                            <div id="user-profile-1" class="user-profile row">
+                                <div class="col-xs-12 col-sm-3 center">
+                                    <div>
+
+                                        <div class="space-4"></div>
+
+                                        <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                            <div class="inline position-relative">
+                                                <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+                                                    <i class="ace-icon fa fa-circle light-green"></i>
+                                                    &nbsp;
+
+                                                </a>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-6"></div>
+
+
+
+                                </div>
+
+                                <div class="col-xs-12 col-sm-9">
+                                    <!--                                    <div class="center">-->
+
+                                    <!--                                    </div>-->
+
+
+                                    <form class="profile-user-info profile-user-info-striped">
+                                        <input type="hidden" id="nurseId" name="id" th:value="${nurse.ID}" />
+                                        <!-- Username -->
+
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3">Mã số: </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <input type="text" id="code" name="code" class="form-control" value="" th:value="${nurse.code}"  readonly/>
+                                            </div>
+                                        </div>
+                                        <!-- Location -->
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3">Họ và tên </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="firstName" class="form-control" value="" name="firstName" th:value="${nurse.firstName}" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="lastName" class="form-control" value="" name="lastName" th:value="${nurse.lastName}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Age -->
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3"> Ngày sinh </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <input type="date" id="dob" class="form-control" name="dob" value="" th:value="${nurse.dob}" />
+                                            </div>
+                                        </div>
+
+                                        <!-- Joined Date -->
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3">Giới tính </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <div class="form-check">
+                                                    <input type="radio" class="form-check-input" th:field="${nurse.gender}" id="male" value="Nam">
+                                                    <label class="form-check-label" for="male">Nam</label>
+                                                    <input type="radio" class="form-check-input" th:field="${nurse.gender}" id="female" value="Nữ">
+                                                    <label class="form-check-label" for="female">Nữ</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Last Online -->
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3"> Địa chỉ </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <div class="form-group row">
+                                                    <!-- City -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="cityId">Thành phố/tỉnh</label>
+                                                        <select th:value="${nurse.city.cityId}"  id="cityId" class="form-control" required onchange="loadDistricts(this.value)">
+                                                            <option value="" disabled selected>Chọn thành phố/tỉnh</option>
+                                                            <option th:each="city : ${cities}" th:value="${city.cityId}"
+                                                                    th:selected="${city.cityId == nurse.city.cityId}" th:text="${city.cityName}"></option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- District -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="districtId">Quận/huyện</label>
+                                                        <select  th:value="${nurse.district.districtId}"  id="districtId" class="form-control" required onchange="loadWards(this.value)">
+                                                            <option value="" disabled selected>Chọn quận/huyện</option>
+                                                            <option th:each="district : ${districts}" th:value="${district.districtId}"
+                                                                    th:selected="${district.districtId == nurse.district.districtId}" th:text="${district.districtName}"></option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Ward -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="wardId">Phường/xã</label>
+                                                        <select  th:value="${nurse.ward.wardId}"  id="wardId" class="form-control" >
+                                                            <option value="" disabled selected>Chọn Phường/xã</option>
+                                                            <option th:each="ward : ${wards}" th:value="${ward.wardId}"
+                                                                    th:selected="${ward.wardId == nurse.ward.wardId}" th:text="${ward.wardName}"></option>
+                                                        </select >
+                                                    </div>
+
+                                                    <!-- Street -->
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label" for="street">Địa chỉ</label>
+                                                        <input type="text" class="form-control" id="street" name="street" placeholder="Địa chỉ" th:value="${nurse.street}" >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3"> Thông tin </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <div class="form-group row">
+                                                    <!-- City -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="SDT">SĐT</label>
+                                                        <input type="text" id="SDT" class="form-control" value="" name="SDT" th:value="${nurse.phoneNumber}" />
+                                                    </div>
+
+                                                    <!-- District -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="specialty">Chuyên ngành</label>
+                                                        <input type="text" id="specialty" class="form-control" value="" name="specialty" th:value="${nurse.specialty}" />
+                                                    </div>
+
+                                                    <!-- Ward -->
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label" for="degreeYear">Năm cấp bằng</label>
+                                                        <input type="text" id="degreeYear" class="form-control" value="" name="degreeYear" th:value="${nurse.degreeYear}" />
+                                                    </div>
+
+                                                    <!-- Street -->
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label" for="startDate">Ngày bắt đầu làm việc</label>
+                                                        <input type="text" class="form-control" id="startDate" name="startDate"  th:value="${nurse.startDate}" >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- About Me -->
+
+
+                                        <div class="profile-info-row row">
+                                            <div class="profile-info-name col-md-3"> Tòa nhà </div>
+                                            <div class="profile-info-value col-md-9">
+                                                <select th:value="${nurse.department?.id}" id="departmentId" class="form-control">
+                                                    <option value="" disabled selected th:text="${nurse.department == null ? 'No Department Assigned' : 'Select Department'}"></option>
+                                                    <option th:each="department : ${departments}"
+                                                            th:value="${department.id}"
+                                                            th:selected="${nurse.department?.id == department.id}"
+                                                            th:text="${department.title}">
+                                                    </option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <!-- Submit Button -->
+                                        <div class="profile-info-row row">
+                                            <div class="col-md-12 text-right">
+                                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--[if !IE]> -->
+<script th:src="@{/admin/assets/js/jquery.2.1.1.min.js}"></script>
+
+
+<script>
+    $(document).ready(function() {
+        // Trigger when the form is submitted
+        $('form.profile-user-info').on('submit', function(event) {
+            event.preventDefault();  // Prevent form submission (page reload)
+            var nurseId = $('#nurseId').val();
+            // Collect form data
+            var formData = {
+                username: $('#username').val(),
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                dob: $('#dob').val(),
+                gender: $("input[name='gender']:checked").val(),
+                cityId: $('#cityId').val(),
+                districtId: $('#districtId').val(),
+                wardId: $('#wardId').val(),
+                street: $('#street').val(),
+                phoneNumber: $('#SDT').val(),
+                specialty: $('#specialty').val(),
+                degreeYear: $('#degreeYear').val(),
+                startDate: $('#startDate').val(),
+                departmentId: $('#departmentId').val()
+            };
+            console.log("Form Data:", formData);
+            // Call the API using AJAX
+            $.ajax({
+                url: '/employee/' + nurseId,  // Replace `employeeId` with the actual employee ID
+                type: 'PUT', // Use PUT or PATCH for editing
+                contentType: 'application/json',  // Send data as JSON
+                data: JSON.stringify(formData),  // Convert form data to JSON
+                success: function(response) {
+                    // Display success message
+                    $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
+                    $('#alertMessage').text("Cập nhật thành công");
+
+                    $('#postResultDiv').show().addClass('alert-fixed');
+
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                    $('#editPatientForm')[0].reset();  // Reset the form
+                },
+                error: function(xhr, status, error) {
+                    // Display error message
+                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                    $('#alertMessage').text("Không thành công");
+                    $('#postResultDiv').show().addClass('alert-fixed');
+                    setTimeout(function() {
+                        $('#postResultDiv').fadeOut();
+                    }, 5000);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function deletePatient(patientId) {
+        if (confirm("Bạn có muốn xóa bệnh nhân??")) {
+            $.ajax({
+                url: `/patient/delete/${patientId}`,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.message === "Xóa thành công") {
+                        alert(data.message);
+                        // Optionally, reload the page or remove the patient row from the UI
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("Lỗi.");
+                }
+            });
+        }
+    }
+
+    function loadDistricts(cityId) {
+        // Clear existing options
+        const districtSelect = document.getElementById('districtId');
+        districtSelect.innerHTML = '<option value="" disabled selected>Chọn quận/huyện</option>';
+
+        // Fetch districts
+        fetch(`/districts/${cityId}`)
+            .then(response => response.json())
+            .then(districts => {
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.districtId; // Adjust this if your field name is different
+                    option.textContent = district.districtName; // Adjust to your attribute
+                    districtSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching districts:', error);
+            });
+    }
+
+    function loadWards(districtId) {
+        // Clear existing options
+        const wardSelect = document.getElementById('wardId');
+        wardSelect.innerHTML = '<option value="" disabled selected>Chọn phường/xã</option>';
+
+        // Fetch wards
+        fetch(`/wards/${districtId}`)
+            .then(response => response.json())
+            .then(wards => {
+                wards.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.wardId; // Adjust this if your field name is different
+                    option.textContent = ward.wardName; // Adjust to your attribute
+                    wardSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching wards:', error);
+            });
+    }
+</script>
+<script>
+    // function search(pageNo = 0) {
+    //     // Serialize form data
+    //     const searchParams = $("#searchForm").serialize(); // Will gather fullName and phoneNumber parameters
+    //
+    //     // Make the AJAX request to the /patients-search/{pageNo} endpoint
+    //     $.ajax({
+    //         url: `/patients-search/${pageNo}?${searchParams}`, // Include pageNo in the URL
+    //         type: 'GET',
+    //         success: function(data) {
+    //             // Handle the response data and update the table
+    //             console.log('OK:', data);
+    //         },
+    //         error: function(error) {
+    //             console.error('There was an error with the search:', error);
+    //         }
+    //     });
+    // }
+
+
+    function clearForm() {
+        // Reset the form fields
+        $("#searchForm")[0].reset();
+        search(0); // Optionally trigger a search on clear
+    }
+    function addNewRow() {
+        var newRow = '<tr>' +
+            '<td>' +
+            '<select class="chosen-select form-control" id="form-field-select-3" data-placeholder="Choose a State...">' +
+            '<option value="">  </option>' +
+            '<option value="AL">Alabama</option>' +
+            '<option value="CA">California</option>' +
+            '<option value="NY">New York</option>' +
+            '</select>' +
+            '</td>' +
+            '<td><input type="text" class="form-control" name="dosage"></td>' +
+            '<td><input type="text" class="form-control" name="frequency"></td>' +
+            '<td><button type="button" class="btn btn-danger remove-row">Remove</button></td>' +
+            '</tr>';
+        $('#medicationBody').append(newRow);  // Append the new row to the tbody
+    }
+
+    // Add new row to the table when the button is clicked
+
+    // Remove row from the table
+    $(document).on('click', '.remove-row', function() {
+        $(this).closest('tr').remove();  // Remove the specific row
+        calculateTotal(); // Recalculate total after removing a row
+    });
+
+
+    // Function to calculate total price of medications + examination fee
+    function calculateTotal() {
+        var total = 0;
+
+        // Iterate through each row in the medication table
+        $('#medicationBody tr').each(function() {
+            var price = $(this).find('input[name="price"]').val();
+            var quantity = $(this).find('input[name="quantity"]').val();
+
+            // Calculate the subtotal for each medication
+            if (price && quantity) {
+                total += price * quantity;
+            }
+        });
+
+        // Add examination fee to total
+        var examinationFee = parseFloat($('#examinationFee').val()) || 0;
+        total += examinationFee;
+
+        // Set the total fee field
+        $('#totalFee').val(total.toFixed(2));
+    }
+    // Handle form submission
+    $('#examination-info-form').submit(function(e) {
+        e.preventDefault();  // Prevent form from refreshing the page
+
+        // Gather form data
+        var formData = {
+            doctorId: $('#doctorId').val(),
+            examinationDate: $('#examinationDate').val(),
+            diagnosis: $('#diagnosis').val(),
+            medications: []
+        };
+
+        // Gather table data
+        $('#medicationTable tbody tr').each(function() {
+            var medication = {
+                medicationName: $(this).find('input[name="medicationName"]').val(),
+                dosage: $(this).find('input[name="dosage"]').val(),
+                frequency: $(this).find('input[name="frequency"]').val()
+            };
+            formData.medications.push(medication);
+        });
+
+        // Send data to the backend via AJAX
+        $.ajax({
+            url: '/api/examinations',  // The URL of the API to handle form submission
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert('Examination saved successfully!');
+                // Reset the form after successful submission
+                $('#examination-info-form')[0].reset();
+                $('#medicationBody').html('');  // Clear the table
+            },
+            error: function(error) {
+                console.error('Error saving the examination:', error);
+            }
+        });
+    });
+
+</script>
+
+<script>
+    $('#btnSubmit').click(function(event) {
+        event.preventDefault();
+        var data = {};
+        var formData = $('#patient-info-form').serializeArray();
+
+        $.each(formData, function() {
+            data[this.name] = this.value; // Convert array to object
+        });
+
+        // Log form data for debugging
+        console.log("Form Data:", data);
+
+        // Perform AJAX request to the API
+        $.ajax({
+            type: "POST",
+            url: "/patient/add", // Make sure the URL matches the endpoint
+            data: JSON.stringify(data),
+            contentType: "application/json", // Important to specify JSON content
+            dataType: 'json', // Expect JSON response
+            success: function(response) {
+                console.log("Success:", response);
+                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                $('#alertMessage').text(response.message); // Update the alert message
+                $('#addPatient').modal('hide');
+                $('#postResultDiv').show().addClass('alert-fixed');
+                // Reload the table content
+                $('#myTable').load(location.href + ' #myTable', function() {
+                    console.log("Table reloaded successfully");
+                });
+
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut();
+                }, 5000);
+
+                // Reset the form
+                $('#patient-info-form')[0].reset();
+
+            },
+            error: function(xhr, status, error) {
+                console.log("Failed:", status, error);
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
+                $('#alertMessage').text("Failed to add patient. Please check the console for more details."); // Update the alert message
+                $('#postResultDiv').show().addClass('alert-fixed');
+                setTimeout(function() {
+                    $('#postResultDiv').fadeOut(); // Fade out the alert
+                }, 5000);
+
+            }
+        });
+    });
+</script>
+
+<script>
+    function assignmentBuilding(){
+        $('#assignmentBuildingModal').modal();
+    }
+</script>
+
+
+
+<!--[if IE]>
+<script th:src="@{/admin/assets/js/jquery.1.11.1.min.js}"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+<script type="text/javascript" th:src="@{/admin/assets/js/jquery.min.js}"></script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script th:src='@{/assets/js/jquery1x.min.js}'><"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if('ontouchstart' in document.documentElement) document.write("<script th:src='@{/assets/js/jquery.mobile.custom.min.js}'><"+"/script>");
+</script>
+<script th:src="@{/admin/assets/js/bootstrap.min.js}"></script>
+
+<!-- Page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script th:src="@{/assets/js/excanvas.min.js}"></script>
+<![endif]-->
+<!--                    <script th:src="@{/assets/js/jquery-ui.custom.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.ui.touch-punch.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.easypiechart.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.sparkline.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.pie.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/jquery.flot.resize.min.js}"></script>-->
+
+<!-- Ace scripts -->
+<!--                    <script th:src="@{/assets/js/ace-elements.min.js}"></script>-->
+<!--                    <script th:src="@{/assets/js/ace.min.js}"></script>-->
+
+</body>
+</html>
