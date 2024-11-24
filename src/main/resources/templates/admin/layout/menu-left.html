@@ -16,6 +16,7 @@
                 </a>
                 <b class="arrow"></b>
             </li>
+
             <li class="active">
                 <a th:href="@{/patients/0}">
                     <i class="menu-icon fa fa-users"></i>
@@ -23,16 +24,21 @@
                 </a>
                 <b class="arrow"></b>
             </li>
-
-<!--            <th:block th:if="${#lists.contains(employee.user.roles, 'ADMIN')}">-->
-<!--                <li class="active">-->
-<!--                    <a th:href="@{/examinations/0}">-->
-<!--                        <i class="menu-icon fa fa-adjust"></i>-->
-<!--                        <span class="menu-text">Danh sách khám bệnh</span>-->
-<!--                    </a>-->
-<!--                    <b class="arrow"></b>-->
-<!--                </li>-->
+<!--            <th:block th:each="role : ${employee.user.roles}">-->
+<!--                <th:block th:if="${role.name == 'DOCTOR'}">-->
+<!--                    <li class="active">-->
+<!--                        <a th:href="@{/patients/0}">-->
+<!--                            <i class="menu-icon fa fa-users"></i>-->
+<!--                            <span class="menu-text"> Danh sách bệnh nhân </span>-->
+<!--                        </a>-->
+<!--                        <b class="arrow"></b>-->
+<!--                    </li>-->
+<!--                </th:block>-->
 <!--            </th:block>-->
+
+<!--                <li th:each="role : ${employee.user.roles}" th:text="${role.name}"></li>-->
+
+
 
             <li class="active">
                 <a th:href="@{/examinations/0}">
@@ -55,7 +61,6 @@
                 </a>
                 <b class="arrow"></b>
             </li>
-
             <li class="active">
                 <a th:href="@{/nurses/0}">
                     <i class="menu-icon fa fa-bars"></i>
@@ -63,6 +68,7 @@
                 </a>
                 <b class="arrow"></b>
             </li>
+
             <li class="active">
                 <a href="#">
                     <i class="menu-icon fa fa-bars"></i>

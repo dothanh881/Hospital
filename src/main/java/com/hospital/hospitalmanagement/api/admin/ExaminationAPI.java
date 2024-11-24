@@ -96,14 +96,14 @@
 
                 // Construct success response
                 response.put("status", "success");
-                response.put("message", "Examination updated successfully!");
+                response.put("message", "Cập nhật thành công!");
                 response.put("examinationId", examinationId); // Optionally return the examination ID
 
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 // Handle any errors
                 response.put("status", "error");
-                response.put("message", "An error occurred while updating the examination: " + e.getMessage());
+                response.put("message", "Cập nhật không thành công: " + e.getMessage());
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }

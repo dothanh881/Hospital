@@ -46,14 +46,14 @@ public class AdmissionAPI {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // Step 1: Check if Patient exists
+            //  Check if Patient exists
             PatientEntity patient = patientRepository.findById(admissionDTO.getInpatientId())
                     .orElseThrow(() -> new IllegalArgumentException("Patient not found with ID: " + admissionDTO.getInpatientId()));
 
-            // Log the patient for debugging
+
             System.out.println("Patient found: " + patient);
 
-            // Step 2: Check if OutPatientEntity exists
+
             Optional<InPatientEntity> optionalInPatient = inPatientRepository.findByPatient_ID(patient.getID());
             InPatientEntity inPatient;
 
@@ -69,7 +69,7 @@ public class AdmissionAPI {
             }
 
             // Log the examination DTO
-            System.out.println("Examination DTO before saving: " + admissionDTO);
+            System.out.println("Admission DTO before saving: " + admissionDTO);
 
             // Call the service to add the examination
             // Step 3: Fetch related entities (Doctor, Nurse, Room)
@@ -92,17 +92,13 @@ public class AdmissionAPI {
             admissionRepository.save(admissionEntity);
 
 
-            response.put("message", "Admission added successfully!");
+            response.put("message", "Thêm mới thành công!");
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace(); // Print stack trace for better debugging
-            response.put("message", "Failed to add Admission: " + e.getMessage());
+            response.put("message", "Thêm mới không thành công: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
-
-
     }
 
 
@@ -136,7 +132,7 @@ public class AdmissionAPI {
             sickroom.setRoomNo(admissionDTO.getSickroom());
             admission.setRoom(sickroom);
 
-            // Update other fields
+            // Update
             admission.setDateAdmission(admissionDTO.getDateAdmission());
             admission.setDateOfDischarge(admissionDTO.getDateOfDischarge());
             admission.setDiagnosis(admissionDTO.getDiagnosis());
@@ -145,7 +141,7 @@ public class AdmissionAPI {
             // Save updated admission
             admissionRepository.save(admission);
 
-            // Construct success response
+
             response.put("status", "success");
             response.put("message", "Cập nhật thành công!");
             response.put("admissionId", admissionId);
@@ -153,7 +149,6 @@ public class AdmissionAPI {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            // Log error for debugging (optional)
             response.put("status", "error");
             response.put("message", "Không thành công: " + e.getMessage());
 

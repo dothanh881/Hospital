@@ -91,11 +91,11 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
         PatientEntity result = patientRepository.save(patientEntity);
 
 
-        response.put("message", "Patient added successfully!");
+        response.put("message", "Thêm mới thành công!");
         response.put("patient", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED); // HTTP 201 for created resource
     } catch (Exception e) {
-        response.put("message", "Failed to add patient: " + e.getMessage());
+        response.put("message", "Thêm mới thất bại: " + e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // HTTP 500 for server error
     }
 }
@@ -152,7 +152,7 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
             patientRepository.save(patient);
 
             // Return success response
-            return new ResponseEntity<>(Map.of("message", "Patient updated successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("message", "Chỉnh sửa thành công"), HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
