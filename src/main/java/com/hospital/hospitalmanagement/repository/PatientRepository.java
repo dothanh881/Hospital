@@ -55,7 +55,7 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
     int softDeletePatient(@Param("id") Integer id);
     @Query("SELECT p.city FROM PatientEntity p WHERE p.ID = :patientId")
     Cities findCityByPatientId(@Param("patientId") int patientId);
-
+    boolean existsByPhoneNumber(String phoneNumber);
 
     @Query(value = "SELECT * FROM patient p WHERE "
             + "p.is_active = 1 AND p.is_deleted = 0 AND "
@@ -69,4 +69,5 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
     Page<PatientEntity> searchPatients(@Param("fullName") String fullName,
                                        @Param("phoneNumber") String phoneNumber,
                                        Pageable pageable);
+
 }

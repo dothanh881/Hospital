@@ -66,6 +66,9 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
     Map<String, Object> response = new HashMap<>();
 
     try {
+        if (patientRepository.existsByPhoneNumber(patientDTO.getPhoneNumber())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại. Vui lòng nhập số khác.");
+        }
         PatientEntity patientEntity = new PatientEntity();
         patientEntity.setFirstName(patientDTO.getFirstName());
         patientEntity.setLastName(patientDTO.getLastName());
@@ -94,7 +97,11 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
         response.put("message", "Thêm mới thành công!");
         response.put("patient", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED); // HTTP 201 for created resource
-    } catch (Exception e) {
+    } catch (IllegalArgumentException e) {
+        response.put("message", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // HTTP 400 for bad request
+    }
+    catch (Exception e) {
         response.put("message", "Thêm mới thất bại: " + e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // HTTP 500 for server error
     }
@@ -109,13 +116,18 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
 
     // Update a patient by ID
     @PutMapping("patient/edit/{id}")
-    public ResponseEntity<Map<String,String>> updatePatient(@PathVariable Integer id, @RequestBody PatientDTO patientDetails) {
+    public ResponseEntity<Map<String, String>> updatePatient(@PathVariable Integer id, @RequestBody PatientDTO patientDetails) {
 
-
+        Map<String, String> response = new HashMap<>();
         try {
+            // Retrieve the existing patient entity
             Optional<PatientEntity> existingPatient = patientRepository.findById(id);
 
-
+            // Check if patient exists
+            if (!existingPatient.isPresent()) {
+                response.put("message", "Patient not found");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
 
             PatientEntity patient = existingPatient.get();
 
@@ -124,40 +136,56 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
             patient.setLastName(patientDetails.getLastName());
             patient.setDateOfBirth(patientDetails.getDob());
             patient.setStreet(patientDetails.getStreet());
+
+            // Check if phone number has changed and is unique
+            if (!patientDetails.getPhoneNumber().equals(patient.getPhoneNumber())) {
+                if (patientRepository.existsByPhoneNumber(patientDetails.getPhoneNumber())) {
+                    response.put("message", "Số điện thoại đã tồn tại. Vui lòng nhập số khác.");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+            }
             patient.setPhoneNumber(patientDetails.getPhoneNumber());
 
             // Set City, District, and Ward (check if they exist)
             Optional<Cities> city = cityRepository.findById(patientDetails.getCityId());
-            if (city.isPresent()) {
-                patient.setCity(city.get());
-            } else {
-                return new ResponseEntity<>(Map.of("message", "City not found"), HttpStatus.BAD_REQUEST);
+            if (!city.isPresent()) {
+                response.put("message", "City not found");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
+            patient.setCity(city.get());
 
             Optional<Districts> district = districtRepository.findById(patientDetails.getDistrictId());
-            if (district.isPresent()) {
-                patient.setDistrict(district.get());
-            } else {
-                return new ResponseEntity<>(Map.of("message", "District not found"), HttpStatus.BAD_REQUEST);
+            if (!district.isPresent()) {
+                response.put("message", "District not found");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
+            patient.setDistrict(district.get());
 
             Optional<Wards> ward = wardRepository.findById(patientDetails.getWardId());
-            if (ward.isPresent()) {
-                patient.setWard(ward.get());
-            } else {
-                return new ResponseEntity<>(Map.of("message", "Ward not found"), HttpStatus.BAD_REQUEST);
+            if (!ward.isPresent()) {
+                response.put("message", "Ward not found");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
+            patient.setWard(ward.get());
 
-
+            // Save the updated patient entity
             patientRepository.save(patient);
 
             // Return success response
-            return new ResponseEntity<>(Map.of("message", "Chỉnh sửa thành công"), HttpStatus.OK);
+            response.put("message", "Chỉnh sửa thành công");
+            return new ResponseEntity<>(response, HttpStatus.OK);
 
+        } catch (IllegalArgumentException e) {
+            // Handle specific validation error
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            // Handle unexpected errors
+            response.put("message", "Error: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     @DeleteMapping("patient/delete/{id}")
@@ -206,26 +234,17 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
 //
 //        return ResponseEntity.ok(patients);
 //    }
-@GetMapping("patient/search/{pageNo}")
-public ResponseEntity<Map<String, Object>> searchPatient(
-        @PathVariable("pageNo") int pageNo,
-        @RequestParam Map<String, Object> searchParams) {
 
-    // Fetch patients data based on the search parameters and page number
-    Page<PatientEntity> patients = iPatientService.searchPatients(searchParams, pageNo);
-
-    // Fetch cities data for dropdown (if required for the front-end)
-    List<Cities> cities = cityRepository.findAll();
-
-    // Prepare the response data
-    Map<String, Object> response = new HashMap<>();
-    response.put("patients", patients.getContent());
-    response.put("size", patients.getSize());
-    response.put("totalPages", patients.getTotalPages());
-    response.put("currentPage", pageNo);
-    response.put("cities", cities); // Optional, if you want to send city data for the front-end
-
-    return ResponseEntity.ok(response); // Send JSON response
-}
+//@GetMapping("patient/search/")
+//public  ResponseEntity<String> searchPatient(
+//        @RequestParam Map<String, Object> searchParams) {
+//
+//    // Fetch patients data based on the search parameters and page number
+//    return patientService.searchPatientsUnsafe(searchParams);
+//
+//    // Prepare the response data
+//
+//
+//}
 }
 

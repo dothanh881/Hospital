@@ -19,7 +19,7 @@ public interface NurseRepository extends JpaRepository<NurseEntity,Integer> {
 
     @Query(value = "select e.* from nurse n left join employee e ON e.id = n.id  where e.is_active = 1 and e.is_deleted = 0", nativeQuery = true)
     Page<NurseEntity> findNurse_ByActivePage(Pageable pageable);
-
+    boolean existsByPhoneNumber(String phoneNumber);
     @Query(value = "SELECT * FROM nurse n left join employee e ON e.id = n.id WHERE "
             + "e.is_active = 1 AND e.is_deleted = 0 AND "
             + "(:fullName IS NULL OR :fullName = '' OR CONCAT(e.last_name, ' ', e.first_name) LIKE :fullName) AND "

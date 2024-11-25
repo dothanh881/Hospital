@@ -37,6 +37,7 @@ public class EmployeeAPI {
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateEmployee(@PathVariable Integer id, @RequestBody EmployeeDTO employeeDTO) {
+        Map<String, String> response = new HashMap<>();
         try {
             // Retrieve the existing employee entity
             Optional<EmployeeEntity> existingEmployee = employeeRepository.findById(id);
@@ -44,6 +45,7 @@ public class EmployeeAPI {
             if (!existingEmployee.isPresent()) {
                 return new ResponseEntity<>(Map.of("message", "Employee not found"), HttpStatus.NOT_FOUND);
             }
+
 
             EmployeeEntity employee = existingEmployee.get();
 
@@ -87,6 +89,12 @@ public class EmployeeAPI {
 
             // Set additional fields
             employee.setStreet(employeeDTO.getStreet());
+            // Check if the phone number has changed and if it is unique
+            if (!employeeDTO.getPhoneNumber().equals(employee.getPhoneNumber())) {
+                if (employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
+                    throw new IllegalArgumentException("Số điện thoại đã tồn tại. Vui lòng nhập số khác.");
+                }
+            }
             employee.setPhoneNumber(employeeDTO.getPhoneNumber());
             employee.setSpecialty(employeeDTO.getSpecialty());
             employee.setDegreeYear(employeeDTO.getDegreeYear());
@@ -95,9 +103,17 @@ public class EmployeeAPI {
             // Save the updated employee entity
             employeeRepository.save(employee);
 
-            return new ResponseEntity<>(Map.of("message", "Employee updated successfully"), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", "Error updating employee: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("message", "Cập nhật thành công");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // HTTP 400 for bad request
+        }
+        catch (Exception e) {
+            response.put("message",
+                    "Cập nhật không thành công.");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -109,6 +125,10 @@ public class EmployeeAPI {
 
         try {
             // Create DoctorEntity directly
+
+            if (doctorRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
+                throw new IllegalArgumentException("Số điện thoại đã tồn tại. Vui lòng nhập số khác.");
+            }
             DoctorEntity doctor = new DoctorEntity();
             doctor.setFirstName(employeeDTO.getFirstName());
             doctor.setLastName(employeeDTO.getLastName());
@@ -148,7 +168,11 @@ public class EmployeeAPI {
             response.put("message", "Thêm mới bác sĩ thành công!");
             response.put("doctor", savedDoctor);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (Exception e) {
+        }catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // HTTP 400 for bad request
+        }
+        catch (Exception e) {
             response.put("message", "Thêm mới bác sĩ không thành công: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -203,6 +227,9 @@ public class EmployeeAPI {
         Map<String, Object> response = new HashMap<>();
 
         try {
+            if (nurseRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
+                throw new IllegalArgumentException("Số điện thoại đã tồn tại. Vui lòng nhập số khác.");
+            }
             // Create DoctorEntity directly
             NurseEntity nurse = new NurseEntity();
             nurse.setFirstName(employeeDTO.getFirstName());
@@ -243,7 +270,12 @@ public class EmployeeAPI {
             response.put("message", "Thêm mới y tá thành công!");
             response.put("doctor", saveNurse);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // HTTP 400 for bad request
+        }
+        catch (Exception e) {
             response.put("message", "Thêm mới y tá không thành công: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

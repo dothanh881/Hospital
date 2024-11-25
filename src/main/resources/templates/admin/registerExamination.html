@@ -259,8 +259,12 @@
                                                                             </option>
                                                                         </select>
                                                                     </td>
-                                                                    <td><input type="number" class="form-control" name="price" id="price" placeholder="Nhập giá"></td>
-                                                                    <td><input type="number" class="form-control" name="quantity" placeholder="Nhập số lượng"></td>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" name="price" id="price" placeholder="Nhập giá" min="0" step="0.01">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" name="quantity" placeholder="Nhập số lượng" min="0" step="1">
+                                                                    </td>
                                                                     <td>
                                                                         <button type="button" class="btn btn-danger btn-sm remove-row">
                                                                             Xóa
@@ -274,9 +278,9 @@
 
                                                     <!-- Examination Fee -->
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label no-padding-right" for="fee">Phí khám</label>
+                                                        <label class="col-sm-3 control-label no-padding-right"  for="fee">Phí khám</label>
                                                         <div class="col-sm-9">
-                                                            <input type="number" id="fee" name="fee" class="form-control" oninput="calculateTotal()" placeholder="Phí khám" required>
+                                                            <input type="number" id="fee" name="fee" class="form-control" min="0" step="1" oninput="calculateTotal()" placeholder="Phí khám" required>
                                                         </div>
                                                     </div>
 
@@ -380,8 +384,8 @@
             options + // Add cloned options here
             '</select>' +
             '</td>' +
-            '<td><input type="number" class="form-control" name="price" placeholder="Enter Price"></td>' +
-            '<td><input type="number" class="form-control" name="quantity" placeholder="Enter Quantity"></td>' +
+            '<td><input type="number" class="form-control" min="0" step="1" name="price" placeholder="Nhấp giá"></td>' +
+            '<td><input type="number" class="form-control" min="0" step="1" name="quantity" placeholder="Nhập số lượng"></td>' +
             '<td><button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button></td>' +
             '</tr>';
 

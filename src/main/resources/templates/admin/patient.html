@@ -5,12 +5,8 @@
 <div th:replace="/admin/layout/head :: head"></div>
 <!--head-->
 
-<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-        <use xlink:href="#check-circle-fill"></use>
-    </svg>
-    <div id="alertMessage" th:text="${alertMessage}"></div>
-    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+<div id="postResultDiv" class="alert" role="alert" style="display:none;">
+    <span id="alertMessage"></span>
 </div>
 <body class="no-skin">
 
@@ -116,6 +112,7 @@
                                         <th style="width: 160px;text-align: center;">Họ và tên</th>
                                         <th style="width: 80px;text-align: center;">Giới tính</th>
                                         <th style="width: 90px;text-align: center;" class="hidden-480">Ngày sinh</th>
+                                        <th style="width: 80px;text-align: center;">SĐT</th>
                                         <th style="width: 180px;text-align: center;">Địa chỉ</th>
                                         <th style="width: 120px;text-align: center;">Phường xã</th>
                                         <th style="width: 110px;text-align: center;">Quận huyện</th>
@@ -175,10 +172,11 @@
                                             </div>
 
                                         </td>
-                                        <td th:text="${patient.firstName + ' ' + patient.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
+                                        <td th:text="${patient.lastName + ' ' + patient.firstName}" style="padding: 10px;"></td> <!-- Patient name -->
                                         <td th:text="${patient.gender}"></td> <!-- Patient gender -->
                                         <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
-                                        <td th:text="${patient.street}"></td> <!-- Address -->
+                                        <td th:text="${patient.phoneNumber}"></td>
+                                        <td th:text="${patient.street}"></td><!-- Address -->
                                         <td th:text="${patient.ward?.WardName}"></td> <!-- Ward -->
                                         <td th:text="${patient.district?.DistrictName}"></td> <!-- District -->
                                         <td th:text="${patient.city?.CityName}"></td>
@@ -471,22 +469,6 @@
         $("#searchForm")[0].reset();
         search(0); // Optionally trigger a search on clear
     }
-    function addNewRow() {
-        var newRow = '<tr>' +
-            '<td>' +
-            '<select class="chosen-select form-control" id="form-field-select-3" data-placeholder="Choose a State...">' +
-            '<option value="">  </option>' +
-            '<option value="AL">Alabama</option>' +
-            '<option value="CA">California</option>' +
-            '<option value="NY">New York</option>' +
-            '</select>' +
-            '</td>' +
-            '<td><input type="text" class="form-control" name="dosage"></td>' +
-            '<td><input type="text" class="form-control" name="frequency"></td>' +
-            '<td><button type="button" class="btn btn-danger remove-row">Remove</button></td>' +
-            '</tr>';
-        $('#medicationBody').append(newRow);  // Append the new row to the tbody
-    }
 
     // Add new row to the table when the button is clicked
 
@@ -583,7 +565,10 @@
             dataType: 'json', // Expect JSON response
             success: function(response) {
                 console.log("Success:", response);
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                $('#postResultDiv')
+                    .removeClass('alert-danger alert-success') // Reset classes
+                    .addClass('alert-success')                // Add success class
+                    .css('display', 'block');                 // Display the alert
                 $('#alertMessage').text(response.message); // Update the alert message
                 $('#addPatient').modal('hide');
                 $('#postResultDiv').show().addClass('alert-fixed');
@@ -602,16 +587,53 @@
             },
             error: function(xhr, status, error) {
                 console.log("Failed:", status, error);
-                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
-                $('#alertMessage').text("Failed to add patient. Please check the console for more details."); // Update the alert message
+                $('#postResultDiv')
+                    .removeClass('alert-success alert-danger') // Reset classes
+                    .addClass('alert-danger')                 // Add danger class
+                    .css('display', 'block');                 // Display the alert
+
+                // Show the error message from the server response
+                const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Thêm bệnh nhân không thành công.";
+                $('#alertMessage').text(responseMessage);
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut(); // Fade out the alert
                 }, 5000);
-
             }
+
         });
     });
+
+    function showAlert(type, message) {
+        const alertDiv = $('#postResultDiv');
+        const alertIcon = $('#alertIcon use');
+
+        // Update the alert type and icon
+        if (type === 'success') {
+            alertDiv
+                .removeClass('alert-danger alert-success')
+                .addClass('alert-success')
+                .data('type', 'success'); // Update data attribute
+
+            alertIcon.attr('xlink:href', '#check-circle-fill'); // Success icon
+        } else if (type === 'error') {
+            alertDiv
+                .removeClass('alert-danger alert-success')
+                .addClass('alert-danger')
+                .data('type', 'error'); // Update data attribute
+
+            alertIcon.attr('xlink:href', '#exclamation-triangle-fill'); // Error icon
+        }
+
+        // Update the alert message and show the alert
+        $('#alertMessage').text(message);
+        alertDiv.css('display', 'block');
+
+        // Auto-hide the alert after 5 seconds
+        setTimeout(() => {
+            alertDiv.fadeOut();
+        }, 5000);
+    }
 </script>
 
 <script>

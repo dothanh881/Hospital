@@ -18,6 +18,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity,Integer
 Optional<EmployeeEntity> findByUserUsername(String username);
 
     boolean existsByCode(String code); // This will check the uniqueness of the code
+    boolean existsByPhoneNumber(String phoneNumber);
 
     @Modifying
     @Transactional

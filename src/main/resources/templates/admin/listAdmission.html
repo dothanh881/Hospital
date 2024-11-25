@@ -523,10 +523,10 @@
                                                                                                         </select>
                                                                                                     </td>
                                                                                                     <td>
-                                                                                                        <input type="number" class="form-control" name="price" th:value="${treatmentMedication.price}" placeholder="Nhập giá">
+                                                                                                        <input type="number" class="form-control" name="price" min="0" step="1" th:value="${treatmentMedication.price}" placeholder="Nhập giá">
                                                                                                     </td>
                                                                                                     <td>
-                                                                                                        <input type="number" class="form-control" name="quantity" th:value="${treatmentMedication.quantity}" placeholder="Nhập số lượng">
+                                                                                                        <input type="number" class="form-control" name="quantity" min="0" step="1" th:value="${treatmentMedication.quantity}" placeholder="Nhập số lượng">
                                                                                                     </td>
                                                                                                     <td>
                                                                                                         <button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button>
@@ -1097,10 +1097,10 @@
             </select>
         </td>
         <td>
-            <input type="number" class="form-control" name="price" placeholder="Enter Price">
+            <input type="number" class="form-control" min="0" step="1" name="price" placeholder="Giá thuốc">
         </td>
         <td>
-            <input type="number" class="form-control" name="quantity" placeholder="Enter Quantity">
+            <input type="number" class="form-control" min="0" step="1" name="quantity" placeholder="Nhập số lượng">
         </td>
         <td>
             <button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button>
@@ -1200,8 +1200,8 @@
             options + // Add cloned options here
             '</select>' +
             '</td>' +
-            '<td><input type="number" class="form-control" name="price" placeholder="Enter Price"></td>' +
-            '<td><input type="number" class="form-control" name="quantity" placeholder="Enter Quantity"></td>' +
+            '<td><input type="number" class="form-control" min="0" step="1" name="price" placeholder="Giá thuốc"></td>' +
+            '<td><input type="number" class="form-control" min="0" step="1" name="quantity" placeholder="Nhập số lượng"></td>' +
             '<td><button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeRow(this)">Xóa</button></td>' +
             '</tr>';
 

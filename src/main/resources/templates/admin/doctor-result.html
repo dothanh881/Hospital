@@ -5,12 +5,8 @@
 <div th:replace="/admin/layout/head :: head"></div>
 <!--head-->
 
-<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
-  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-    <use xlink:href="#check-circle-fill"></use>
-  </svg>
-  <div id="alertMessage" th:text="${alertMessage}"></div>
-  <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+<div id="postResultDiv" class="alert" role="alert" style="display:none;">
+  <span id="alertMessage"></span>
 </div>
 <body class="no-skin">
 
@@ -114,6 +110,7 @@
                     <th style="width: 160px;text-align: center;">Họ và tên</th>
                     <th style="width: 80px;text-align: center;">Giới tính</th>
                     <th style="width: 90px;text-align: center;" class="hidden-480">Ngày sinh</th>
+                    <th style="width: 80px;text-align: center;">SĐT</th>
                     <th style="width: 180px;text-align: center;">Địa chỉ</th>
                     <th style="width: 120px;text-align: center;">Phường xã</th>
                     <th style="width: 110px;text-align: center;">Quận huyện</th>
@@ -176,6 +173,7 @@
                     <td th:text="${doctor.firstName + ' ' + doctor.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
                     <td th:text="${doctor.gender}"></td> <!-- Patient gender -->
                     <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(doctor.dob, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
+                    <td th:text="${doctor.phoneNumber}"></td>
                     <td th:text="${doctor.street}"></td> <!-- Address -->
                     <td th:text="${doctor.ward?.WardName}"></td> <!-- Ward -->
                     <td th:text="${doctor.district?.DistrictName}"></td> <!-- District -->
@@ -442,8 +440,11 @@
         data: JSON.stringify(formData),  // Convert form data to JSON
         success: function(response) {
           // Display success message
-          $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
-          $('#alertMessage').text("Thêm bác sĩ thành công");
+          $('#postResultDiv')
+                  .removeClass('alert-danger alert-success') // Reset classes
+                  .addClass('alert-success')                // Add success class
+                  .css('display', 'block');                 // Display the alert
+          $('#alertMessage').text(response.message); // Update the alert message
           $('#addDoctor').modal('hide');
           $('#postResultDiv').show().addClass('alert-fixed');
 
@@ -459,9 +460,14 @@
         },
         error: function(xhr, status, error) {
           // Display error message
-          $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
-          $('#alertMessage').text("Không thành công");
+          $('#postResultDiv')
+                  .removeClass('alert-success alert-danger') // Reset classes
+                  .addClass('alert-danger')                 // Add danger class
+                  .css('display', 'block');                 // Display the alert
 
+          // Show the error message from the server response
+          const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Thêm bác sĩ không thành công.";
+          $('#alertMessage').text(responseMessage);
           $('#postResultDiv').show().addClass('alert-fixed');
 
           // Hide the message after 5 seconds

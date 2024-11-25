@@ -20,7 +20,7 @@ public interface DoctorRepository extends JpaRepository<DoctorEntity,Integer> {
 
     @Query(value = "select e.* from doctor d left join employee e ON e.id = d.id  where e.is_active = 1 and e.is_deleted = 0", nativeQuery = true)
     Page<DoctorEntity> findDoctor_ByActivePage(Pageable pageable);
-
+    boolean existsByPhoneNumber(String phoneNumber);
     @Query(value = "SELECT * FROM doctor p left join employee e ON e.id = p.id WHERE "
             + "e.is_active = 1 AND e.is_deleted = 0 AND "
             + "(:fullName IS NULL OR :fullName = '' OR CONCAT(e.last_name, ' ', e.first_name) LIKE :fullName) AND "

@@ -4,12 +4,15 @@ import com.hospital.hospitalmanagement.entity.Cities;
 import com.hospital.hospitalmanagement.entity.PatientEntity;
 import com.hospital.hospitalmanagement.models.dto.PatientDTO;
 import com.hospital.hospitalmanagement.repository.PatientRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -49,12 +52,32 @@ public class PatientService implements IPatientService {
             fullName = "%" + fullName + "%"; // Wildcards for LIKE
         }
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            phoneNumber = "%" + phoneNumber + "%"; // Wildcards for LIKE
+            phoneNumber =  phoneNumber ; // Wildcards for LIKE
         }
 
 
         // Call the repository method with dynamic criteria
         return patientRepository.searchPatients(fullName,phoneNumber, pageable);
+    }
+
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<PatientEntity> searchPatientsUnsafe(Map<String, Object> param ) {
+        String fullName = (String) param.getOrDefault("fullName", null);
+        String phoneNumber = (String) param.getOrDefault("phoneNumberSearch", null);
+        String queryString = "SELECT p FROM PatientEntity p WHERE 1 = 1";
+
+        if (fullName != null && !fullName.isEmpty()) {
+            queryString += " AND CONCAT(p.lastName, ' ', p.firstName) LIKE '%" + fullName + "%'";
+        }
+
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            queryString += " AND p.phoneNumber = '" + phoneNumber + "'";
+        }
+
+        Query query = entityManager.createQuery(queryString, PatientEntity.class);
+        return query.getResultList();
     }
 
     @Override
