@@ -237,7 +237,7 @@
                                                                     <div class="form-group row">
                                                                         <label th:for="'examinationPatient-' + ${examination.ID}" class="col-md-3 col-form-label">Họ tên bệnh nhân:</label>
                                                                         <div class="col-md-9">
-                                                                            <input type="text"  class="form-control" th:value="${examination.outPatient.patient.firstName + ' ' + examination.outPatient.patient.lastName}" th:id="'examinationPatient-' + ${examination.ID}" name="examinationPatient" readonly />
+                                                                            <input type="text"  class="form-control" th:value="${examination.outPatient.patient.lastName + ' ' + examination.outPatient.patient.firstName}" th:id="'examinationPatient-' + ${examination.ID}" name="examinationPatient" readonly />
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group row">
@@ -362,7 +362,7 @@
 
                                         </td>
                                         <td th:text="${examination.outPatient.code}" style="padding: 10px;"></td> <!-- Patient name -->
-                                        <td th:text="${examination.outPatient.patient.firstName + ' ' + examination.outPatient.patient.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
+                                        <td th:text="${examination.outPatient.patient.lastName + ' ' + examination.outPatient.patient.firstName}" style="padding: 10px;"></td> <!-- Patient name -->
                                         <td  th:text="${#dates.format(examination.examinationDate, 'dd-MM-yyyy')}"></td> <!-- Patient gender -->
                                         <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(examination.nextExaminationDate, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
                                         <td th:text="${examination.doctor.firstName + ' ' + examination.doctor.lastName}"></td> <!-- Address -->

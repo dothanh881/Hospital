@@ -284,7 +284,7 @@
                                                                                 <div class="form-group row">
                                                                                     <label th:for="'admissionPatient-' + ${admission.ID}" class="col-md-3 col-form-label">Họ tên bệnh nhân:</label>
                                                                                     <div class="col-md-9">
-                                                                                        <input type="text"  class="form-control" th:value="${admission.inPatient.patient.firstName + ' ' + admission.inPatient.patient.lastName}" th:id="'admissionPatient-' + ${admission.ID}" name="admissionPatient" readonly />
+                                                                                        <input type="text"  class="form-control" th:value="${admission.inPatient.patient.lastName + ' ' + admission.inPatient.patient.firstName}" th:id="'admissionPatient-' + ${admission.ID}" name="admissionPatient" readonly />
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="form-group row">
@@ -363,7 +363,7 @@
                                                                                 <div class="form-group row">
                                                                                     <label th:for="'admissionFee-' + ${admission.ID}" class="col-md-3 col-form-label">Phí khám:</label>
                                                                                     <div class="col-md-9">
-                                                                                        <input type="number" step="0.01" class="form-control" th:value="${admission.fee}" th:id="'admissionFee-' + ${admission.ID}" name="admissionFee" />
+                                                                                        <input type="number" step="0.01" min="0" class="form-control" th:value="${admission.fee}" th:id="'admissionFee-' + ${admission.ID}" name="admissionFee" />
                                                                                     </div>
                                                                                 </div>
 
@@ -693,7 +693,7 @@
 
                                         </td>
                                         <td th:text="${admission.inPatient.code}" style="padding: 10px;"></td> <!-- Patient name -->
-                                        <td th:text="${admission.inPatient.patient.firstName + ' ' + admission.inPatient.patient.lastName}" style="padding: 10px;"></td> <!-- Patient name -->
+                                        <td th:text="${admission.inPatient.patient.lastName + ' ' + admission.inPatient.patient.firstName}" style="padding: 10px;"></td> <!-- Patient name -->
                                         <td  th:text="${#dates.format(admission.dateAdmission, 'dd-MM-yyyy')}"></td> <!-- Patient gender -->
                                         <td style="text-align: center;" class="hidden-480" th:text="${#dates.format(admission.dateOfDischarge, 'dd-MM-yyyy')}"></td> <!-- Birth date formatted -->
                                         <td th:text="${admission.doctor.firstName + ' ' + admission.doctor.lastName}"></td> <!-- Address -->
