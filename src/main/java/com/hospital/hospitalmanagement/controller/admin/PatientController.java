@@ -63,19 +63,7 @@ public class PatientController extends BaseController {
 @GetMapping("/home")
 public String homePage(Model model)
 {
-    // Get the authenticated user (User)
-//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//    String username = authentication.getName();  // This will be the user's username (or email, depending on your setup)
-//
-//    // Retrieve the Employee entity based on the logged-in user
-//    Optional<EmployeeEntity> employee = employeeService.findByUserUsername(username);
-//
-//    if (employee.isPresent()) {
-//        model.addAttribute("employee", employee.get());
-//    } else {
-//        model.addAttribute("error", "Employee not found");
-//        return "errorPage";  // Or any other error page
-//    }
+
     Long totalInpatient = inPatientRepository.countInPatients();
     Long totalOutpatient = outPatientRepository.countOutPatients();
     Long totalDoctor = doctorRepository.countDoctor();
