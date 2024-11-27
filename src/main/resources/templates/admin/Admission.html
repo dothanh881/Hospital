@@ -3,12 +3,8 @@
 <!--head-->
 <div th:replace="/admin/layout/head :: head"></div>
 <!--head-->
-<div class="alert alert-fixed" role="alert" id="postResultDiv" th:style="'display: ' + (${alertMessage != null} ? 'block' : 'none') + ';'">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-        <use xlink:href="#check-circle-fill"></use>
-    </svg>
-    <div id="alertMessage" th:text="${alertMessage}"></div>
-    <span class="close-btn" onclick="$('#postResultDiv').fadeOut();">&times;</span>
+<div id="postResultDiv" class="alert" role="alert" style="display:none;">
+    <span id="alertMessage"></span>
 </div>
 <body class="no-skin">
 
@@ -183,7 +179,7 @@
                 doctorId: $('#doctorId').val(),
                 nurseId: $('#nurseId').val(),
                 dateAdmission: new Date($('#dateAdmission').val()).toISOString(),
-                dateOfDischarge: $('#dateDischarge').val() ? new Date($('#dateDischarge').val()).toISOString() : null,
+                dateOfDischarge:  new Date($('#dateOfDischarge').val()).toISOString(),
                 sickroom: $('#sickroom').val(),
                 diagnosis: $('#diagnosis').val()
             };
@@ -201,16 +197,20 @@
                         window.location.href = '/patients/0'; // Redirect to patients page
                     }, 1000); // Delay of 5 seconds
 
-                    $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
+                    $('#postResultDiv')
+                        .removeClass('alert-danger alert-success') // Reset classes
+                        .addClass('alert-success')                // Add success class
+                        .css('display', 'block');                 // Display the alert
                     $('#alertMessage').text(response.message); // Update the alert message
                     $('#postResultDiv').show().addClass('alert-fixed');
 
 
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error('Error during API request:', error);
-                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
-                    $('#alertMessage').text("Failed to add admission!"); // Update the alert message
+                    $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                    const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Thêm mới không thành công.";
+                    $('#alertMessage').text(responseMessage);
                     $('#postResultDiv').show().addClass('alert-fixed');
                     setTimeout(function() {
                         $('#postResultDiv').fadeOut();

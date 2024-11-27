@@ -35,10 +35,6 @@ public interface PatientRepository  extends JpaRepository<PatientEntity,Integer>
     );
 
 
-//    @Query(value= "select  * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery =true )
-//    List<PatientEntity> findPatient_ByActive();
-
-
     // Updated query to include pagination
     @Query(value = "select * from patient p where p.is_active = 1 and p.is_deleted = 0", nativeQuery = true)
     Page<PatientEntity> findPatient_ByActivePage(Pageable pageable);

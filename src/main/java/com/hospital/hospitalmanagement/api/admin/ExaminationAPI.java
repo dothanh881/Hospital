@@ -63,10 +63,18 @@
 
 
                 examinationService.addExamination(examinationDTO);
-
+                if (examinationDTO.getNextExaminationDate() != null &&
+                        examinationDTO.getExaminationDate().after(examinationDTO.getNextExaminationDate())) {
+                    throw new IllegalArgumentException("Ngày khám phải trước ngày tái khám!.");
+                }
                 response.put("message", "Thêm thành công !");
                 return new ResponseEntity<>(response, HttpStatus.CREATED);
-            } catch (Exception e) {
+            }catch (IllegalArgumentException e) {
+                response.put("status", "error");
+                response.put("message", e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            catch (Exception e) {
                 e.printStackTrace(); // Print stack trace for better debugging
                 response.put("message", "lỗi, thêm không thành công " + e.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,16 +99,26 @@
             examinationDTO.setId(examinationId);
 
             try {
+
                 // Call the service layer to update the examination
                 examinationService.updateExamination(examinationDTO);
-
+                if (examinationDTO.getNextExaminationDate() != null &&
+                        examinationDTO.getExaminationDate().after(examinationDTO.getNextExaminationDate())) {
+                    throw new IllegalArgumentException("Ngày khám phải trước ngày tái khám!.");
+                }
                 // Construct success response
                 response.put("status", "success");
                 response.put("message", "Cập nhật thành công!");
                 response.put("examinationId", examinationId); // Optionally return the examination ID
 
                 return ResponseEntity.ok(response);
-            } catch (Exception e) {
+
+            }  catch (IllegalArgumentException e) {
+                response.put("status", "error");
+                response.put("message", e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            catch (Exception e) {
                 // Handle any errors
                 response.put("status", "error");
                 response.put("message", "Cập nhật không thành công: " + e.getMessage());

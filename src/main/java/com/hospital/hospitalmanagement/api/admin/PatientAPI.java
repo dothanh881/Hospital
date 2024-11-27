@@ -34,11 +34,7 @@ public class PatientAPI {
     PatientService patientService;
     @Autowired
     IPatientService iPatientService;
-//    @PostMapping("/upsert")
-//    public ResponseEntity<String> upsertPatient(@RequestBody PatientEntity patientEntity) {
-//        patientService.upsertPatient(patientEntity);
-//        return ResponseEntity.ok("Patient record processed successfully.");
-//    }
+
     @Autowired
     PatientRepository patientRepository;
     @Autowired
@@ -55,12 +51,7 @@ public class PatientAPI {
 
 
 
-    //    @GetMapping("/patients")
-//    public ResponseEntity<List<PatientEntity>> getAllPatient(){
-//        List<PatientEntity> patients = patientRepository.findAll();
-//        return new ResponseEntity<>(patients, HttpStatus.OK);
-//    }
-//     add patient
+
 @PostMapping("/patient/add")
 public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO patientDTO) {
     Map<String, Object> response = new HashMap<>();
@@ -136,6 +127,7 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
             patient.setLastName(patientDetails.getLastName());
             patient.setDateOfBirth(patientDetails.getDob());
             patient.setStreet(patientDetails.getStreet());
+            patient.setGender(patientDetails.getGender());
 
             // Check if phone number has changed and is unique
             if (!patientDetails.getPhoneNumber().equals(patient.getPhoneNumber())) {
@@ -207,44 +199,6 @@ public ResponseEntity<Map<String, Object>> addPatient(@RequestBody PatientDTO pa
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // Delete a patient by ID
-//    @DeleteMapping("patient/delete/{id}")
-//    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-//        if (patientRepository.existsById(id)) {
-//            patientRepository.deleteById(id);
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
 
-//    @GetMapping("patient/search/{pageNo}")
-//    public ResponseEntity<Page<PatientEntity>> searchPatients(
-//            @RequestParam Map<String, Object> searchParams,
-//            @RequestParam Optional<Integer> page,
-//            @RequestParam Optional<Integer> size) {
-//
-//        // Default pagination values
-//        int pageNumber = page.orElse(0);
-//        int pageSize = size.orElse(10);
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//
-//        // Pass the search parameters to the service layer
-//        Page<PatientEntity> patients = iPatientService.searchPatients(searchParams, pageable);
-//
-//        return ResponseEntity.ok(patients);
-//    }
-
-//@GetMapping("patient/search/")
-//public  ResponseEntity<String> searchPatient(
-//        @RequestParam Map<String, Object> searchParams) {
-//
-//    // Fetch patients data based on the search parameters and page number
-//    return patientService.searchPatientsUnsafe(searchParams);
-//
-//    // Prepare the response data
-//
-//
-//}
 }
 

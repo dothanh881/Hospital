@@ -45,6 +45,10 @@ public class ExaminationServiceImpl implements ExaminationService {
         if (outpatientId == null) {
             throw new IllegalArgumentException("Outpatient ID cannot be null");
         }
+        if (examinationDTO.getNextExaminationDate() != null &&
+                examinationDTO.getExaminationDate().after(examinationDTO.getNextExaminationDate())) {
+            throw new IllegalArgumentException("Ngày khám phải trước ngày tái khám!.");
+        }
         Integer doctorId = examinationDTO.getDoctorId();
         Date examinationDate = new Date(); // Assuming current date
         Date nextExaminationDate = examinationDTO.getNextExaminationDate();
@@ -76,6 +80,8 @@ public class ExaminationServiceImpl implements ExaminationService {
         Map<String, Object> response = new HashMap<>();
 
         try {
+
+
             // Retrieve the examination from the database
             ExaminationEntity examination = examinationRepository.findById(examinationDTO.getId())
                     .orElseThrow(() -> new RuntimeException("Examination not found"));
@@ -85,9 +91,13 @@ public class ExaminationServiceImpl implements ExaminationService {
             doctor.setID(examinationDTO.getDoctorId()); // Set the doctor ID
             examination.setDoctor(doctor); // Set the doctor on the examination
 
+            if (examinationDTO.getNextExaminationDate() != null &&
+                    examinationDTO.getExaminationDate().after(examinationDTO.getNextExaminationDate())) {
+                throw new IllegalArgumentException("Ngày khám phải trước ngày tái khám!.");
+            }
             examination.setExaminationDate(examinationDTO.getExaminationDate());
-            examination.setDiagnosis(examinationDTO.getDiagnosis());
             examination.setNextExaminationDate(examinationDTO.getNextExaminationDate());
+            examination.setDiagnosis(examinationDTO.getDiagnosis());
             examination.setFee(examinationDTO.getFee());
             examination.setMedications(examinationDTO.getMedications());
 
@@ -159,12 +169,17 @@ public class ExaminationServiceImpl implements ExaminationService {
 
             // Construct successful response
             response.put("status", "success");
-            response.put("message", "Examination updated successfully");
+            response.put("message", "Cập nhật thành công");
             response.put("examinationId", examination.getID()); // Optionally return the updated examination ID
 
             return ResponseEntity.ok(response);
 
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        catch (RuntimeException e) {
             // Construct error response
             response.put("status", "error");
             response.put("message", e.getMessage());
@@ -172,7 +187,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         } catch (Exception e) {
             // Handle any other exceptions that may occur
             response.put("status", "error");
-            response.put("message", "An unexpected error occurred: " + e.getMessage());
+            response.put("message", "Cập nhật không thành công: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

@@ -80,6 +80,10 @@ public class AdmissionAPI {
             RoomEntity room = roomRepository.findById(admissionDTO.getSickroom())
                     .orElseThrow(() -> new IllegalArgumentException("Room not found with ID: " + admissionDTO.getSickroom()));
 
+            if (admissionDTO.getDateOfDischarge() != null &&
+                    admissionDTO.getDateAdmission().after(admissionDTO.getDateOfDischarge())) {
+                throw new IllegalArgumentException("Ngày nhập viện phải trước ngày xuất viện!.");
+            }
             AdmissionEntity admissionEntity = new AdmissionEntity();
             admissionEntity.setInPatient(inPatient); // Ensure the inPatient entity is set correctly
             admissionEntity.setDoctor(doctor); // Set the doctor entity
@@ -94,7 +98,12 @@ public class AdmissionAPI {
 
             response.put("message", "Thêm mới thành công!");
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (Exception e) {
+        }catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        catch (Exception e) {
             e.printStackTrace(); // Print stack trace for better debugging
             response.put("message", "Thêm mới không thành công: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -133,6 +142,12 @@ public class AdmissionAPI {
             admission.setRoom(sickroom);
 
             // Update
+            if (admissionDTO.getDateOfDischarge() != null &&
+                    admissionDTO.getDateAdmission().after(admissionDTO.getDateOfDischarge())) {
+                throw new IllegalArgumentException("Ngày nhập viện phải trước ngày xuất viện!.");
+            }
+
+
             admission.setDateAdmission(admissionDTO.getDateAdmission());
             admission.setDateOfDischarge(admissionDTO.getDateOfDischarge());
             admission.setDiagnosis(admissionDTO.getDiagnosis());
@@ -148,7 +163,14 @@ public class AdmissionAPI {
 
             return ResponseEntity.ok(response);
 
-        } catch (Exception e) {
+        }
+
+        catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        catch (Exception e) {
             response.put("status", "error");
             response.put("message", "Không thành công: " + e.getMessage());
 

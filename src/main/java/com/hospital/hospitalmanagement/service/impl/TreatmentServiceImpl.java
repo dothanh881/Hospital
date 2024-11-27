@@ -87,7 +87,10 @@ public class TreatmentServiceImpl implements TreatmentService {
                     .orElseThrow(() -> new RuntimeException("Treatment not found"));
 
             // Update examination fields
-
+            if (treatmentDTO.getEndDate() != null &&
+                    treatmentDTO.getStartDate().after(treatmentDTO.getEndDate())) {
+                throw new IllegalArgumentException("Ngày bắt đầu phải trước ngày kết thúc điều trị!.");
+            }
             treatment.setStartDate(treatmentDTO.getStartDate());
             treatment.setEndDate(treatmentDTO.getEndDate());
             TreatmentStatusEntity treatmentStatus = new TreatmentStatusEntity();
@@ -171,7 +174,12 @@ public class TreatmentServiceImpl implements TreatmentService {
 
             return ResponseEntity.ok(response);
 
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        catch (RuntimeException e) {
             // Construct error response
             response.put("status", "error");
             response.put("message", e.getMessage());

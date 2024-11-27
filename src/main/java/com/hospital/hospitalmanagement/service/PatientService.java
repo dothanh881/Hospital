@@ -41,7 +41,6 @@ public class PatientService implements IPatientService {
         );
     }
 
-
     @Override
     public Page<PatientEntity> searchPatients(Map<String, Object> param, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo,10);
@@ -56,29 +55,9 @@ public class PatientService implements IPatientService {
         }
 
 
-        // Call the repository method with dynamic criteria
         return patientRepository.searchPatients(fullName,phoneNumber, pageable);
     }
 
-    @Autowired
-    private EntityManager entityManager;
-
-    public List<PatientEntity> searchPatientsUnsafe(Map<String, Object> param ) {
-        String fullName = (String) param.getOrDefault("fullName", null);
-        String phoneNumber = (String) param.getOrDefault("phoneNumberSearch", null);
-        String queryString = "SELECT p FROM PatientEntity p WHERE 1 = 1";
-
-        if (fullName != null && !fullName.isEmpty()) {
-            queryString += " AND CONCAT(p.lastName, ' ', p.firstName) LIKE '%" + fullName + "%'";
-        }
-
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            queryString += " AND p.phoneNumber = '" + phoneNumber + "'";
-        }
-
-        Query query = entityManager.createQuery(queryString, PatientEntity.class);
-        return query.getResultList();
-    }
 
     @Override
     public Page<PatientEntity> pagePatients(int pageNo) {

@@ -77,6 +77,7 @@
 
 <!--head-->
 <div th:replace="/admin/layout/head :: head"></div>
+
 <!--head-->
 <div id="postResultDiv" class="alert" role="alert" style="display:none;">
     <span id="alertMessage"></span>
@@ -177,9 +178,9 @@
                                     <div class="mb-2">
                                         <label class="form-label">Giới tính:</label>
                                         <div class="form-check">
-                                            <input type="radio" class="form-check-input" th:field="${patient.gender}" id="male" value="Nam">
+                                            <input type="radio" class="form-check-input" name="gender" id="male" value="Nam" th:checked="${patient.gender == 'Nam'}">
                                             <label class="form-check-label" for="male">Nam</label>
-                                            <input type="radio" class="form-check-input" th:field="${patient.gender}" id="female" value="Nữ">
+                                            <input type="radio" class="form-check-input" name="gender" id="female" value="Nữ" th:checked="${patient.gender == 'Nữ'}">
                                             <label class="form-check-label" for="female">Nữ</label>
                                         </div>
                                     </div>
@@ -1174,7 +1175,8 @@
                 phoneNumber: $('#phoneNumber').val(),
                 cityId: $('#cityId').val(),
                 districtId: $('#districtId').val(),
-                wardId: $('#wardId').val()
+                wardId: $('#wardId').val(),
+                gender: $('input[name="gender"]:checked').val()  // Get selected gender
             };
 
             // Make AJAX request to update patient data
@@ -1302,8 +1304,11 @@
             data: JSON.stringify(formData),
             success: function(response) {
                 console.log("Success:", response);
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
-                $('#alertMessage').text("Cập nhật thành công");
+                $('#postResultDiv')
+                    .removeClass('alert-danger alert-success') // Reset classes
+                    .addClass('alert-success')                // Add success class
+                    .css('display', 'block');                 // Display the alert
+                $('#alertMessage').text(response.message); // Update the alert message
                 $(`#${modalId}`).modal('hide');
                 $('#postResultDiv').show().addClass('alert-fixed');
                 const activeTab = $('.tab-pane.active').attr('id');
@@ -1315,9 +1320,10 @@
                     $('#postResultDiv').fadeOut();
                 }, 5000);
             },
-            error: function(error) {
+            error: function(xhr, status, error)  {
                 $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
-                $('#alertMessage').text("Không thành công");
+                const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Cập nhật không thành công.";
+                $('#alertMessage').text(responseMessage);
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut();
@@ -1452,8 +1458,12 @@
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success'); // Set to success alert
-                $('#alertMessage').text("Cập nhật thành công"); // Update the alert message
+                $('#postResultDiv')
+                    .removeClass('alert-danger alert-success') // Reset classes
+                    .addClass('alert-success')                // Add success class
+                    .css('display', 'block');                 // Display the alert
+                $('#alertMessage').text(response.message); // Update the alert message
+
                 $(`#${modalId}`).modal('hide');  // Hide the modal with the specific ID
                 $('#postResultDiv').show().addClass('alert-fixed');
                 const activeTab = $('.tab-pane.active').attr('id');
@@ -1464,9 +1474,10 @@
                     $('#postResultDiv').fadeOut();
                 }, 5000);
             },
-            error: function(error) {
-                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger'); // Set to danger alert
-                $('#alertMessage').text("Không thành công"); // Update the alert message
+            error: function(xhr, status, error) {
+                $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
+                const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Cập nhật không thành công.";
+                $('#alertMessage').text(responseMessage);
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut(); // Fade out the alert
@@ -1549,8 +1560,11 @@
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
-                $('#alertMessage').text("Cập nhật thành công");
+                $('#postResultDiv')
+                    .removeClass('alert-danger alert-success') // Reset classes
+                    .addClass('alert-success')                // Add success class
+                    .css('display', 'block');                 // Display the alert
+                $('#alertMessage').text(response.message); // Update the alert message
                 $(`#${modalId}`).modal('hide');
                 $('#postResultDiv').show().addClass('alert-fixed');
                 const activeTab = $('.tab-pane.active').attr('id');
@@ -1562,9 +1576,10 @@
                     $('#postResultDiv').fadeOut();
                 }, 5000);
             },
-            error: function(error) {
+            error: function(xhr, status, error) {
                 $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
-                $('#alertMessage').text("Không thành công");
+                const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Cập nhật không thành công.";
+                $('#alertMessage').text(responseMessage);
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut();
