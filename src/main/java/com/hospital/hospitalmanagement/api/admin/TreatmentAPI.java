@@ -79,14 +79,23 @@ public class TreatmentAPI {
         try {
             // Call the service layer to update the examination
             treatmentService.addTreatment(treatmentDTO);
-
+            if (treatmentDTO.getEndDate() != null &&
+                    treatmentDTO.getStartDate().after(treatmentDTO.getEndDate())) {
+                throw new IllegalArgumentException("Ngày bắt đầu phải trước ngày kết thúc điều trị!.");
+            }
             // Construct success response
             response.put("status", "success");
             response.put("message", "Thành công!");
 
 
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        catch (Exception e) {
             // Handle any errors
             response.put("status", "error");
             response.put("message", "lỗi: " + e.getMessage());

@@ -37,6 +37,10 @@ public class TreatmentServiceImpl implements TreatmentService {
     public ResponseEntity<Map<String, Object>> addTreatment(TreatmentDTO treatmentDTO) {
         Map<String, Object> response = new HashMap<>();
 
+        if (treatmentDTO.getEndDate() != null &&
+                treatmentDTO.getStartDate().after(treatmentDTO.getEndDate())) {
+            throw new IllegalArgumentException("Ngày bắt đầu phải trước ngày kết thúc điều trị!.");
+        }
         Integer admissionId = treatmentDTO.getAdmissionId();
         Date startDate = treatmentDTO.getStartDate();
         Date endDate = treatmentDTO.getEndDate();
@@ -71,7 +75,7 @@ public class TreatmentServiceImpl implements TreatmentService {
             return ResponseEntity.ok(response);
         } else {
 
-            response.put("message", "Failed to add treatment");
+            response.put("message", "Thêm mới không thành công");
             return ResponseEntity.status(500).body(response);
         }
     }

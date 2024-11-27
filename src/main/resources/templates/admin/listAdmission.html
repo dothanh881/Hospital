@@ -950,8 +950,11 @@
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
-                $('#postResultDiv').removeClass('alert-danger').addClass('alert-success');
-                $('#alertMessage').text(response.message);
+                $('#postResultDiv')
+                    .removeClass('alert-danger alert-success') // Reset classes
+                    .addClass('alert-success')                // Add success class
+                    .css('display', 'block');                 // Display the alert
+                $('#alertMessage').text(response.message); // Update the alert message
                 $(`#addTreatment`).modal('hide');  // Hide the modal with the specific ID
                 $('#postResultDiv').show().addClass('alert-fixed');
 
@@ -966,7 +969,8 @@
             },
             error: function(xhr, status, error) {
                 $('#postResultDiv').removeClass('alert-success').addClass('alert-danger');
-                $('#alertMessage').text("Không thành công");
+                const responseMessage = xhr.responseJSON ? xhr.responseJSON.message : "Cập nhật không thành công.";
+                $('#alertMessage').text(responseMessage);
                 $('#postResultDiv').show().addClass('alert-fixed');
                 setTimeout(function() {
                     $('#postResultDiv').fadeOut();

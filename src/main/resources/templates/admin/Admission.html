@@ -179,7 +179,7 @@
                 doctorId: $('#doctorId').val(),
                 nurseId: $('#nurseId').val(),
                 dateAdmission: new Date($('#dateAdmission').val()).toISOString(),
-                dateOfDischarge:  new Date($('#dateOfDischarge').val()).toISOString(),
+                dateOfDischarge: $('#dateOfDischarge').val() ? new Date($('#dateOfDischarge').val()).toISOString() : null,
                 sickroom: $('#sickroom').val(),
                 diagnosis: $('#diagnosis').val()
             };
